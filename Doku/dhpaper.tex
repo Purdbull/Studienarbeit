@@ -1,0 +1,101 @@
+% arara: pdflatex
+% arara: bibtex
+% arara: makeglossaries
+% arara: pdflatex
+% arara: pdflatex
+\documentclass[ngerman,a4paper,12pt,pdftex]{report}
+\usepackage{dhpaper}
+\usepackage{lipsum}
+\usepackage{wrapfig}
+
+\includeonly{
+    intro,
+    foundations,
+    body,
+    conclusion,
+    glossary
+}
+
+\makeglossaries
+\include{glossary}
+
+\bibliography{dhpaper}
+
+\begin{document}
+
+% project details
+\projecttitle{Digitalisierung einer Gartenhochbahn}
+\projectauthor{Moritz Knapp und Jan Bantle}
+\projecttype{Studienarbeit}
+\studentid{3591447}
+
+% company information
+\companyname{Sick AG}
+\companylocation{Waldkirch}
+\companylogo{Logo_SICK_AG_2009.svg}
+\companyadvisor{}
+
+% timeline
+\deadline{20.09.2021}
+\duration{12 Wochen}
+
+% school information
+\schoolname{Dualen Hochschule Baden Württemberg}
+\schoollogo{dhbw-logo}
+\schooladvisor{Dominik Weickgenannt}
+
+% degree information
+\degreetype{Bachelor of Science}
+\subject{Informationstechnik und Mechatronik}
+\courseid{TINF19B3}
+
+\maketitlepage
+
+\makestatement
+
+\makenda
+
+% table of contents, listings
+\pagenumbering{gobble}
+\tableofcontents
+
+\clearpage
+\pagenumbering{roman}
+\setcounter{page}{1}
+% list of figures
+\listoffigures
+\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+
+% list of tables
+\listoftables
+\addcontentsline{toc}{chapter}{Tabellenverzeichnis}
+
+% list of code listings
+\lstlistoflistings
+\addcontentsline{toc}{chapter}{Codelistingverzeichnis}
+
+% actual body of the report
+\begin{onehalfspace}
+    \clearpage
+    \pagenumbering{arabic}
+    % main body of the report, separated by chapters
+    \include{intro}
+    \include{foundations}
+    \include{body}
+    \include{conclusion}
+\end{onehalfspace}
+
+\clearpage
+\pagenumbering{roman}
+\setcounter{page}{4}
+\appendix
+
+% bibliography
+\printbibliography[title={Literaturverzeichnis}]
+\addcontentsline{toc}{chapter}{Literaturverzeichnis}
+
+% list of abbreviations, glossary of terms
+\printglossary[title={Abkürzungsverzeichnis},type=\acronymtype]
+\printglossary
+
+\end{document}
