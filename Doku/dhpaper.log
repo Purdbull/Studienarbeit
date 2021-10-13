@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.6.29) (preloaded format=pdflatex 2020.8.23)  11 OCT 2021 08:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.6.29) (preloaded format=pdflatex 2020.8.23)  12 OCT 2021 17:32
 entering extended mode
 **./dhpaper.tex
 (dhpaper.tex
@@ -1186,9 +1186,8 @@ Package biblatex Info: Data encoding 'utf8' specified.
 \openout3 = `dhpaper-blx.bib'.
 
 Package biblatex Info: Trying to load bibliographic data...
-Package biblatex Info: ... file 'dhpaper.bbl' not found.
-
-No file dhpaper.bbl.
+Package biblatex Info: ... file 'dhpaper.bbl' found.
+ (dhpaper.bbl)
 Package biblatex Info: Reference section=0 on input line 24.
 Package biblatex Info: Reference segment=0 on input line 24.
 \c@lstlisting=\count460
@@ -1207,6 +1206,7 @@ Package microtype Info: Character `029' is missing
 (microtype)             Ignoring protrusion settings for this character.
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 5
 2.
+
 (C:\Users\morit\AppData\Local\Programs\MiKTeX\tex/latex/lm\ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -1318,20 +1318,28 @@ Kapitel 2.
 
  (body.tex
 Kapitel 3.
-) [3
+[3
 
 
 
-] [4]
+]
+Kapitel 4.
+[4
+
+]
+Kapitel 5.
+) [5
+
+] [6]
 \openout2 = `conclusion.aux'.
 
  (conclusion.tex
-Kapitel 4.
-) [5
+Kapitel 6.
+) [7
 
 
 
-] [6]
+] [8]
 
 LaTeX Warning: Empty bibliography on input line 94.
 
@@ -1351,34 +1359,22 @@ Package logreq Info: Writing requests to 'dhpaper.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 28274 strings out of 480790
- 498336 string characters out of 2897301
- 1344971 words of memory out of 3000000
- 43650 multiletter control sequences out of 15000+200000
- 578289 words of font info for 82 fonts, out of 3000000 for 9000
+ 28302 strings out of 480790
+ 498936 string characters out of 2897301
+ 1346984 words of memory out of 3000000
+ 43666 multiletter control sequences out of 15000+200000
+ 578107 words of font info for 80 fonts, out of 3000000 for 9000
  1143 hyphenation exceptions out of 8191
  62i,7n,73p,1154b,2281s stack positions out of 5000i,500n,10000p,200000b,50000s
-pdfTeX warning (dest): name{glo:cu} has been referenced but does not exist, r
-eplaced by a fixed one
-
-pdfTeX warning (dest): name{glo:ssu} has been referenced but does not exist, re
-placed by a fixed one
-
-pdfTeX warning (dest): name{glo:bu} has been referenced but does not exist, rep
-laced by a fixed one
-
-pdfTeX warning (dest): name{glo:gbc} has been referenced but does not exist, re
-placed by a fixed one
-
-{C:/Users/morit/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}<C:/
-Users/morit/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/
-Users/morit/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmcsc10.pfb><C:
-/Users/morit/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/
-Users/morit/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/U
-sers/morit/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmro12.pfb>
-Output written on dhpaper.pdf (13 pages, 242956 bytes).
+{C:/Users/morit/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}<C
+:/Users/morit/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C
+:/Users/morit/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmcsc10.pfb><
+C:/Users/morit/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C
+:/Users/morit/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:
+/Users/morit/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmro12.pfb>
+Output written on dhpaper.pdf (15 pages, 253233 bytes).
 PDF statistics:
- 154 PDF objects out of 1000 (max. 8388607)
- 26 named destinations out of 1000 (max. 500000)
- 12891 words of extra memory for PDF output out of 14400 (max. 10000000)
+ 233 PDF objects out of 1000 (max. 8388607)
+ 40 named destinations out of 1000 (max. 500000)
+ 13019 words of extra memory for PDF output out of 14400 (max. 10000000)
 

@@ -9,14 +9,46 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {1}Einleitung}{1}{chapter.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.1}SICK AG}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.1}Vorwort}{1}{section.1.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1.2}Unternehmensstruktur}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.2}Problemstellung/Zielsetzung}{1}{section.1.2}%
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {2}Grundlagen}{2}{chapter.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {3}Hochbahn}{3}{chapter.3}%
+\contentsline {chapter}{\numberline {3}Anforderungsanalyse}{3}{chapter.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {4}Diskussion und Ausblick}{5}{chapter.4}%
+\contentsline {section}{\numberline {3.1}Ausgangslage}{3}{section.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{Literaturverzeichnis}{iv}{chapter.4}%
+\contentsline {section}{\numberline {3.2}Anforderungen}{3}{section.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2.1}Antrieb}{3}{subsection.3.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2.2}Bestellsystem}{3}{subsection.3.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {4}Konzept}{4}{chapter.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.1}Mechanik}{4}{section.4.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.2}Hardware}{4}{section.4.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.2.1}Platine}{4}{subsection.4.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.2.2}Stromversorgung}{4}{subsection.4.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.2.3}Positionserkennung}{4}{subsection.4.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.3}Software}{4}{section.4.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.3.1}Server}{4}{subsection.4.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.3.2}Client}{4}{subsection.4.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.3.3}Web-Applikation}{4}{subsection.4.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.3.4}Steuerung und Positionserkennung}{4}{subsection.4.3.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {5}Umsetzung}{5}{chapter.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {6}Diskussion und Ausblick}{7}{chapter.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Literaturverzeichnis}{iv}{chapter.6}%
