@@ -1,5 +1,0 @@
-[2] Config.pm:304> INFO - This is Biber 2.14
-[2] Config.pm:307> INFO - Logfile is 'dhpaper.blg'
-[246] biber-MSWIN64:322> INFO - === 
-[948] Utils.pm:320> ERROR - Cannot find 'dhpaper.bcf'!
-[948] Biber.pm:132> INFO - ERRORS: 1
