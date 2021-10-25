@@ -1,14 +1,15 @@
 \chapter{Anforderungsanalyse}
 Der bisherige Aufbau der Gartenhochbahn soll verbessert und in einigen Bereichen erneuert werden. 
-In diesem Kapitel wird mit Abschnitt 3.1.%referenzieren!
+In diesem Kapitel wird mit Abschnitt \ref{sec:ausgangslage}
  zunächst das bisherige System beschrieben. 
-Mit Abschnitt 3.2. folgen die resultierenden Anforderungen unterteilt in die jeweiligen Bereiche.  
+Mit Abschnitt \ref{sec:anforderungen} folgen die resultierenden Anforderungen unterteilt in die jeweiligen Bereiche.  
 
 \section{Ausgangslage}
+\label{sec:ausgangslage}
 Die Gartenhochbahn stellt ein Transportsystem dar. Hauptbestandteil des Systems ist eine Gondel, die sich über Laufräder 
 auf einer Schiene fortbewegt. 
 
-Der Antrieb der Gondel erfolgt durch einem Gleichstrommotor, der über PWM (Pulsweitenmodulation) angesteuert wird. Für die Bereitstellung der Energie ist eine Batterie in der Gondel installiert. Diese wird in der Parkstellung am Ende der Schiene aufgeladen. Als Abschaltung des Motors an den hinteren Endlagen sind Tastsensoren verbaut. Ein Read-Kontakt in der Gondel erkennt außerdem Magnete entlang der Strecke. Dadurch kann bereits vor Erreichen der Endlage die Geschwindigkeit reduziert werden. Für die Signalverarbeitung und Steuerung des Motors ist ein Arduino Nano im Einsatz. \\
+Der Antrieb der Gondel erfolgt durch einem Gleichstrommotor, der über \acrfull{pwm} angesteuert wird. Für die Bereitstellung der Energie ist eine Batterie in der Gondel installiert. Diese wird in der Parkstellung am Ende der Schiene aufgeladen. Als Abschaltung des Motors an den hinteren Endlagen sind Tastsensoren verbaut. Ein Read-Kontakt in der Gondel erkennt außerdem Magnete entlang der Strecke. Dadurch kann bereits vor Erreichen der Endlage die Geschwindigkeit reduziert werden. Für die Signalverarbeitung und Steuerung des Motors ist ein Arduino Nano im Einsatz. \\
 
 Die Kraftübertragung des Motors auf das treibende Laufrad erfolgt bislang über Reibung. Der Aufbau weist einen hohen Verschleiß auf und ist nicht ausreichend zuverlässig. 
 
@@ -17,6 +18,7 @@ Durch die Sensorik ist eine Abschaltung bei Erreichen der Endlage möglich. Somi
 
 
 \section{Anforderungen}
+\label{sec:anforderungen}
 \subsection{Antrieb}
 Insgesamt soll der Antrieb eine hohe Verfügbarkeit aufweisen und verschleißarm sein. 
 Die Kraftübertragung soll mit einer passenden Übersetzung erfolgen. Durch den elektrischen Motor soll eine Regelung der Geschwindigkeit und Drehrichtung möglich sein. Wünschenswert wäre außerdem eine Rückmeldung der Umdrehungen. 
@@ -24,17 +26,15 @@ Das Prinzpi der Energieversorgung über eine Batterie soll beibehalten werden. D
 
 \subsection{Bestellsystem}
 
-Dummys für Glossar und Literaturverzeichnis:
-\acrfull{dma} \cite{knuth84}
 
-\begin{itemize}
-	\item [-] Speisekarte auf dem Webserver. --> Auskunft über Bestand
-	\item [-] Benutzerfreundliche GUI
-	\item [-] Slebst organisierend, dh. Priorisierung oder Queu der Aufträge? 
-	\item [-] Lieferungszustand einsehen können (mit Positionserkennung)
-	\item [-] Bestelllübersicht mit Rechnung? 
-	\item [-] Zugriff von beliebigen Endgegnern (Endgeräten :D --> loool)
-\end{itemize}
+Das Bestellsystem soll es Nutzern ermöglichen, die Hochbahn von der Terasse aus mit einem Bestellauftrag zur Küche zu schicken. 
+Dort soll ein Tablet die aktuelle Bestellung anzeigen. Ist alles für den Transport vorbereitet, kann ein Nutzer aus der Küche den Auftrag 
+bestätigen und die Bahn fährt zur gewünschten Position zurück. Ein Webserver soll diese Funktionen über ein benutzerfreundliches \acrfull{gui} bereitstellen, welches über beliebige Engeräte ( z.B. Samrtphone oder Tablet) erreichbar ist.
+Zudem soll es möglich sein einzutragen, was alles bestellt werden kann. Das System soll selbstorganisieren sein, sodass sich auch das Kontingent durch Bestellungen aktualisiert. Dadurch soll verhindert werden, dass mehr bestellt wird als vorhanden ist.
+Ebenfalls sollen Nutzer die etwas bestellt haben den aktuellen Lieferzustand einsehen können. D. h. es soll angezeigt werden wo sich die Bahn befindet und welche Bestellung gerade bearbeitet wird.
+\\Dummy für Literaturverzeichnis:\\
+\cite{knuth84}\\
+
 
 \subsection{Sensorik}
 Die erforderliche Sensorik kann in zwei Bereiche gegliedert werden: 
