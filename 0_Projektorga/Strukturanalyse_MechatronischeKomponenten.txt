@@ -1,0 +1,39 @@
+Strukturanalyse Mechatronik
+
+
+- Grundaufbau
+	- Bewertung Initialzustand
+	- Bestimmung Reengineering
+	- Bestimmung des groben Aufbautyps 
+	--> Aufbaukonzept I entwickeln 
+ 
+- Aktorik
+	- Entscheidung des Motortyps
+	- Aufstellung aller Kräfte 
+		- Gewichtskräfte 
+		- Getriebeverluste
+			- Fallunterscheidung 
+	- Anforderungen an Drehmoment & Drehzahl
+	- Motorauslegung
+	- Validierung  
+	- Motortreiberauswahl
+
+- Energieversorgung
+	- Leistungsbetrachtung 
+	- Bestimmung des Akkus
+	- Auslegung des Akkus
+	- Ladekonzept 
+
+- Sensorik 
+	- Konzepte zur Positionsbestimmung & Unfallverhütung 
+	- Prototypen 
+	- Entscheidung 
+
+- Aufbaukonzept Stufe II entwickeln
+	- Aufhängung designen 
+	- Antrieb & Getriebe designen 
+	- Machbarkeitsanalyse & Verbesserungen 
+
+- Aufbaukonzept Stufe III 
+	- Trägerelemente & Unterbringung elektronischer Komponenten 
+
