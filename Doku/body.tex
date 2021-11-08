@@ -61,9 +61,25 @@ Die Sicherheitsabschaltung soll Hindernisse im Fahrweg der Gondel erkennen und d
 \subsection{Positionserkennung}
 
 \section{Software}
+Es gibt in diesem Projekt zwei Hauptsoftwarekomponenten, welche die Anlage steuern: Der Server, welcher Anfragen und Befehle an die Bahn verwaltet und die Bahn selbst,
+welche für die Steuerung der Hardware zuständig ist. Der Server soll im Heimnetzwerk über die Adresse des Hosting-System erreichbar sein. Befehle an die Hochbahn sollen drahtlos mit \acrshort{mqtt} übertragen werden.
+Auf der Bahn kommuniziert ein Arduino über einen ESP8266 mit dem Server und steuert gleichzeitig die Bahn. In den folgeneden Abschnitten wird die Konzeption dieser einzelnen Softwareteilen erläutert.
+
+\subsection{Web-Applikation}
+Die Web-Applikation bezeichnet die Benutzeroberfläche, welche sowohl in der Küche zum Einsehen von Bestellungen, als auch von Gästen zum Bestellen und Steuern der Bahn verwendet wird. Jeder Gast soll sich ein Konto erstellen und dabei seine Lieblingsfarbe auswählen können.
+Bestellt dieser etwas kann so die Hochbahn in der individuellen Farbe leuchten. Dies dient zum einen der Freude der Gäste und zum anderen zum Erkennen, für wen die Bestellung ist. Angemeldet soll ein Nutzer über ein Menü unter folgenden Optionen
+wählen können:
+\begin{itemize}
+	\item Allgemeines
+	\item Mein Konto
+	\item Bestellen
+	\item Steuern
+	\item Live-Verfolgung
+\end{itemize}
+Unter \textit{Allgemeines} werden generelle Infos zur Hochbahn angezeigt. Kontoeinstellungen wie Änderung der E-Mail Adresse oder Lieblingsfarbe werden unter \textit{Mein Konto} getätigt. Unter \textit{Bestellen} kann gewählt werden, was bestellt werden soll.
+Ebenfalls ist dabei anzugeben, wohin die Bahn das bestellte fahren soll. Unter \textit{Steuern} kann die Bahn ohne eine Bestellung zu gewünschten Positionen gefahren werden. Die aktuelle Position und ggf. Bestellung kann unter \textit{Live-Verfolgung} eingesehen werden.
 \subsection{Server}
 \subsection{Client}
-\subsection{Web-Applikation}
 \subsection{Steuerung und Positionserkennung}
 
 \chapter{Umsetzung}
