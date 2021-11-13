@@ -51,10 +51,12 @@ Die Sicherheitsabschaltung soll Hindernisse im Fahrweg der Gondel erkennen und d
 
 
 \chapter{Vorgehensweise}
+\label{vorgehensweise}
 In diesem Kapitel wird die Vorgehensweise zur Bewerkstelligung des Projektzieles beschrieben. Um das Ziel zu erreichen, stand die Projektorganisation im Vordergrund. Diese soll nachfolgend erläutert werden. 
 
-\section{Arbeitsorganisation}
-Die Arbeitsorganisation erfolgte anhand der folgenden Stufen: 
+\section{Projektorganisation}
+\label{projektorganisation}
+Die Projektorganisation erfolgte anhand der folgenden Stufen: 
 
 \begin{enumerate}
 	\item Projektstrukturplan %Akronym erstellen PSD!
@@ -69,21 +71,26 @@ In einem letzten Schritt folgte das Definieren der Aufgaben in einem Kanban-Boar
 	
 \newpage
 \subsection{Projektstrukturplan}
+\label{projektstrukturplan}
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=17cm]{structure_mech.png}
+		\includegraphics[width=17cm]{structureMech.png}
 		\caption{Projektstrukturplan mechatronischer Komponenten}
 		\label{pic:structure_mech}
 	\end{center}
 \end{figure}
 
-In \autoref{pic:structure_mech} ist der  Projektstrukturplan mit den mechatronischen Komponenten dargestellt. 
+In \autoref{pic:structureMech} ist der  Projektstrukturplan mit den mechatronischen Komponenten dargestellt. 
 Das Projekt ist unterglieder in drei Telaufgaben. Diese werden in der nächsten Ebene in Arbeitspakete untergliedert. 
 Da die Bereiche aufeinander aufbauend sind, können Zusammenhänge analysiert werden. In dem Schaubild sind die Bereiche entsprechend der zeitlichen Abfolge aufgetragen. Dementsprechend soll in einem ersten Schritt die Aktorik konzeptioniert werden. Dazu zählt die elektrische und mechanische Komponente des Antriebs. Dieser erste Entwurf des Antriebs wird im Aufbaukonzept I festgehalten. Mit den elektrischen Leistungsdaten der Aktorik wird im nächten Schritt das Energiekonzept ausgearbeitet. Auf diesen Bereich baut final die Konzeptionierungsphase der Sensorik auf. \\ 
 Durch weitere Anforderungen aus den Bereichen Energie und Sensorik folgt das Aufbaukonzept II. 
 
-\subsection{Projektablaufplan} %Wird noch schön eingefügt, fürs Testat reichts erst mal. 
+\newpage
+\subsection{Projektablaufplan}
+\label{projektablaufplan}
+ %Wird noch schön eingefügt, fürs Testat reichts erst mal. 
 %Werden auch in einem zweiten Schritt diene Aufgaben einfügen. 
+Aus dem Projektstrukturplan geht der Projektablaufplan hervor. Darin werden die zuvor definierten Arbeitspakete aus den Teilaufgaben terminiert. 
 \begin{figure}[t]
 	\begin{center}
 		\includegraphics[width=17cm]{roadmap.png}
@@ -93,9 +100,23 @@ Durch weitere Anforderungen aus den Bereichen Energie und Sensorik folgt das Auf
 \end{figure}
 
 
+
+\subsection{Arbeitsmangement}
+\label{sec:arbeitsmanagement}
+Für das Arbeitsmanagement wird die Kanban-Methode verwendet. Dabei werden die Teilaufgaben dem Bearebeitungsstatus zugeordnet. Im Rahmen des Projektes wurden die Stati "Backlog", "Todo", "In Progress" und "Done" unterschieden. Die Aufgaben wurden mit den Berbeitungszeiträume aus dem Projektablaufplan definiert und dem entsprechenden Bearbeiter zugewiesen. 
+Für die Kanban-Methode kam das Tool "trello" zum Einsatz. Ein Bildausschnitt aus dem Kanban-Board ist in \autoref{pic:kanban} dargestellt. 
+
+
+\begin{figure}[h]
+	\includegraphics[width=17cm]{kanban.png}
+	\caption{Ausschnitt aus dem Kanban-Board}
+	\label{pic:kanban}
+\end{figure}
+
+
 \chapter{Konzept}
 
-Kukuk, hier ist ein Test, ob das mit dem Kompilieren auch funktioniert ;) 
+
 \section{Mechanik}
 \section{Hardware}
 \subsection{Platine}
