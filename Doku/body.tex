@@ -103,7 +103,7 @@ Aus dem Projektstrukturplan geht der Projektablaufplan hervor. Darin werden die 
 
 \subsection{Arbeitsmangement}
 \label{sec:arbeitsmanagement}
-Für das Arbeitsmanagement wird die Kanban-Methode verwendet. Dabei werden die Teilaufgaben dem Bearebeitungsstatus zugeordnet. Im Rahmen des Projektes wurden die Stati "Backlog", "Todo", "In Progress" und "Done" unterschieden. Die Aufgaben wurden mit den Berbeitungszeiträume aus dem Projektablaufplan definiert und dem entsprechenden Bearbeiter zugewiesen. 
+Für das Arbeitsmanagement wird die Kanban-Methode verwendet. Dabei werden die Teilaufgaben dem Bearebeitungsstatus zugeordnet. Im Rahmen des Projektes wurden die Stati Backlog, Todo, In Progress und Done  unterschieden. Die Aufgaben wurden mit den Berbeitungszeiträume aus dem Projektablaufplan definiert und dem entsprechenden Bearbeiter zugewiesen. 
 Für die Kanban-Methode kam das Tool "trello" zum Einsatz. Ein Bildausschnitt aus dem Kanban-Board ist in \autoref{pic:kanban} dargestellt. 
 
 
@@ -116,8 +116,42 @@ Für die Kanban-Methode kam das Tool "trello" zum Einsatz. Ein Bildausschnitt au
 
 \chapter{Konzept}
 
+\section{Grundaufbau}
+\section{Aktorik}
+In diesem Kapitel wird die Konzeptionierung des Antriebs der Gartenhochbahn beschrieben. In Abschnitt xy wird zunächst die Auswahl und Auslegung des Motors beschrieben. Das Drehmoment des Motors soll anschließend auf ein Laufrad übertragen werden. Die Beschreibung des dafür zuständigen Getriebes folgt mit Abschnitt xy Getriebe. 
 
-\section{Mechanik}
+\subsection{Motor}
+Für den Antrieb der Gartenhochbahn wurde zwischen einem DC-Motor und einem Schrittmotor ausgewählt. 
+Bei einem DC-Motor wird das Signal zur Steuerung der Drehzahl vom Arduino mit PWM an einen Motortreiber übermittelt. Dieser ist für die Leistungsübersetzung des Signals und die Implementierung der Richtungsumkehr zuständig. 
+
+Bei der Steuerung eines Schrittmotors werden von einem Treiber positive Taktflanken ausgewertet. Bei jeder Taktflanke erfolgt eine Umpolung der Spulen in der Art, dass sich ein Inkrementalschritt ergibt. Umgekehrt können aufgrund der erzeugten Taktflanken Rückschlüsse auf die Umdrehungen des Motors und somit auf die Wegstrecke gemacht werden. 
+
+Diese Information kann für die Positionsbestimmung der Gartenhochbahn genutzt werden. Aus diesem Grund soll für den Antrieb ein Schrittmotor verwendet werden. Dafür kommt der Motor Nema 17-04 von Joy-IT zum Einsatz. Als Schrittmotortreiber wird der DRV8825 von Texas Instruments verwendet. 
+
+
+\subsection{Getriebe}
+Das Getriebe sorgt für die Kraftübertragung des Motordrehmoments auf die Schiene. Zusätzlich ist die Geschwindigkeit der Hochbahn vom Übersetzungsverhältnis des Getriebes abhängig. Nachfolgend wird die Auswahl der Getriebeart und anschließend die Auslegung beschrieben. \\
+
+\underline{Getriebeart}\\
+Für die Auswahl der Getriebe steht ein Zahnradgetriebe und ein Zugmittelgetriebe im Raum. Das Zahnradgetriebe besitzt eine formschlüssige Kraftübertragung der beiden Räder. Damit diese mit dem geeigneten Kopfspiel zustande kommt, müssen die beiden Wellen in einem exakten Abstand zueinander stehen. Das bedarf es einem hohen Grad an Präzision bei der Fertigung. Bei einem Zugmittelgetriebe kann eine Spannrolle dafür sorgen, dass das Zugmittel ausreichend gespannt ist. Dadurch muss der Abstand der beiden Räder zueinander ein niedrigeres Maß an Genauigkeit besitzen. 
+Für das Projekt wird ein Zugmittelgetriebe verwendet. Um dabei Schlupf zu vermeiden, wird ein T-Profil bei Riemen und Rad verwendet. \\
+
+
+\underline{Konstruktion und Fertigung}\\
+Der Antrieb besteht aus den folgenden Komponenten: getriebenes und treibendes Riemenrad, Laufrad und Zahnriemen. Zunächst wird das Konzept für das getriebene Riemenrad und das Laufrad beschrieben. Anschließend erfolgt die Beschreibung des gesamten Antriebs anhand der Konstruktion.  
+
+Das Laufrad kommt für den Abtrieb auf der Schiene zum Einsatz. Eine Herausforderung stellt dabei die Kraftübertragung vom Laufrad auf das des getriebenen Riemenrades dar. Dazu wurden zwei Konzept entwickelt, die nachfolgend erläutert werden. 
+
+
+
+
+\section{Sensorik}
+\subsection{Kollisionsvermeidung}
+\subsection{Positionserfassung}
+\section{Energie}
+\subsection{Batterie}
+\subsection{Leistungskonvertierung}
+
 \section{Hardware}
 \subsection{Platine}
 \subsection{Stromversorgung}
