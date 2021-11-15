@@ -11,7 +11,7 @@ auf einer Schiene fortbewegt.
 
 Der Antrieb der Gondel erfolgt durch einem Gleichstrommotor, der über \acrfull{pwm} angesteuert wird. Für die Bereitstellung der Energie ist eine Batterie in der Gondel installiert. Diese wird in der Parkstellung am Ende der Schiene aufgeladen. Als Abschaltung des Motors an den hinteren Endlagen sind Tastsensoren verbaut. Ein Read-Kontakt in der Gondel erkennt außerdem Magnete entlang der Strecke. Dadurch kann bereits vor Erreichen der Endlage die Geschwindigkeit reduziert werden. Für die Signalverarbeitung und Steuerung des Motors ist ein Arduino Nano im Einsatz. \\
 
-Die Kraftübertragung des Motors auf das treibende Laufrad erfolgt bislang über Reibung. Der Aufbau weist einen hohen Verschleiß auf und ist nicht ausreichend zuverlässig. 
+Die Kraftübertragung des Motors auf das treibende Laufrad erfolgt bislang reibschlüssig. Das Getriebe weist dadurch einen hohen Verschleiß auf und ist nicht ausreichend zuverlässig. 
 
 Durch die Sensorik ist eine Abschaltung bei Erreichen der Endlage möglich. Somit können einzelne Fahrzyklen der Hochbahn automatisiert durchgführt werden. 
 
@@ -22,7 +22,7 @@ Durch die Sensorik ist eine Abschaltung bei Erreichen der Endlage möglich. Somi
 \subsection{Antrieb}
 Insgesamt soll der Antrieb eine hohe Verfügbarkeit aufweisen und verschleißarm sein. 
 Die Kraftübertragung soll mit einer passenden Übersetzung erfolgen. Durch den elektrischen Motor soll eine Regelung der Geschwindigkeit und Drehrichtung möglich sein. Wünschenswert wäre außerdem eine Rückmeldung der Umdrehungen. 
-Das Prinzpi der Energieversorgung über eine Batterie soll beibehalten werden. Dafür soll der Akkumulator bei möglichst geringem Platzbedarf und Masse eine ausreichende Kapazität besitzen. 
+Das Prinzipder Energieversorgung über eine Batterie soll beibehalten bleiben. 
 
 \subsection{Bestellsystem}
 
@@ -40,22 +40,22 @@ Die erforderliche Sensorik kann in zwei Bereiche gegliedert werden:
 
 \begin{itemize}
 	\item [a)] Positionserkennung 
-	\item [b)] Sicherheitsabschaltung 
+	\item [b)] Kollisionsvermeidung  
 	
 \end{itemize}
 
 Die Positionserkennung soll entlang der Strecke erfolgen. Die Information soll der Steuerung zur Verfügung gestellt werden. Dabei sollend die Positionswerte so exakt wie nötig ermittelt werden.
 
-Die Sicherheitsabschaltung soll Hindernisse im Fahrweg der Gondel erkennen und dadurch einen rechtzeitigen Stillstand gewährleisten. Dafür muss die Sensorik den kritischen Bereich ausreichend prüfen. 
+Die Kollisionsvermeidung soll Hindernisse im Fahrweg der Gondel erkennen und dadurch einen rechtzeitigen Stillstand gewährleisten. Dafür muss die Sensorik den kritischen Bereich ausreichend prüfen. 
 
 
 
 \chapter{Vorgehensweise}
-\label{vorgehensweise}
-In diesem Kapitel wird die Vorgehensweise zur Bewerkstelligung des Projektzieles beschrieben. Um das Ziel zu erreichen, stand die Projektorganisation im Vordergrund. Diese soll nachfolgend erläutert werden. 
+\label{sec:vorgehensweise}
+In diesem Kapitel wird die Vorgehensweise zur Bewerkstelligung des Projektzieles beschrieben. Um das Ziel zu erreichen, stand zunächst die die Projektorganisation im Vordergrund. Diese wird im  \autoref{sec:projektorganisation} erläutert. 
 
 \section{Projektorganisation}
-\label{projektorganisation}
+\label{sec:projektorganisation}
 Die Projektorganisation erfolgte anhand der folgenden Stufen: 
 
 \begin{enumerate}
@@ -65,23 +65,23 @@ Die Projektorganisation erfolgte anhand der folgenden Stufen:
 	
 \end{enumerate}
 
-In einem ersten Schritt wurden mithilfe einer Projektstrukturplan die Teilbereiche definiert. Dadurch stellten sich die Wirkzusammenhänge der Bereiche heraus. Nachfolgend wurden die zugehörigen Aufgaben erstellt. Durch die Übersicht in einer Roadmap wurden die Aufgaben in einen zeitlichen Zusammenhang gebracht. 
+In einem ersten Schritt wurden mithilfe eines Projektstrukturplans die Teilbereiche definiert. Dadurch stellten sich die Wirkzusammenhänge der Bereiche heraus. Nachfolgend wurden die zugehörigen Aufgaben erstellt. Durch die Übersicht in einer Roadmap wurden die Aufgaben in einen zeitlichen Zusammenhang gebracht. 
 In einem letzten Schritt folgte das Definieren der Aufgaben in einem Kanban-Board. 
 
-	
+
 \newpage
 \subsection{Projektstrukturplan}
-\label{projektstrukturplan}
+In \autoref{pic:structuremech} ist der  Projektstrukturplan mit den mechatronischen Komponenten dargestellt. 
+
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=17cm]{structureMech.png}
 		\caption{Projektstrukturplan mechatronischer Komponenten}
-		\label{pic:structure_mech}
+		\label{pic:structuremech}
 	\end{center}
 \end{figure}
 
-In \autoref{pic:structureMech} ist der  Projektstrukturplan mit den mechatronischen Komponenten dargestellt. 
-Das Projekt ist unterglieder in drei Telaufgaben. Diese werden in der nächsten Ebene in Arbeitspakete untergliedert. 
+Das Projekt ist unterglieder in drei Teilaufgaben. Diese werden in der nächsten Ebene in Arbeitspakete untergliedert. 
 Da die Bereiche aufeinander aufbauend sind, können Zusammenhänge analysiert werden. In dem Schaubild sind die Bereiche entsprechend der zeitlichen Abfolge aufgetragen. Dementsprechend soll in einem ersten Schritt die Aktorik konzeptioniert werden. Dazu zählt die elektrische und mechanische Komponente des Antriebs. Dieser erste Entwurf des Antriebs wird im Aufbaukonzept I festgehalten. Mit den elektrischen Leistungsdaten der Aktorik wird im nächten Schritt das Energiekonzept ausgearbeitet. Auf diesen Bereich baut final die Konzeptionierungsphase der Sensorik auf. \\ 
 Durch weitere Anforderungen aus den Bereichen Energie und Sensorik folgt das Aufbaukonzept II. 
 
@@ -91,7 +91,7 @@ Durch weitere Anforderungen aus den Bereichen Energie und Sensorik folgt das Auf
  %Wird noch schön eingefügt, fürs Testat reichts erst mal. 
 %Werden auch in einem zweiten Schritt diene Aufgaben einfügen. 
 Aus dem Projektstrukturplan geht der Projektablaufplan hervor. Darin werden die zuvor definierten Arbeitspakete aus den Teilaufgaben terminiert. 
-\begin{figure}[t]
+\begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=17cm]{roadmap.png}
 		\caption{Projaktablaufplan mechatronischer Komponenten}
@@ -99,28 +99,45 @@ Aus dem Projektstrukturplan geht der Projektablaufplan hervor. Darin werden die 
 	\end{center}
 \end{figure}
 
+\textcolor{red}{Der Projektablaufplan wird noch ausgearbeitet!}
 
-
+\newpage
 \subsection{Arbeitsmangement}
 \label{sec:arbeitsmanagement}
-Für das Arbeitsmanagement wird die Kanban-Methode verwendet. Dabei werden die Teilaufgaben dem Bearebeitungsstatus zugeordnet. Im Rahmen des Projektes wurden die Stati Backlog, Todo, In Progress und Done  unterschieden. Die Aufgaben wurden mit den Berbeitungszeiträume aus dem Projektablaufplan definiert und dem entsprechenden Bearbeiter zugewiesen. 
+Für das Arbeitsmanagement wird die Kanban-Methode verwendet. Dabei werden die Teilaufgaben dem Bearebeitungsstatus zugeordnet. Im Rahmen des Projektes wurden die Stati \textit{Backlog}, \textit{Todo,  In Progress, Testing} und \textit{Done}  unterschieden. Die Aufgaben wurden mit den Berbeitungszeiträume aus dem Projektablaufplan definiert und dem entsprechenden Bearbeiter zugewiesen. 	
 Für die Kanban-Methode kam das Tool "trello" zum Einsatz. Ein Bildausschnitt aus dem Kanban-Board ist in \autoref{pic:kanban} dargestellt. 
 
 
-\begin{figure}[h]
+\begin{figure}[h] %Würde ich evtl. in finaler Abgabe raus lassen!
 	\includegraphics[width=17cm]{kanban.png}
-	\caption{Ausschnitt aus dem Kanban-Board}
+	\caption{Bildausschnitt aus dem Kanban-Board}
 	\label{pic:kanban}
 \end{figure}
 
 
 \chapter{Konzept}
+Aufgrund der gestellten Anforderungen werden in diesem Kapitel die Konzepte zum Erreichen der Teilaufgaben erläutert. \newpage
 
+%ich wäre schon dafür, dass man keine neue Seite anfängt und das Bild in die Mitte setzt... 
+%Nur Latex sieht das vermutlich anders... 
 \section{Grundaufbau}
+\textcolor{red}{Platzhalter:Begründung, weshalb Neuaufbau nötig}\\
+In  \autoref{pic:grundaufbau} ist das Konzept des Grundaufbaus der Gondel dargestellt. Dieser soll aus den beiden Baugruppen \textit{Triebwagen} und \textit{Stützwagen} bestehen. Im Triebwagen sind Motor und Getriebe verbaut. An die beiden Wägen anchließend werden nach unten Verbindungselemente für die Befestigung des Tabletts sowie für die Elektronik angebracht. \\
+Die detaillierte Konzeptionierung der dargestellten Komponenten erfolgt in den nachfolgenden Abschnitten. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=10cm]{grundaufbau.png} 
+	\caption{Grundaufbau von Trieb- und Stützwagen}
+	\label{pic:grundaufbau}
+\end{figure}
+
+
 \section{Aktorik}
-In diesem Kapitel wird die Konzeptionierung des Antriebs der Gartenhochbahn beschrieben. In Abschnitt xy wird zunächst die Auswahl und Auslegung des Motors beschrieben. Das Drehmoment des Motors soll anschließend auf ein Laufrad übertragen werden. Die Beschreibung des dafür zuständigen Getriebes folgt mit Abschnitt xy Getriebe. 
+In diesem Abschnitt wird die Konzeptionierung des Antriebs der Gartenhochbahn beschrieben. In \autoref{sec:motor} wird zunächst die Auswahl und Auslegung des Motors beschrieben. Das Drehmoment des Motors soll anschließend auf ein Laufrad übertragen werden. Die Beschreibung des dafür zuständigen Getriebes folgt mit \autoref{sec:getriebekonzept}
 
 \subsection{Motor}
+\label{sec:motor}
 Für den Antrieb der Gartenhochbahn wurde zwischen einem DC-Motor und einem Schrittmotor ausgewählt. 
 Bei einem DC-Motor wird das Signal zur Steuerung der Drehzahl vom Arduino mit PWM an einen Motortreiber übermittelt. Dieser ist für die Leistungsübersetzung des Signals und die Implementierung der Richtungsumkehr zuständig. 
 
@@ -129,28 +146,30 @@ Bei der Steuerung eines Schrittmotors werden von einem Treiber positive Taktflan
 Diese Information kann für die Positionsbestimmung der Gartenhochbahn genutzt werden. Aus diesem Grund soll für den Antrieb ein Schrittmotor verwendet werden. Dafür kommt der Motor Nema 17-04 von Joy-IT zum Einsatz. Als Schrittmotortreiber wird der DRV8825 von Texas Instruments verwendet. 
 
 
+
 \subsection{Getriebe}
+\label{sec:getriebekonzept}
 Das Getriebe sorgt für die Kraftübertragung des Motordrehmoments auf die Schiene. Zusätzlich ist die Geschwindigkeit der Hochbahn vom Übersetzungsverhältnis des Getriebes abhängig. Nachfolgend wird die Auswahl der Getriebeart und anschließend die Auslegung beschrieben. \\
 
 \underline{Getriebeart}\\
-Für die Auswahl der Getriebe steht ein Zahnradgetriebe und ein Zugmittelgetriebe im Raum. Das Zahnradgetriebe besitzt eine formschlüssige Kraftübertragung der beiden Räder. Damit diese mit dem geeigneten Kopfspiel zustande kommt, müssen die beiden Wellen in einem exakten Abstand zueinander stehen. Das bedarf es einem hohen Grad an Präzision bei der Fertigung. Bei einem Zugmittelgetriebe kann eine Spannrolle dafür sorgen, dass das Zugmittel ausreichend gespannt ist. Dadurch muss der Abstand der beiden Räder zueinander ein niedrigeres Maß an Genauigkeit besitzen. 
+Für die Auswahl der Getriebe steht ein Zahnradgetriebe und ein Zugmittelgetriebe im Raum. Das Zahnradgetriebe besitzt eine formschlüssige Kraftübertragung der beiden Räder. Damit diese mit dem geeigneten Kopfspiel zustande kommt, müssen die beiden Wellen in einem exakten Abstand zueinander stehen. Das bedarf einem hohen Grad an Präzision bei der Fertigung. Bei einem Zugmittelgetriebe kann eine Spannrolle dafür sorgen, dass das Zugmittel ausreichend gespannt ist. Dadurch muss der Abstand der beiden Räder zueinander ein niedrigeres Maß an Genauigkeit besitzen. 
 Für das Projekt wird ein Zugmittelgetriebe verwendet. Um dabei Schlupf zu vermeiden, wird ein T-Profil bei Riemen und Rad verwendet. \\
 
 
 \underline{Konstruktion und Fertigung}\\
-Der Antrieb besteht aus den folgenden Komponenten: getriebenes und treibendes Riemenrad, Laufrad und Zahnriemen. Zunächst wird das Konzept für das getriebene Riemenrad und das Laufrad beschrieben. Anschließend erfolgt die Beschreibung des gesamten Antriebs anhand der Konstruktion.  
+Der Antrieb besteht aus den folgenden Komponenten: getriebenes- und treibendes Riemenrad, Laufrad und Zahnriemen. Zunächst wird das Konzept für das getriebene Riemenrad und das Laufrad beschrieben. Anschließend erfolgt die Beschreibung des gesamten Antriebs anhand der Konstruktion.  
 
-Das Laufrad kommt für den Abtrieb auf der Schiene zum Einsatz. Eine Herausforderung stellt dabei die Kraftübertragung vom Laufrad auf das des getriebenen Riemenrades dar. Dazu wurden zwei Konzept entwickelt. Die Gegenüberstellung ist in \autoref{pic:abtriebkonzepte} dargestellt.
+Das Laufrad kommt für den Abtrieb auf der Schiene zum Einsatz. Eine Herausforderung stellt dabei die Kraftübertragung vom Laufrad auf das getriebene Riemenrade dar. Dazu wurden zwei Konzept entwickelt. Die Gegenüberstellung ist in \autoref{pic:abtriebkonzepte} dargestellt.
 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=17cm]{abtriebkonzepte.png}
-		\caption{nix}
+		\caption{Konzepte für die Kraftübertragung von Riemenrad auf das Laufrad}
 		\label{pic:abtriebkonzepte}
 	\end{center}
 \end{figure}
 \newpage
-Bei Konzept a) wird für das Laufrad und Riemenrad jeweils ein Normteil verwendet. Die Kraftübertragung zwischen den beiden Rädern erfolgt über eine Welle. Diese ist gelagert während die beiden Räder stehend auf der Welle montiert sind.
+Bei Konzept a) wird für  Laufrad und Riemenrad jeweils ein Normteil verwendet. Die Kraftübertragung zwischen den beiden Rädern erfolgt über eine Welle. Diese ist gelagert während die beiden Räder stehend auf der Welle montiert sind.
 Bei Konzept b) handelt es sich um eine Baugruppe, bestehend aus Laufrad und Riemenrad. Das kombinierte Bauteil wird additiv gefertigt. Es ist stehend auf der Welle gelagert.  Die Welle selbst ist stehend ausgeführt. 
 Durch die additive Fertigung muss eine Konstruktion des Bauteils erfolgen. Dadurch ergibt sich in diesem Punkt ein höherer Aufwand als bei der Verwendung von Normteilen. Die Konstruktion bietet jedoch den Vorteil, dass das Laufrad an das Profil der Schiene angepasst werden kann. Die Normteile der beiden Räder sind meist für hohe Krafteinwirkungen in industriellem Einsatz ausgelegt. Dadurch ergibt sich bei Verwendung der Räder ein hohes Gewicht. Zusätzlich sind die Bauteile mit hohen Kosten verbunden. Die additive Fertigung des Bauteils sollte für die Krafteinwirkung ausreichend sein. Aufgrund der genannten Vorteile kommt für das Projekt Konzept b) zum Einsatz.  
 
@@ -161,13 +180,28 @@ Durch die additive Fertigung muss eine Konstruktion des Bauteils erfolgen. Dadur
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=17cm]{leistungskonvertierung.png}
-		\caption{nix}
+		\caption{Schema zur Leistungskonvertierung der elektrischen Komponenten}
 		\label{pic:leistungskonvertierung}
 	\end{center}
 \end{figure}
 
+\textcolor{red}{To be continued...}
+
 \section{Sensorik}
 \subsection{Kollisionsvermeidung}
+Für die Kollisionsvermeidung soll kontinuierlich die Distanz zum nächsten Objekt gemessen werden. Für die Entfernungsmessung sollen zwei Ultraschallsensoren HC-SR04 auf dem Tablett angebracht werden. Die Position der Sensoren auf dem Tablett ist schematisch in \autoref{pic:kollisionsvermeidung} dargestellt.  
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=17cm]{kollisionsvermeidung.png}
+		\caption{Schematische Anordnung der Ultraschallsensoren HC-SR04 auf dem Tablett zur Kollisionsvermeidung}
+		\label{pic:kollisionsvermeidung}
+	\end{center}
+\end{figure}
+
+\textcolor{red}{To be continued...}
+
+
+
 \subsection{Positionserfassung}
 
 
@@ -199,5 +233,18 @@ Ebenfalls ist dabei anzugeben, wohin die Bahn das bestellte fahren soll. Unter \
 \subsection{Steuerung und Positionserkennung}
 
 \chapter{Umsetzung}
+\section{Konstruktion}
+\subsection{Getriebe}
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=17cm]{getriebe.png}
+		\caption{Detaillierte Ansicht der Getriebekonsruktion}
+		\label{pic:getriebe}
+	\end{center}
+\end{figure}
 
-\lipsum
+Entsprechend des Konzepts zum Getriebe in \autoref{sec:getriebekonzept} erfolgt die Konstruktion der Bauteile.   
+
+\textcolor{red}{To be continued...}
+
+	
