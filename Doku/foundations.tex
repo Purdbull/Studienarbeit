@@ -14,7 +14,7 @@ Prinipbedingt unterliegen Ultraschallsensoren einigen Messfehlern. Dazu gehört,
 
 \newpage
 \section{Der Schrittmotor}
-Der Schrittmotor zählt zu den Synchronmaschinen und besitzt ausgeprägte Statorpolen. Die Motoren werden vor allem in Anwendungen eingesetzt, bei denen hohe Genauigkeit gefordert ist. Anwendungsbeispiele sind Drucker, CD-Laufwerke und computergesteuerte Werkzeugmaschinen. Mit den Motoren können Positionen ohne weitere Regler angesteuerut werden. Schrittmotoren besitzen ein Haltemoment, das ebenfalls in vielen Anwendungen zum Tragen kommt. (vgl. \cite{schrittmotorBa}, S. 2)\\
+Der Schrittmotor zählt zu den \acrshort{synchronmaschine}n und besitzt ausgeprägte Statorpolen. Die Motoren werden vor allem in Anwendungen eingesetzt, bei denen hohe Genauigkeit gefordert ist. Anwendungsbeispiele sind Drucker, CD-Laufwerke und computergesteuerte Werkzeugmaschinen. Mit den Motoren können Positionen ohne weitere Regler angesteuerut werden. Schrittmotoren besitzen ein Haltemoment, das ebenfalls in vielen Anwendungen zum Tragen kommt. (vgl. \cite{schrittmotorBa}, S. 2)\\
 
 Prinzipiell folgt bei einem Schrittmotor der Rotor dem sprungförmigen Weiterschalten des Statormagnetfeldes. Dadurch ergibt sich ein schrittweises Drehen um den Schrittwinkel $\alpha$. Nach einer Umschaltung erfolgt die Drehung des Rotors mechanisch bedingt nach einer Verzögerung. Nach einem Einschwingvorgang verharrt der Rotor für einen kurzen Moment in dieser Position.  \autoref{pic:diagrammSchrittmotor} zeigt den zeitlichen Verlauf der mechanischen Winkelgeschwindigkeit  $\Omega$ und des Verdrehwinkels $\beta$ nach dem sprungförmigen Umschalten der Statorwicklung.  
 
@@ -22,13 +22,13 @@ Prinzipiell folgt bei einem Schrittmotor der Rotor dem sprungförmigen Weitersch
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=8cm]{DiagrammVerlaufSchrittmotor.png}
-		\caption{Zeitlicher Verlauf der mechanischen Winkelgeschwindigkeit und des Verdrehwinkels in Folge eines elektrischen Impulses in einer Statorwicklung (hier: VR-Schrittmotor); \cite{kleinantriebe}, S.433}
+		\caption{Zeitlicher Verlauf der mechanischen Winkelgeschwindigkeit und des Verdrehwinkels in Folge elektrischer Impulse in den Statorwicklungen (hier: VR-Schrittmotor); \cite{kleinantriebe} S.433}
 		\label{pic:diagrammSchrittmotor}
 	\end{center}
 \end{figure}
 
 
-Da der Verdrehwinkel $\beta$ ein ganzzahliges Vielfaches des Schrittwinkels $\alpha$ ist, wird eine diskrete Positionierung ohne zusätzliche Sensorik möglich. Diese Art der Positionsbestimmung ist nur möglich, solange das maximale Drehmoment des Schrittmotors nicht überschritten wird. Ist das Lastmoment zu hoch, kommt es zu Schrittervlusten oder gar zum Stillstand.   Für die Ansteuerung eines Schrittmotors wereden durch eine Steuerlogik Impulse erzeugt. Damit wird ein Leistungselektronik-Stellglied gesteuert, das die Statorwicklungen bestromt (vgl. \cite{kleinantriebe}, S. 432). \newline
+Da der Verdrehwinkel $\beta_M$ ein ganzzahliges Vielfaches des Schrittwinkels $\alpha$ ist, wird eine diskrete Positionierung ohne zusätzliche Sensorik möglich. Diese Art der Positionsbestimmung ist nur möglich, solange das maximale Drehmoment des Schrittmotors nicht überschritten wird. Ist das Lastmoment zu hoch, kommt es zu Schrittervlusten oder gar zum Stillstand.   Für die Ansteuerung eines Schrittmotors wereden durch eine Steuerlogik Impulse erzeugt. Damit wird ein Leistungselektronik-Stellglied gesteuert, das die Statorwicklungen bestromt (vgl. \cite{kleinantriebe}, S. 432). \newline
 
 Auf die folgenden Grundtypen von Schrittmotoren soll nachfolgend näher eingegangen werden:
 \begin{itemize}
@@ -38,18 +38,36 @@ Auf die folgenden Grundtypen von Schrittmotoren soll nachfolgend näher eingegan
 \end{itemize}
 
 \newpage
-In \autoref{pic:schrittmotor} ist der Aufbau eines Schrittmotors dargestellt. 
-\begin{figure}[h]
-	\begin{center}
-		\includegraphics[width=6cm]{schrittmotor.png}
-		\caption{Aufbau eines Schrittmotors (hier: VR-Schrittmotor); \cite{kleinantriebe}, S.432}
-		\label{pic:schrittmotor}
-	\end{center}
-\end{figure}
 
 \subsection{Der \acrshort{reluktanz}-Schrittmotor (VR)}
 
-Beim \acrshort{reluktanz}-Schrittmotor ist der Rotor magnetisch und dessen Zahnteilung ungleich der Polteilung des Stators. Nach einem Umschalten des Statormagnetfeldes bewegt sich der in die sogenannte bis zum geringsten magnetischen Widerstand (Reluktanz). Diese Stellung wird auch als \acrshort{koinzidenzstellung} bezeichnet . 
+Beim \acrshort{reluktanz}-Schrittmotor ist der Rotor magnetisch und dessen Zahnteilung ungleich der Polteilung des Stators. Nach einem Umschalten des Statormagnetfeldes bewegt sich der Rotor in die Position des geringsten magnetischen Widerstands (Reluktanz). Diese Stellung wird auch als \acrshort{koinzidenzstellung} bezeichnet. Die Stärke des magnetischen Feldes hängt von der Stromstärke ab. Diese ist veränderlich und verleiht dem Motortyp seine Bezeichnung VR-Motor (\textit{VR = variable reluctance motor}). Kennzeichnend für diesen Motortyp ist das \acrshort{haltemoment} im stromlosen Zustand. 
+
+Für die Anzahl der Schritte je Umdrehung gilt: 
+
+\begin{align}
+	z = Z_R\cdot m_S \cdot S \\
+	\text{mit } Z_R \text{= Anzahl Rotorzähne und } m_S \text{ = Strangzahl im Stator})
+\end{align}
+
+Bei einem \acrshort{vrMotor} mit vier Rotorzähnen und 3 Strängen würde sich somit bei einem Umschaltvorgang ein Verdrehwinkel $\beta$ von 30° einstellen. Für ein größeres Drehmoment werden können bei einem \acrshort{vrMotor} alle Spule gleichzeitig bestromt werden. 
+
+\subsection{Der Permanenterrete Schrittmotor (PM)}
+Beim PM-Motor ist der Rotor permanentmagnetisch. Dieser stellt sich ebenfalls in Abhänigigkeit vom Statormagnetfeld in polaritätsrichtige \acrshort{koinzidenzstellung}. Durch den Permanentmagneten bildet der Motor ein Haltemoment im stromlosen Zustand aus. \\ 
+Durch die Anzahl $n$ erreger Wicklungen wird der Schrittwinkel $\alpha$ des Rotors bestimmt. Bei Verdopplung von $n$ halbiert sich $\alpha$. Außerdem kann durch $n$ die Betriebsart bestimmt werden. Bleibt $n$ konstant, dreht sich der Rotor im \textit{Vollschrittbetrieb}. Im \textit{Halbschrittbetrieb} wechselt n. In \autoref{pic:halbschrittbetrieb} ist der Verdrehwinkel $\beta_m$ eines PM-Motors im Halbschrittbetrieb dargsetellt. Der Motor besitzt 2 Stränge.  
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=12cm]{halbschrittbetrieb.png}
+		\caption{Verdrehwinkel $\beta_m$ bei wechselnder Anzahl erregter Statorwicklungen $n$ (\cite{kleinantriebe} S. 436)}
+		\label{pic:halbschrittbetrieb}
+	\end{center}
+\end{figure}
+
+Der PM-Motor weist ein großes Halte- und Drehmoment auf. Allerdings besitzt der Motortyp eine niedrige Aufllösung. 
+
+\subsection{Der Hybrid-Schrittmotor (HY)}
+Der Hybrid-Schrittmotor (HY) vereint die 
 
 
 \section{MQTT} %Acronym wieder einfuegen!
