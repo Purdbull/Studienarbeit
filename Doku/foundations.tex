@@ -12,10 +12,50 @@ d = \frac{1}{2} \cdot t\cdot c\\
 Die maximale Messdistanz hängt dabei von der maximal möglichen Intensität der ausgesandter Wellen ab. Die minimale Messdistanz wird durch die Frequenz der Messung bestimmt (vgl. \cite{ultraschallUni}). \\
 Prinipbedingt unterliegen Ultraschallsensoren einigen Messfehlern. Dazu gehört, dass schallschluckende Oberflächen eine zu geringe Intensität reflektieren. Dasselbe gilt für Objekte mit rauer Oberfläche. Messfehler können außerdem durch sog. Scheinechos entstehen, wenn der Ultraschallimpuls von mehreren Objekten reflektiert wird. Aufgrund des Öffnungswinkels der Schalwelle ist der gleichzeitige Betrieb mehrerer Sensoren nur	 eingeschränkt möglich. (vgl. \cite{ultraschallBa})
 
+\newpage
+\section{Der Schrittmotor}
+Der Schrittmotor zählt zu den Synchronmaschinen und besitzt ausgeprägte Statorpolen. Die Motoren werden vor allem in Anwendungen eingesetzt, bei denen hohe Genauigkeit gefordert ist. Anwendungsbeispiele sind Drucker, CD-Laufwerke und computergesteuerte Werkzeugmaschinen. Mit den Motoren können Positionen ohne weitere Regler angesteuerut werden. Schrittmotoren besitzen ein Haltemoment, das ebenfalls in vielen Anwendungen zum Tragen kommt. (vgl. \cite{schrittmotorBa}, S. 2)\\
+
+Prinzipiell folgt bei einem Schrittmotor der Rotor dem sprungförmigen Weiterschalten des Statormagnetfeldes. Dadurch ergibt sich ein schrittweises Drehen um den Schrittwinkel $\alpha$. Nach einer Umschaltung erfolgt die Drehung des Rotors mechanisch bedingt nach einer Verzögerung. Nach einem Einschwingvorgang verharrt der Rotor für einen kurzen Moment in dieser Position.  \autoref{pic:diagrammSchrittmotor} zeigt den zeitlichen Verlauf der mechanischen Winkelgeschwindigkeit  $\Omega$ und des Verdrehwinkels $\beta$ nach dem sprungförmigen Umschalten der Statorwicklung.  
+
+ 
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=8cm]{DiagrammVerlaufSchrittmotor.png}
+		\caption{Zeitlicher Verlauf der mechanischen Winkelgeschwindigkeit und des Verdrehwinkels in Folge eines elektrischen Impulses in einer Statorwicklung (hier: VR-Schrittmotor); \cite{kleinantriebe}, S.433}
+		\label{pic:diagrammSchrittmotor}
+	\end{center}
+\end{figure}
+
+
+Da der Verdrehwinkel $\beta$ ein ganzzahliges Vielfaches des Schrittwinkels $\alpha$ ist, wird eine diskrete Positionierung ohne zusätzliche Sensorik möglich. Diese Art der Positionsbestimmung ist nur möglich, solange das maximale Drehmoment des Schrittmotors nicht überschritten wird. Ist das Lastmoment zu hoch, kommt es zu Schrittervlusten oder gar zum Stillstand.   Für die Ansteuerung eines Schrittmotors wereden durch eine Steuerlogik Impulse erzeugt. Damit wird ein Leistungselektronik-Stellglied gesteuert, das die Statorwicklungen bestromt (vgl. \cite{kleinantriebe}, S. 432). \newline
+
+Auf die folgenden Grundtypen von Schrittmotoren soll nachfolgend näher eingegangen werden:
+\begin{itemize}
+	\item Reluktanz-Schrittmotor (VR)
+	\item Permanenterregert Schrittmotor (PM)
+	\item Hybrid-Schrittmotor (HY)
+\end{itemize}
+
+\newpage
+In \autoref{pic:schrittmotor} ist der Aufbau eines Schrittmotors dargestellt. 
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=6cm]{schrittmotor.png}
+		\caption{Aufbau eines Schrittmotors (hier: VR-Schrittmotor); \cite{kleinantriebe}, S.432}
+		\label{pic:schrittmotor}
+	\end{center}
+\end{figure}
+
+\subsection{Der \acrshort{reluktanz}-Schrittmotor (VR)}
+
+Beim \acrshort{reluktanz}-Schrittmotor ist der Rotor magnetisch und dessen Zahnteilung ungleich der Polteilung des Stators. Nach einem Umschalten des Statormagnetfeldes bewegt sich der in die sogenannte bis zum geringsten magnetischen Widerstand (Reluktanz). Diese Stellung wird auch als \acrshort{koinzidenzstellung} bezeichnet . 
+
+
 \section{MQTT} %Acronym wieder einfuegen!
 \acrshort{mqtt} ist ein Protokoll, welches zur digitalen Datenübertragung in ethernet-basierten Systemen dient. Es benötigt nur wenig Bandbreite und Ressourcen und verwendet eine 
 Publish/Subscribe - Architektur. Das bedeutet, dass Nachrichten sogenannter Topics von Publishern bereitgestellt und von Subscribern empfangen werden. Der Datenverkehr wird über einen 
-zentralen Broker verwaltet. Um die Publish Subscribe Architektur zu verstehen ist es hilfreich die Analogie zum Fernsehen zu bilden. Dabei sendet ein TV-Sender sein Programm an einen bestimmten Kanal.
+zentralen Broker verwaltet. Um die Publish Subscribe Architektur zu verstehen ist es hilfreich die Analogie zum Fernsehen zu bilden. Dabei senjdet ein TV-Sender sein Programm an einen bestimmten Kanal.
 Auf diesen Kanal können nun beliebig viele Fernseher (Subscriber) zugreifen. Auch wenn keine aktive Verbindung zwischen Sender und Empfänger aufgebaut wird, erhalten beliebig viele Empfänger die benötigten Daten.
 In \autoref{pic:mqttbroker} ist zu erkennen, wie die Daten nicht zwischen Publisher und Subscriber direkt, sondern über den zentralen Broker versendet werden. (Vgl. \cite{mqtt})
 
