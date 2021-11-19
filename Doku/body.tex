@@ -206,20 +206,19 @@ Für die Kollisionsvermeidung soll kontinuierlich die Distanz zum nächsten Obje
 \subsection{Positionserfassung}
 \newpage
 \section{Schnittstelle}
+Als Übergang von der Konzeptionierung mechatronischer Komponente zu den informationstechnischen Konzepten soll in diesem Abschnitt die Schnittstelle aller verwendeten Komponenten vorgestellt werden. Dazu ist in \autoref{pic:schnittstellen} eine Übersicht dargestellt.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=17cm]{schnittstellen.pdf}
-	\caption{Schnittstellen}
+	\caption{Schnittstellenübersicht der verwendeteter Komponenten}
 	\label{pic:schnittstellen}
 \end{figure}
 
-\autoref{pic:schnittstellen} zeigt alle Komponenten des Projekts im Betrieb. Die Pfeile stellen verschiedene Schnittstellen dar. Wie links zu erkennen, kommuniziert der Webserver 
-mit Endgeräten von Kunden oder der Küchenanzeige über \acrshort{http}. Mit POST-Requests werden Steuerbefehle oder Bestellungen zur weiteren Verarbeitung an den Server geschickt.
-\acrshort{mqtt} dient zur Kommunikation zwischen Server und Hochbahn. Die Hochbahn benötigt dabei keinerlei Infos über Bestellungen sondern nur wohin mit welcher Leuchtfarbe zu fahren ist.
-Rückgemeldet werden dabei Positions- und Statusmeldungen. Auf der Hochbahn befinden sich drei Komponenten: D1-Mini zur zentralen Steuerung und zwei weitere Arduinos. Einer zur Motorsteuerung und einer 
-zur Abstandsmessung. Zwischen D1-Mini und Motor-Arduino wird über die RX und TX - Pins eine serielle Kommunikationsschnittstelle aufgebaut, während der Arduino zur Kollisionsvorbeugung direkt an Interrupt Pins 
-Signale geben kann. Diese Signale benötigen höchste Priorität, da die Hochbahn bei KOllisionsgefahr sehr schnell reagieren muss.
+%@Moritz: Hoffe, es passt so für dich. Kannst gerne alles auch wieder anders schreiben ;) Habe aber eig alles von dir drinne  und nur ergänzt... 
+
+In der Übersicht sind die Komponenten hierarchisch dargestellt. Die Pfeile dazwischen stellen die Schnittstellen dar. Der Webserver kommuniziert mit den Endgeräten der Kunden oder dem Tablet in der Küche über \acrshort{http}. Mit POST-Requests werden Steuerbefehle oder Bestellungen zur weiteren Verarbeitung an den Server geschickt.
+\acrshort{mqtt} dient zur Kommunikation zwischen dem Server und Hochbahn. Für die Übermittlung der \acrshort{mqtt}-Befehle  befindet sich ein \acrshort{mqttBroker} auf der Kommunikationsebene. Die Hochbahn bekommt Information über die Station, die angefahren werden soll. Während der Fahrt gibt die Bahn Rückmeldung über die aktuelle Position. Außerdem sollen Kollisionswarnungen übertragen werden. Auf der Hochbahn führt ein D1-Mini als Controller die Kommunikation durch. Dieser steuert außerdem die beiden Steuerungen für den Motor und der Kollisionsvermeidung. Für die beiden ausgelagerten Steuerungen werden jeweils Arduino Nanos verwendet. Die Motorsteuerung empfängt die Befehle zur gewünschten Motordrehzahl. Aus den Befehlen werden die benötigten Takte für den Schrittmotortreiber generiert. Die Sicherheitssteuerung überprüft kontinuierlich die Distanzwerte der Ultraschallesnsoren. Ist eine Kollision zu erwarten, setzt die Steuerung einen Interrupt des Hochbahn-Controllers. Zwischen D1-Mini und Motor-Arduino wird über die RX und TX - Pins eine serielle Kommunikationsschnittstelle aufgebaut, während der Arduino zur Kollisionsvorbeugung direkt an Interrupt Pins. Dadurch erlangen die Signale höchste Priorität und die Steuerung kann somit schnell reagieren. Die Positionserfassung wird vom Hochbahn-Controller anhand der Schaltvorgänge des Reed-Kontaktes und der aktuellen Motordrehzahl berechnet. \newpage
 
 \section{Software}
 Es gibt in diesem Projekt zwei Hauptsoftwarekomponenten, welche die Anlage steuern: Der Server, welcher Anfragen und Befehle an die Bahn verwaltet und die Bahn selbst,
