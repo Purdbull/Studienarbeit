@@ -175,9 +175,7 @@ Bei Konzept b) handelt es sich um eine Baugruppe, bestehend aus Laufrad und Riem
 Durch die additive Fertigung muss eine Konstruktion des Bauteils erfolgen. Dadurch ergibt sich in diesem Punkt ein höherer Aufwand als bei der Verwendung von Normteilen. Die Konstruktion bietet jedoch den Vorteil, dass das Laufrad an das Profil der Schiene angepasst werden kann. Die Normteile der beiden Räder sind meist für hohe Krafteinwirkungen in industriellem Einsatz ausgelegt. Dadurch ergibt sich bei Verwendung der Räder ein hohes Gewicht. Zusätzlich sind die Bauteile mit hohen Kosten verbunden. Die additive Fertigung des Bauteils sollte für die Krafteinwirkung ausreichend sein. Aufgrund der genannten Vorteile kommt für das Projekt Konzept b) zum Einsatz.  
 
 
-\section{Energie}
-\subsection{Batterie}
-\subsection{Leistungskonvertierung}
+\section{Energieversorgung}
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=17cm]{leistungskonvertierung.png}
@@ -190,16 +188,43 @@ Durch die additive Fertigung muss eine Konstruktion des Bauteils erfolgen. Dadur
 
 \section{Sensorik}
 \subsection{Kollisionsvermeidung}
-Für die Kollisionsvermeidung soll kontinuierlich die Distanz zum nächsten Objekt gemessen werden. Für die Entfernungsmessung sollen zwei Ultraschallsensoren HC-SR04 auf dem Tablett angebracht werden. Die Position der Sensoren auf dem Tablett ist schematisch in \autoref{pic:kollisionsvermeidung} dargestellt.  
+Für die Kollisionsvermeidung soll mithilfe von Ultraschallsensoren kontinuierlich die Distanz $d$ zum nächsten Objekt gemessen werden. Als Sensor kommt der HC-SR04 auf dem Tablett angebracht. Der Messbereich beträgt $0,02m - 5m$ (\cite{hcrs04}). Die Kollisionsvermeidung soll anhand von einem Warn- und einem Schutzfeld geschehen. Das Warnfeld wird ausgelöst, wenn bei mindestens einem der beiden Sensoren $d<1,5m$ erfüllt ist. Eine Schutzfeldverletzung erfolgt bei $d<0,7m$. Die Breite $b$ des kleinsten zu erfassende Objektes beim Öffnungswinkel $\alpha = 30°$ beträgt $b= tan(\alpha) \cdot d \cdot 2$. Dabei beträgt das kleinste erfassbare Objekt am Ende des Schutzfelds $b_S \approx 0,4m$ und am Ende des Warnfelds $b_W \approx 0,8m$. \\
+In \autoref{pic:kollisionsvermeidung} sind die beiden Ultraschallsensoren sowie Warn- und Schutzfeld dargestellt. 
+
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=17cm]{kollisionsvermeidung.png}
+		\includegraphics[width=15cm]{kollisionsvermeidung.pdf}
 		\caption{Schematische Anordnung der Ultraschallsensoren HC-SR04 auf dem Tablett zur Kollisionsvermeidung}
 		\label{pic:kollisionsvermeidung}
 	\end{center}
 \end{figure}
 
-\textcolor{red}{To be continued...}
+\newpage
+Der Ultraschallsensor HC-SCR04 Ultraschallsensor verfügt für die Messung der Schalllaufzeit über die beiden Pins \textit{TRIG} und \textit{ECHO}. Die Messung wird durch eine fallende Flanke von 10µs am Triggereingang gestartet. Anschließend werden über den  Piezokristall des Sensors acht aufeinanderfolgende 40Khz Schallwellen ausgesandt. Nach diesen 200µs setzt der Sensor den \textit{ECHO} so lange auf high, bis der Ultraschallimpuls empfangen wurde. Wurde keine Schallreflektion empfangen, verbleibt der \textit{Echo} für max. 38 ms auf HIGH. Eine erneute Messung kann frühestens nach 20ms gestartet werden. (vgl. \cite{hcrs04})
+
+Mit einem Arduino Nano werden die Messungen an beiden Sensoren zyklisch durchgeführt. Die Berechnung der Distanz erfolgt anhand der in \autoref{sec:ultraschall} beschriebenen Formel. Tritt eine Schutz- oder Warnfeldverletzung auf, gibt der Arduino ein Signal auf einen entsprechenden Interrupt-Pin am ESP32 als  Hochbahn-Controller. Die verwendeten Interupt-Pins sind nachfolgend dargestellt. \\
+
+
+\begin{center}
+	\begin{tabular}[h]{l|l|l}
+		Sensor & Verletzung  & ESP32 Interrupt-Pin \\
+		\hline
+		1 & Warnfeld & GPIO1\\
+		\hline
+		1 & Schutzfeld & GPIO2\\
+		\hline
+		2 & Warnfeld & GPIO3\\
+		\hline
+		2 & Schutzfeld & GPIO4\\	
+	\end{tabular}
+\end{center}
+
+
+
+
+
+
+
 
 
 
@@ -253,8 +278,38 @@ Ebenfalls ist dabei anzugeben, wohin die Bahn das bestellte fahren soll. Unter \
 	\end{center}
 \end{figure}
 
-Entsprechend des Konzepts zum Getriebe in \autoref{sec:getriebekonzept} erfolgt die Konstruktion der Bauteile.   
+Entsprechend des Konzepts zum Getriebe in \autoref{sec:getriebekonzept} erfolgt die Konstruktion der Bauteile.
 
-\textcolor{red}{To be continued...}
+\underline{Riemenräder}\\   
+Für das Riemengetriebe werden zunächst die beiden Riemenräder ausgelegt. Es wird ein Zahnflachriemen mit einem äußeren Umfang von $U = 381mm$ und einer Riemenbreite von $b=9,5mm$ verwendet. Die Zähnezahl $z=75$. Folglich ist das Modul $m \approx 5$.  Die folgende Beschreibung der Abmaße des Riemenrades und des Laufrades sind das Ergebnis der gefertigten Prototypen.\\
+
+ Für das Zahnrad gilt: $d_Z = \frac{m \cdot z}{\pi}$. Die Zähnezahl $z$ des Zahnrads wurde auf 22 festgelegt, dadurch ergibt sich $d_Z = 35,01 mm$. Entsprechend der Abmessungen des Riemens wurde der Durchmesser der Zahnflanken auf 2mm festgelegt. Für die seitliche Führung des Riemens wird ein Rand mit der Breite $b=3mm$ und dem Durchmesser $d=40mm$ einfügt. In \autoref{pic:riemenradZeichnung} ist die Zeichnung des Riemenrades dargestellt.  \\
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=9cm]{riemenradZeichnung.png}
+	\caption{Technische Zeichnung des Riemenrades}
+	\label{pic:riemenradZeichnung}
+\end{figure}
+
+
+
+\newpage
+\underline{Das Laufrad}\\
+Beim Laufrad beträgt der Durchmesser der Lauffläche 34mm. Für die Führung auf der Schiene besitzen die beiden äußeren Ränder eine Breite $b=3mm$ sowie einen Durchmesser $d=40mm$. \\
+
+\underline{Implementierung des Getriebes}\\
+Der äußere Umfang des Riemens beträgt $U = 381mm$. Für die Berechnung des Abstandes $\Delta$ der beiden Wellen zueinander gilt mit dem Riemenraddurchmesser $r$ folgende Formel: 
+
+\begin{align}
+	U = 2 (r+ \Delta) \\
+	\Delta = \frac{U - 2r}{2} = \frac{381mm - 35,01}{2} \approx 173mm 
+\end{align}
+
+
+
+
+
+
 
 	
