@@ -125,6 +125,8 @@ Aufgrund der gestellten Anforderungen werden in diesem Kapitel die Konzepte zum 
 In  \autoref{pic:grundaufbau} ist das Konzept des Grundaufbaus der Gondel dargestellt. Dieser soll aus den beiden Baugruppen \textit{Triebwagen} und \textit{Stützwagen} bestehen. Im Triebwagen sind Motor und Getriebe verbaut. An die beiden Wägen anchließend werden nach unten Verbindungselemente für die Befestigung des Tabletts sowie für die Elektronik angebracht. \\
 Die detaillierte Konzeptionierung der dargestellten Komponenten erfolgt in den nachfolgenden Abschnitten. 
 
+\textbf{Fertigungsmethode} 
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=10cm]{grundaufbau.png} 
@@ -220,14 +222,6 @@ Mit einem Arduino Nano werden die Messungen an beiden Sensoren zyklisch durchgef
 \end{center}
 
 
-
-
-
-
-
-
-
-
 \subsection{Positionserfassung}
 \newpage
 \section{Schnittstelle}
@@ -278,34 +272,78 @@ Ebenfalls ist dabei anzugeben, wohin die Bahn das bestellte fahren soll. Unter \
 	\end{center}
 \end{figure}
 
-Entsprechend des Konzepts zum Getriebe in \autoref{sec:getriebekonzept} erfolgt die Konstruktion der Bauteile.
+Entsprechend des Konzepts zum Getriebe in \autoref{sec:getriebekonzept} erfolgt in diesem Abschnitt die Konstruktion der Bauteile. Die folgende Beschreibung der Abmaße des Riemenrades und des Laufrades sind das Ergebnis der gefertigten Prototypen.\\
 
-\underline{Riemenräder}\\   
-Für das Riemengetriebe werden zunächst die beiden Riemenräder ausgelegt. Es wird ein Zahnflachriemen mit einem äußeren Umfang von $U = 381mm$ und einer Riemenbreite von $b=9,5mm$ verwendet. Die Zähnezahl $z=75$. Folglich ist das Modul $m \approx 5$.  Die folgende Beschreibung der Abmaße des Riemenrades und des Laufrades sind das Ergebnis der gefertigten Prototypen.\\
-
- Für das Zahnrad gilt: $d_Z = \frac{m \cdot z}{\pi}$. Die Zähnezahl $z$ des Zahnrads wurde auf 22 festgelegt, dadurch ergibt sich $d_Z = 35,01 mm$. Entsprechend der Abmessungen des Riemens wurde der Durchmesser der Zahnflanken auf 2mm festgelegt. Für die seitliche Führung des Riemens wird ein Rand mit der Breite $b=3mm$ und dem Durchmesser $d=40mm$ einfügt. In \autoref{pic:riemenradZeichnung} ist die Zeichnung des Riemenrades dargestellt.  \\
+\underline{Das Laufrad}\\
+Beim Laufrad beträgt der Durchmesser der Lauffläche $d=34mm$ und eine Breite $b=5mm$. Für die Führung auf der Schiene besitzen die beiden äußeren Ränder eine Breite $b_R=2mm$ sowie einen Durchmesser $d=40mm$. Die Laufräder werden mit einem Rillenkugellager 6000 Welle gelagert. Das Lager wird mit Übermaßpassung verbaut. Die Konstruktion des Laufrads ist in \autoref{pic:laufrad}dargestellt. \\
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=9cm]{riemenradZeichnung.png}
-	\caption{Technische Zeichnung des Riemenrades}
-	\label{pic:riemenradZeichnung}
+	\includegraphics[width=3cm]{laufrad.png}
+	\caption{Konstruktion des Laufrades}
+	\label{pic:laufrad}
+\end{figure}
+
+\underline{Riemenräder}\\   
+Das Riemengetriebe bestet aus dem treibenden und getriebenen Riemenrad. Zunächst soll das Zahnprofil der beiden Riemenräder ausgelegt werden. Als Zugmittel soll ein Zahnflachriemen mit einem äußeren Umfang von $U = 206mm$ und einer Riemenbreite von $b=9,5mm$ verwendet werden. Die Zähnezahl $z=75$. Folglich ist das Modul $m \approx 5$. 
+ Für das Zahnrad gilt: $d_Z = \frac{m \cdot z}{\pi}$. Die Zähnezahl wird auf $z=22$ festgelegt. Dadurch ergibt sich $d_Z = 35,01 mm$. Entsprechend der Abmessungen des Riemens wurde der Durchmesser der Zahnflanken auf 2mm festgelegt. Für die seitliche Führung des Riemens wird ein Rand mit der Breite $b=3mm$ und dem Durchmesser $d=40mm$ einfügt.  \\
+ 
+ Das treibende Riemenrad (Ritzel) ist in \autoref{pic:ritzel} dargestellt. Es wird auf die Nabe des Motors gesteckt.
+ Das getriebene Riemenrad zeigt \autoref{pic:riemenlaufrad}. Wie in \ref{sec:getriebekonzept} konzeptioniert, befindet sich auf der anderen gegenüberliegenden Seite eine Lauffläche. Das Bauteil wird beidseitig gelagert. Dafür wird ebenfalls das Kugellager 6000 mit Übermaßpassung verbaut.  
+ 
+
+\begin{figure}[h]
+	\centering
+	\begin{minipage}[t]{0.45\linewidth}
+		\centering
+		\includegraphics[width=4cm]{ritzel.png}
+		\caption{Konstruktion des treibenden Riemenrades (Ritzel)}
+		\label{pic:ritzel}
+	\end{minipage}
+	\hfil	
+	\begin{minipage}[t]{0.45\linewidth}
+		\centering
+		\includegraphics[width=4cm]{riemenlaufrad.png}
+		\caption{Konstruktion des getriebenen Riemenrades mit Laufrad}
+		\label{pic:riemenlaufrad}
+	\end{minipage}	
 \end{figure}
 
 
 
 \newpage
-\underline{Das Laufrad}\\
-Beim Laufrad beträgt der Durchmesser der Lauffläche 34mm. Für die Führung auf der Schiene besitzen die beiden äußeren Ränder eine Breite $b=3mm$ sowie einen Durchmesser $d=40mm$. \\
+
 
 \underline{Implementierung des Getriebes}\\
-Der äußere Umfang des Riemens beträgt $U = 381mm$. Für die Berechnung des Abstandes $\Delta$ der beiden Wellen zueinander gilt mit dem Riemenraddurchmesser $r$ folgende Formel: 
+Der äußere Umfang des Riemens beträgt $U = 206mm$. Für die Berechnung des erforderlichen Abstandes $\Delta$ der beiden Wellen zueinander gilt mit dem Riemenraddurchmesser $r$ folgende Formel: 
+
 
 \begin{align}
 	U = 2 (r+ \Delta) \\
-	\Delta = \frac{U - 2r}{2} = \frac{381mm - 35,01}{2} \approx 173mm 
+	\Delta = \frac{U - 2r}{2} = \frac{206mm - 35,01}{2} \approx 85mm 
 \end{align}
 
+Um den Wellenabstand zu erreichen, wird die Motoraufhängung nach unten entsprechend versetzt. Zusätzlich soll sich die Aufhängung nach der Montage in Y-Richtung justieren lassen. Dadurch kann der Riemen nach dem Einbau auf Spannung gebracht werden. Die Motoraufhängung ist in \autoref{pic:motoraufhaengung} dargestellt. 
+
+
+
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=9cm]{placeholder.pdf}
+	\caption{Detailansicht der verschiebbaren Motoraufhängung}
+	\label{pic:motoraufhaengung}
+\end{figure}
+
+Die Welle wird durch das Getriebe mit axial beansprucht. Damit die Befestigung der Welle die axialen Kräfte aufnehmen kann, wird zusätzlich ein Rundmaterial an die Seitenteile montiert. \autoref{pic:wellenhalter} zeigt das Bauteil in der Konstruktion. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=9cm]{placeholder.pdf}
+\caption{Detailansicht der verschiebbaren Motoraufhängung}
+\label{pic:wellenhalter}
+\end{figure}
 
 
 
