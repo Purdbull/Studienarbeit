@@ -262,34 +262,40 @@ Ebenfalls ist dabei anzugeben, wohin die Bahn das bestellte fahren soll. Unter \
 \subsection{Steuerung und Positionserkennung}
 
 \chapter{Umsetzung}
-\section{Konstruktion}
-\subsection{Getriebe}
+\section{Getriebekonstruktion}
+Wie im Konzeptionierungsteil \ref{sec:getriebekonzept} beschrieben, soll für die Kraftübertragung des Motors auf die Schiene ein Riemengetriebe verwendet werden. In diesem Kapitel wird die Konstruktion des Getriebes beschrieben. In \autoref{pic:getriebe} ist eine Übersicht des Getriebes dargestellt. Auf die Bauteile wird nachfolgend genauer eingegangen. 
+
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=17cm]{getriebe.png}
-		\caption{Detaillierte Ansicht der Getriebekonsruktion}
+		\includegraphics[width=12cm]{getriebe.pdf}
+		\caption{Gerenderte Konstruktionsansicht der Getriebekonsruktion}
 		\label{pic:getriebe}
 	\end{center}
-\end{figure}
+\end{figure} 
+\newpage
 
-Entsprechend des Konzepts zum Getriebe in \autoref{sec:getriebekonzept} erfolgt in diesem Abschnitt die Konstruktion der Bauteile. Die folgende Beschreibung der Abmaße des Riemenrades und des Laufrades sind das Ergebnis der gefertigten Prototypen.\\
 
 \underline{Das Laufrad}\\
-Beim Laufrad beträgt der Durchmesser der Lauffläche $d=34mm$ und eine Breite $b=5mm$. Für die Führung auf der Schiene besitzen die beiden äußeren Ränder eine Breite $b_R=2mm$ sowie einen Durchmesser $d=40mm$. Die Laufräder werden mit einem Rillenkugellager 6000 Welle gelagert. Das Lager wird mit Übermaßpassung verbaut. Die Konstruktion des Laufrads ist in \autoref{pic:laufrad}dargestellt. \\
+Beim Laufrad beträgt der Durchmesser der Lauffläche $d=34mm$ bei einer Breite $b=5mm$. Für die Führung auf der Schiene sorgen seitliche Ränder. Diese besitzen eine Breite $b_R=2mm$ sowie einen Durchmesser $d=40mm$. Die Laufräder werden mit einem Rillenkugellager 6000 Welle gelagert. Das Lager wird mit Übermaßpassung verbaut. Das Laufrad ist in \autoref{pic:laufrad}dargestellt. \\
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=3cm]{laufrad.png}
-	\caption{Konstruktion des Laufrades}
+	\caption{Konstruktionsansicht des Laufrades}
 	\label{pic:laufrad}
 \end{figure}
 
 \underline{Riemenräder}\\   
-Das Riemengetriebe bestet aus dem treibenden und getriebenen Riemenrad. Zunächst soll das Zahnprofil der beiden Riemenräder ausgelegt werden. Als Zugmittel soll ein Zahnflachriemen mit einem äußeren Umfang von $U = 206mm$ und einer Riemenbreite von $b=9,5mm$ verwendet werden. Die Zähnezahl $z=75$. Folglich ist das Modul $m \approx 5$. 
- Für das Zahnrad gilt: $d_Z = \frac{m \cdot z}{\pi}$. Die Zähnezahl wird auf $z=22$ festgelegt. Dadurch ergibt sich $d_Z = 35,01 mm$. Entsprechend der Abmessungen des Riemens wurde der Durchmesser der Zahnflanken auf 2mm festgelegt. Für die seitliche Führung des Riemens wird ein Rand mit der Breite $b=3mm$ und dem Durchmesser $d=40mm$ einfügt.  \\
+Das Riemengetriebe besteht aus einem treibenden und getriebenen Riemenrad. Zunächst soll das Zahnprofil der beiden Riemenräder ausgelegt werden. Dafür ist die Grundlage der Zahnflachriemen mit einem äußeren Umfang von $U = 206mm$ und einer Riemenbreite von $b=9,5mm$. Die Zähnezahl des Riemens beträgt $z_R=75$. Folglich ist das Modul $m \approx 5$. \\
+
+ Für das Zahnprofil muss ebenfalls das Moduel $m=5$ verwendet werden. Die Zähnezahl wird auf $z=22$ festgelegt. Dadurch ergibt sich für den Kopfkreisdurchmesser $d_Z$ des Profils: 
  
- Das treibende Riemenrad (Ritzel) ist in \autoref{pic:ritzel} dargestellt. Es wird auf die Nabe des Motors gesteckt.
- Das getriebene Riemenrad zeigt \autoref{pic:riemenlaufrad}. Wie in \ref{sec:getriebekonzept} konzeptioniert, befindet sich auf der anderen gegenüberliegenden Seite eine Lauffläche. Das Bauteil wird beidseitig gelagert. Dafür wird ebenfalls das Kugellager 6000 mit Übermaßpassung verbaut.  
+ \begin{align}
+ 	d_Z =  \frac{m \cdot z}{\pi} = \frac{5 \cdot 22}{\pi} \approx 31,05 
+ \end{align}
+
+
+Entsprechend der Abmessungen des Riemens wurde der Durchmesser der Zahnflanken auf 2mm festgelegt.  Das treibende Riemenrad (Ritzel) ist in \autoref{pic:ritzel} dargestellt. Es wird auf die Nabe des Motors gesteckt. Durch die Phase af der Motorwelle geschieht die Übertragung des Drehmoments formschlüssig.  Das getriebene Riemenrad zeigt \autoref{pic:riemenlaufrad} und wird beidseitig gelagert. Dafür wird ebenfalls das Kugellager 6000 mit Übermaßpassung verbaut.  
  
 
 \begin{figure}[h]
@@ -326,28 +332,33 @@ Der äußere Umfang des Riemens beträgt $U = 206mm$. Für die Berechnung des er
 Um den Wellenabstand zu erreichen, wird die Motoraufhängung nach unten entsprechend versetzt. Zusätzlich soll sich die Aufhängung nach der Montage in Y-Richtung justieren lassen. Dadurch kann der Riemen nach dem Einbau auf Spannung gebracht werden. Die Motoraufhängung ist in \autoref{pic:motoraufhaengung} dargestellt. 
 
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=5cm]{motoraufhaengung.png}
+	\caption{Konstruktionsansicht der verschiebbaren Motoraufhängung}
+	\label{pic:motoraufhaengung}
+\end{figure}
 
+Die Wellen werden axial beansprucht. Damit die Befestigung der Welle die axialen Kräfte aufnehmen kann, wird zusätzlich ein Rundmaterial an die Seitenteile montiert. 
+
+
+\section{Fertigungsverfahren}
+Für 
+Für die vorgestellten Bauteile soll nun das Fertigungsverfahren ausgewählt weden. Dabei besteht die Möglichkeit konventionelle- und adaptiven Fertigungsverfahren zur Auswahl.
 
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=9cm]{placeholder.pdf}
-	\caption{Detailansicht der verschiebbaren Motoraufhängung}
-	\label{pic:motoraufhaengung}
-\end{figure}
-
-Die Welle wird durch das Getriebe mit axial beansprucht. Damit die Befestigung der Welle die axialen Kräfte aufnehmen kann, wird zusätzlich ein Rundmaterial an die Seitenteile montiert. \autoref{pic:wellenhalter} zeigt das Bauteil in der Konstruktion. 
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=9cm]{placeholder.pdf}
-\caption{Detailansicht der verschiebbaren Motoraufhängung}
-\label{pic:wellenhalter}
+	\includegraphics[width=12cm]{fertigungsverfahren.png}
+	\caption{Konstruktionsansicht der verschiebbaren Motoraufhängung}
+	\label{pic:fertigungsverfahren}
 \end{figure}
 
 
+Aufbereitungs-  Rüstzeit 
 
-
+Bei hoch beanspruchten Teilen: Konventionelle Fertigungsverfahren 
+Aufwändige Konturen: Adaptive Fertigung
 
 
 	
