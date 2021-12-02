@@ -5697,19 +5697,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Moritz Knapp\\.nuget\\packages\\": {}
+    "C:\\Users\\morit\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Moritz Knapp\\Desktop\\DH\\T3000B\\Studienarbeit\\WebServer\\HighTrainServer\\HighTrainServer\\HighTrainServer.csproj",
+      "projectUniqueName": "D:\\DH\\T3000_B\\Studienarbeit\\WebServer\\HighTrainServer\\HighTrainServer\\HighTrainServer.csproj",
       "projectName": "HighTrainServer",
-      "projectPath": "C:\\Users\\Moritz Knapp\\Desktop\\DH\\T3000B\\Studienarbeit\\WebServer\\HighTrainServer\\HighTrainServer\\HighTrainServer.csproj",
-      "packagesPath": "C:\\Users\\Moritz Knapp\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Moritz Knapp\\Desktop\\DH\\T3000B\\Studienarbeit\\WebServer\\HighTrainServer\\HighTrainServer\\obj\\",
+      "projectPath": "D:\\DH\\T3000_B\\Studienarbeit\\WebServer\\HighTrainServer\\HighTrainServer\\HighTrainServer.csproj",
+      "packagesPath": "C:\\Users\\morit\\.nuget\\packages\\",
+      "outputPath": "D:\\DH\\T3000_B\\Studienarbeit\\WebServer\\HighTrainServer\\HighTrainServer\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Moritz Knapp\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\morit\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5774,7 +5774,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.102\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
       }
     }
   }
