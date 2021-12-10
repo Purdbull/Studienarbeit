@@ -1,10 +1,11 @@
 const int dirPin = 2;
-const int stepPin = 1;
+const int stp = 1;
 const int stepsPerRevolution = 200;
 const int M0 = 10;
 const int M1 = 11;
 const int mode = 0;
-const int t = 350;
+const int rpm = 320;
+const int r = 0.02;
 
 
 /*
@@ -14,51 +15,102 @@ const int t = 350;
     3 = 16 microSteps/ Step
 */
 
+
+//#########################SETUP#################
 void setup() {
-  pinMode(stepPin, OUTPUT);
+  pinMode(stp, OUTPUT);
   pinMode(dirPin, OUTPUT);
   pinMode(M0, OUTPUT);
   pinMode(M1, OUTPUT);
-
+  //Serial.begin(9600);
   setMode(mode);
 
 }
 
+
+//###########################MAIN###############
 void loop() {
+ continuosHz(5, true);
+  //continuosD(25, false);
+   
+  
+}
 
-  for (int i = 0; i <= 4; i++) {
-    turn(t*i);
+//#########################FUNCTIONS#############
+
+int HzToD(double hz, bool debug) {
+  double T = 1.0 / hz; //Zeit pro Umdrehung
+  double d_s = T / (200.0 * 2.0); //Zeit je Step (on/off)
+  d_s = d_s * 1E6; //--> µs
+  int d = d_s; //conversion to int
+
+  if (debug) {
+    Serial.print("HzToD, D=");
+    Serial.println(d);
+  }
+  return d;
+}
+
+double continuosD(double d, bool debug) //d in µs
+{
+  digitalWrite(stp, 0);
+  delayMicroseconds(d);
+  digitalWrite(stp, 1);
+  delayMicroseconds(d);
+
+  if (debug) {
+    Serial.print("continuos D mit D=");
+    Serial.println(d);
   }
 
-   for (int i = 4; i >= 0; i--) {
-    turn(t*i);
+}
+
+double continuosHz (double hz, bool debug)
+{
+  int d = HzToD(hz, debug);
+
+  if (debug) {
+    Serial.print("continuos Hz mit D von ...");
   }
-
-}
-
-void continuos(int t) {
-  digitalWrite(stepPin, HIGH);
-  delayMicroseconds(toT(t));
-  digitalWrite(stepPin, LOW);
-  delayMicroseconds(toT(t));
-}
-
-void turn(int t) {
-  for (int i = 0; i <= stepsPerRevolution; i++) {
-    digitalWrite(stepPin, HIGH);
-    delayMicroseconds(toT(t));
-    digitalWrite(stepPin, LOW);
-    delayMicroseconds(toT(t));
-  }
+  continuosD(d, false);
 
 }
 
 
-int toT(int t) {
-  int rpm;
-  rpm = t;
-  return rpm;
-}
+//
+//double rpmToD(int rpm) {
+//  //function converts rpm to T for PWM
+//  double u_s = rpm / 60; //turns per second
+//  double d = 1 / (u_s* 2);
+//  d = d*10E-6;
+//  return d;
+//}
+//
+//double rpmToMs(int rpm) {
+//  double u_s = rpm/60;
+//  double m_s = u_s*r;
+//  return m_s;
+//
+//}
+//
+//double msToD (int m_s){
+//  double u_s = m_s/r;
+//  double d = 1/(u_s*2);
+//  d = d*10E-6;
+//  Serial.println(d);
+//  return d;
+//
+//}
+//
+//void continuos_ms(int m_s) {
+//  double d = msToD(m_s);
+//  digitalWrite(stepPin, HIGH);
+//  delayMicroseconds(d);
+//  digitalWrite(stepPin, LOW);
+//  delayMicroseconds(d);
+//}
+
+
 
 void setMode(int mode) {
   switch (mode) {

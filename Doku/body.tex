@@ -176,17 +176,46 @@ Bei Konzept a) wird für  Laufrad und Riemenrad jeweils ein Normteil verwendet. 
 Bei Konzept b) handelt es sich um eine Baugruppe, bestehend aus Laufrad und Riemenrad. Das kombinierte Bauteil wird additiv gefertigt. Es ist stehend auf der Welle gelagert.  Die Welle selbst ist stehend ausgeführt. 
 Durch die additive Fertigung muss eine Konstruktion des Bauteils erfolgen. Dadurch ergibt sich in diesem Punkt ein höherer Aufwand als bei der Verwendung von Normteilen. Die Konstruktion bietet jedoch den Vorteil, dass das Laufrad an das Profil der Schiene angepasst werden kann. Die Normteile der beiden Räder sind meist für hohe Krafteinwirkungen in industriellem Einsatz ausgelegt. Dadurch ergibt sich bei Verwendung der Räder ein hohes Gewicht. Zusätzlich sind die Bauteile mit hohen Kosten verbunden. Die additive Fertigung des Bauteils sollte für die Krafteinwirkung ausreichend sein. Aufgrund der genannten Vorteile kommt für das Projekt Konzept b) zum Einsatz.  
 
+\newpage
 
 \section{Energieversorgung}
+Die Batterie dient als Energieversorgung für Aktorik, Sensorik und Steuerung. Um für die Komponenten passende Ströme und Spannungen bereitstellen zu können, ist eine Leitsungskonvertierung notwendig. In \autoref{pic:leistungskonvertierung} sind die diesem Zweck verwendeten Komponenten dargestellt und in \autoref{tbl:leistungskonvertierung} aufgelistet. 
+
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=17cm]{leistungskonvertierung.png}
+		\includegraphics[width=15cm]{leistungskonvertierung.pdf}
 		\caption{Schema zur Leistungskonvertierung der elektrischen Komponenten}
 		\label{pic:leistungskonvertierung}
 	\end{center}
 \end{figure}
 
-\textcolor{red}{To be continued...}
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}[h]{l|l|l}
+			\textbf{Name} & \textbf{Bezeichnung} & \textbf{Bauteill}\\
+			\hline
+			G1 & Li-Ion Batterie & Panasonic NCR18650B\\
+			\hline
+			T1-T2 & Step-Down Converter & Polulu S13V30F5\\
+			\hline
+			T3 & Step-Up Converter & Polulu U1V11F3\\
+			\hline
+			T4 & Schrittmotor Treiber & Polulu DRV8834 \\
+			\hline
+			K1 & Steueurungen & Arduino Nano, ESP32 \\
+		\end{tabular}
+	\end{center}
+	\caption{Bezeichnungen verwendeter Komponenten}
+	\label{tbl:leistungskonvertierung}
+\end{table}
+
+Die Li-Ion Batterie darf eine minimale Zellspannung $U_{min} =2,75V$ nicht unterschreiten. Zu diesem Zweck lässt sich die \acrshort{cutoffvoltage} bei den beiden Step-Down Convertern $T1$ und $T2$ einstellen. Damit wird bei  niedrigem Batteriezustand die Leistungselektronik abgeschaltet. Die Steuerung ist anschließend noch immer aktiv, sodass eine Kommunikation mit dem Hochbahncontroller weiterhin möglich bleibt. Die beiden Converter sind in Reihe geschalten um die erforderlichen Leistungen des Schrittmotors bereitstellen zu können. Am Schrittmotortreiber $T4$ lässt sich die für den Motor geforderte Spannung und der maximale Strom einstellen. Dafür findet im Treiber ebenfalls eine Leistungskonvertierung von $V_{in}=6,6V$ auf $V_{Motor}=3,3V$ statt. Der Step-Up Converter $T3$ passt die Eingangsspannung an die erforderliche Spannung der Controller an Die Ausgangsspannung des Converters liegt bei $5 \pm 0,15 V$ \\
+
+Die Li-Ion Batterie soll in der Parkposition der Hochbahn aufgeladen werden. Die Batterie kann bei einer Ladespannung von $4,2V$ aufgeladen werden. Für die Steueurung des Ladevorgangs kommt der Ladecontroller MCP73831/2 von Microchip zum Einsatz. Der Controller lässt einen Ladestrom von 	$500mA$ zu. 
+
+
+\newpage
 
 \section{Sensorik}
 \subsection{Kollisionsvermeidung}
