@@ -5,8 +5,8 @@ const int M0 = 10;
 const int M1 = 11;
 const int mode = 0;
 const int rpm = 320;
-const int r = 0.02;
-
+const double r = 0.02;
+bool debug = false;
 
 /*
     0 = full step
@@ -22,34 +22,30 @@ void setup() {
   pinMode(dirPin, OUTPUT);
   pinMode(M0, OUTPUT);
   pinMode(M1, OUTPUT);
-  //Serial.begin(9600);
+  if (debug) {
+    Serial.begin(9600);
+  }
+
   setMode(mode);
 
 }
 
+  
 
 //###########################MAIN###############
 void loop() {
- continuosHz(5, true);
-  //continuosD(25, false);
-   
-  
+  //HzToV(3.5, true);
+  //continuosHz(3.5, true); //max 3.5
+  continuosD(700, false);
+
+
 }
 
 //#########################FUNCTIONS#############
 
-int HzToD(double hz, bool debug) {
-  double T = 1.0 / hz; //Zeit pro Umdrehung
-  double d_s = T / (200.0 * 2.0); //Zeit je Step (on/off)
-  d_s = d_s * 1E6; //--> µs
-  int d = d_s; //conversion to int
 
-  if (debug) {
-    Serial.print("HzToD, D=");
-    Serial.println(d);
-  }
-  return d;
-}
+
+//-----------Turning functions---------
 
 double continuosD(double d, bool debug) //d in µs
 {
@@ -77,6 +73,59 @@ double continuosHz (double hz, bool debug)
 }
 
 
+//----------convertions------------
+int HzToD(double hz, bool debug) {
+  double T = 1.0 / hz; //Zeit pro Umdrehung
+  double d_s = T / (200.0 * 2.0); //Zeit je Step (on/off)
+  d_s = d_s * 1E6; //--> µs
+  int d = d_s; //conversion to int
+
+  if (debug) {
+    Serial.print("HzToD, D=");
+    Serial.println(d);
+  }
+  return d;
+}
+
+double HzToV(double hz, bool debug) {
+  double v = hz * r;
+  if (debug) {
+    Serial.print("V =");
+    Serial.println(v);
+  }
+  return v;
+
+}
+
+//------------modes------------------------
+
+void setMode(int mode) {
+  switch (mode) {
+    case 0:
+      digitalWrite(M0, 0);
+      digitalWrite(M1, 0);
+      break;
+
+
+    case 1:
+      digitalWrite(M0, 1);
+      digitalWrite(M1, 0);
+      break;
+
+    case (2):
+      digitalWrite(M0, 0);
+      digitalWrite(M1, 1);
+      break;
+
+
+    case (3):
+      digitalWrite(M0, 1);
+      digitalWrite(M1, 1);
+      break;
+  }
+}
+
+//-------------------------END----------
 //
 //double rpmToD(int rpm) {
 //  //function converts rpm to T for PWM
@@ -109,31 +158,3 @@ double continuosHz (double hz, bool debug)
 //  digitalWrite(stepPin, LOW);
 //  delayMicroseconds(d);
 //}
-
-
-
-void setMode(int mode) {
-  switch (mode) {
-    case 0:
-      digitalWrite(M0, 0);
-      digitalWrite(M1, 0);
-      break;
-
-
-    case 1:
-      digitalWrite(M0, 1);
-      digitalWrite(M1, 0);
-      break;
-
-    case (2):
-      digitalWrite(M0, 0);
-      digitalWrite(M1, 1);
-      break;
-
-
-    case (3):
-      digitalWrite(M0, 1);
-      digitalWrite(M1, 1);
-      break;
-  }
-}
