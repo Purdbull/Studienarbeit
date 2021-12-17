@@ -134,6 +134,15 @@ Die detaillierte Konzeptionierung der dargestellten Komponenten erfolgt in den n
 	\label{pic:grundaufbau}
 \end{figure}
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=10cm]{kippmoment.pdf} 
+	\caption{Grundaufbau von Trieb- und Stützwagen}
+	\label{pic:kippmoment}
+\end{figure}
+
+
+
 
 \section{Aktorik}
 In diesem Abschnitt wird die Konzeptionierung des Antriebs der Gartenhochbahn beschrieben. In \autoref{sec:motor} wird zunächst die Auswahl und Auslegung des Motors beschrieben. Das Drehmoment des Motors soll anschließend auf ein Laufrad übertragen werden. Die Beschreibung des dafür zuständigen Getriebes folgt mit \autoref{sec:getriebekonzept}
@@ -292,7 +301,8 @@ Ebenfalls ist dabei anzugeben, wohin die Bahn das bestellte fahren soll. Unter \
 
 \chapter{Umsetzung}
 \section{Motoransteuerung}
-\begin{figure}[t]
+Für die Motorsteuerung wird auf einem Arduino Nano ein Skript ausgeführt. Der ESP32 als Hochbahncontroller ist dem Controller übergeordnet. In \autoref{pic:motorsteuerung} ist schematisch der Steuerungsablauf  dargestellt. 
+\begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=17cm]{motorsteuerung.pdf}
 		\caption{Schematische Übersicht der Motoransteuerung}
@@ -300,6 +310,14 @@ Ebenfalls ist dabei anzugeben, wohin die Bahn das bestellte fahren soll. Unter \
 	\end{center}
 \end{figure}
 
+\newpage
+
+Für die Motorsteueurung können vom ESP32 Funktionen im Skript ausgeführt werden. Für den Brems- und Beschleunigungsvorgang dienen die beiden Funktionen \textit{ speedUp} und \textit{slowDown}. Als Parameter werden die Start- und Enddrehzahl in $Hz$ sowie der Gradient mitgegeben. Bei einer Fahrt mit gleichbleibender Geschwindigkeit wird \textit{continuos} mit Drehzahlparameter in $Hz$ ausgeführt. Wird das Schutzfeld verletzt, löst der ESP32 die \textit{emergencyBrake} Funktion aus. Die Befehle werden über serielle Kommunikation (Rx/ Tx) versendet. Der Nothalt wird durch einen Interrupt am Arduino Nano ausgelöst. \\
+
+Im Skript sind die beiden Variabeln Drehzahl $speed$ und Schrittmodus' $mode$ global angelegt. Diese werden von den Steuerungsfunktionen verändert. Die Variablen dienen den Fukntionen $setMode, hzToPwm$ und $hzToV$ als Grundlage. Diese werden in einer Schleife ausgeführt. $setMode$ stellt den Schrittmodus am Motortreiber über die \acrshort{gpio}-Pins am  Treiber ein. $hzToPwm$ berechnet anhand der aktuellen Drehzahl die Geschwindigkeit in $\frac{m}{s}$. Der Wert wird über die serielle Schnittstelle an den ESP32 zurückgegeben. Die Funktion $hzToPWM$ bestimmt aufgrund der geforderten Drehzahl den \acrshort{pwm}-Wert. Der Wert wird über $I^2C$ an einen  \acrshort{pwm}-Treiber übergeben und dient als Takt für den Schrittmotortreiber. \\
+
+Während ersten Versuchen wurde der Takt für den Schrittmotortreiber vom Mikrocontroller generiert. Dabei zeigte sich, dass die maximale Taktrate stark von der Auslastung des Mikrocontrollers abhängig ist. Durch Verwendung des \acrshort{pwm}-Treibers wird die Takterzeugung ausgelagert. 
+ 
 
 \section{Getriebekonstruktion}
 Wie im Konzeptionierungsteil \ref{sec:getriebekonzept} beschrieben, soll für die Kraftübertragung des Motors auf die Schiene ein Riemengetriebe verwendet werden. In diesem Kapitel wird die Konstruktion des Getriebes beschrieben. In \autoref{pic:getriebe} ist eine Übersicht des Getriebes dargestellt. Auf die Bauteile wird nachfolgend genauer eingegangen. 
