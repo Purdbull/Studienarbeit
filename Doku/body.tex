@@ -123,9 +123,9 @@ Aufgrund der gestellten Anforderungen werden in diesem Kapitel die Konzepte zum 
 \section{Grundaufbau}
 \textcolor{red}{Platzhalter:Begründung, weshalb Neuaufbau nötig}\\
 In  \autoref{pic:grundaufbau} ist das Konzept des Grundaufbaus der Gondel dargestellt. Dieser soll aus den beiden Baugruppen \textit{Triebwagen} und \textit{Stützwagen} bestehen. Im Triebwagen sind Motor und Getriebe verbaut. An die beiden Wägen anchließend werden nach unten Verbindungselemente für die Befestigung des Tabletts sowie für die Elektronik angebracht. \\
-Die detaillierte Konzeptionierung der dargestellten Komponenten erfolgt in den nachfolgenden Abschnitten. 
+Die Konstruktion der dargestellten Komponenten wird wird in \ref{sec:getriebekonzept} beschrieben. 
 
-\textbf{Fertigungsmethode} 
+
 
 \begin{figure}[h]
 	\centering
@@ -133,14 +133,29 @@ Die detaillierte Konzeptionierung der dargestellten Komponenten erfolgt in den n
 	\caption{Grundaufbau von Trieb- und Stützwagen}
 	\label{pic:grundaufbau}
 \end{figure}
+\newpage
+
+\textbf{Ausgleich des Kippmoments}\\
+Die Gondel soll stets lotrecht hängen. Vor allem beim Triebwagen ist der Aufbau durch den Motor stark einseitig belastet, wodurch sich ein Kippmoment ergibt. Mit einem Gewicht soll ein entgegengesetztes Drehmoment erzeugt werden. In \autoref{pic:kippmoment} ist der Zusammenhang veranschaulicht. 
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=10cm]{kippmoment.pdf} 
-	\caption{Grundaufbau von Trieb- und Stützwagen}
+	\caption{Betrachtung des Kippmoments am Triebwagen}
 	\label{pic:kippmoment}
 \end{figure}
+Der Aufbau dreht sich um den Punkt $D$. Für die lotrechte Ausrichtung der Gondel muss gelten, dass 
 
+\begin{align}
+	\sum M_D = 0
+\end{align}
+ Der Motor hat mit einer Masse von $300g$ eine Gewichtskraft von $F_{G,M} \approx 2,94N$. Der Hebelarm ist $l_1=70mm$. Dieses positive Dremhmoment soll mit einem negativen Moment durch das Gewicht mit der Kraft $F_{G,G}$ und Hebelarm $l_2$ ausgeglichen werden. Bei gegebenem Hebelarm $l_2$ ergibt sich dabei für die erforderliche Masse des Gewichtes:
+
+\begin{align}
+	m_G = m_M \cdot \frac{l_1}{l_2}
+\end{align}
+ 
+ 	
 
 
 
@@ -258,11 +273,20 @@ Mit einem Arduino Nano werden die Messungen an beiden Sensoren zyklisch durchgef
 		2 & Schutzfeld & GPIO4\\	
 	\end{tabular}
 \end{center}
-
+\newpage
 
 \subsection{Positionserfassung}
-\newpage
-\section{Schnittstelle}
+Die Position der Hochbahn entlang der Strecke soll kontinuierlich erfasst werden. Dafür kommen zwei Lokalisierungsmethoden zum Einsatz: 
+
+ \begin{itemize}
+ 	\item [a)] Absolute Positionserfassung durch einen \acrshort{reed}-Kontakt
+ 	\item[b)] \acrshort{lagekopplung} auf Basis des Feedbacks der Motorsteueurung  
+ \end{itemize}
+
+Für die absolute Positionserfassung sollen entlang der Strecke Dauermagneten in einem Abstand von ca. 1,5m angebracht werden. Die Magneten schließen den Kontakt des  \acrshort{reed}-Schalters auf der Hochbahn. Je nach Fahrtrichtung inkrementiert bzw. dekrementiert dieses Signal einen Zähler auf dem Hochbahncontroller (ESP32). Auf Basis des Feedbacks der Motorsteuerung wird aus der aktuellen Geschwindigkeit die Position zwischen den Magneten berechnet. Die \acrshort{lagekopplung} ist prinzipbedingt fehlerbehaftet. Daher überschreibt die absolute Positionserfassung den Wert der Kopplung. 
+
+
+\section{Schnittstellen}
 Als Übergang von der Konzeptionierung mechatronischer Komponente zu den informationstechnischen Konzepten soll in diesem Abschnitt die Schnittstelle aller verwendeten Komponenten vorgestellt werden. Dazu ist in \autoref{pic:schnittstellen} eine Übersicht dargestellt.
 
 \begin{figure}[h]
@@ -320,7 +344,7 @@ Während ersten Versuchen wurde der Takt für den Schrittmotortreiber vom Mikroc
  
 
 \section{Getriebekonstruktion}
-Wie im Konzeptionierungsteil \ref{sec:getriebekonzept} beschrieben, soll für die Kraftübertragung des Motors auf die Schiene ein Riemengetriebe verwendet werden. In diesem Kapitel wird die Konstruktion des Getriebes beschrieben. In \autoref{pic:getriebe} ist eine Übersicht des Getriebes dargestellt. Auf die Bauteile wird nachfolgend genauer eingegangen. 
+Wie im Konzeptionierungsteil \ref{sec:getriebekonstruktion} beschrieben, soll für die Kraftübertragung des Motors auf die Schiene ein Riemengetriebe verwendet werden. In diesem Kapitel wird die Konstruktion des Getriebes beschrieben. In \autoref{pic:getriebe} ist eine Übersicht des Getriebes dargestellt. Auf die Bauteile wird nachfolgend genauer eingegangen. 
 
 \begin{figure}[h]
 	\begin{center}
