@@ -3,7 +3,7 @@ const int stp = 1;
 const int stepsPerRevolution = 200;
 const int M0 = 10;
 const int M1 = 11;
-const int mode = 0;
+const int mode = 2;
 const int rpm = 320;
 const double r = 0.02;
 bool debug = false;
@@ -36,7 +36,7 @@ void setup() {
 void loop() {
   //HzToV(3.5, true);
   //continuosHz(3.5, true); //max 3.5
-  continuosD(700, false);
+  continuosD(5000, false);
 
 
 }

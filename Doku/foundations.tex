@@ -1,5 +1,10 @@
+%----------------------GRUNDLAGEN --------------------
+
 \chapter{Grundlagen}
-\section{Distanzmessung mit Ultraschall}
+\label{cha:grundlagen}
+Für die Abstandsmessung wird dabei das Ultraschallverfahren in \autoref {sec:ultraschall}erläutert. Als Antriebstechnik wird in \autoref{sec:schrittmotor} der Schrittmotor betrachtet und schließlich das \acrshort{mqtt}-Protokoll für die Kommunikation mit \autoref{sec:mqtt} beschrieben. 
+
+\section{Abstandsmessung mit Ultraschall}
 \label{sec:ultraschall}
 Die Distanzmessung mit Ultraschall ist ein berührungsloses Verfahren. Die Messung  beruht auf dem Prinzip der Laufzeitmessung. Der Frequenzbereich von Ultraschalls liegt zwischen 20Khz - 1Ghz (vgl. \cite{ultraschallbereich}) und somit außerhalb des hörbaren Bereichs (20Khz).  Das Frequenzspektrum bei technischen Anwendungen ist kleiner. \\
 Ein Ultraschallsensor besteht aus einer Sende- und Empfangseinheit. Die Schallwellen werden meist auf Basis des piezoelektrischen Effekts impulsartig ausgesandt und ausgewertet.  Der Ultraschallimpuls pflanzt sich mit Schallgeschwindigkeit im Ausbreitungsmedium fort. Das zu messende Objekt reflektiert die Schallwelle. Die Emfpangseinheit nimmt das entstandene Echo auf. Durch die verstrichene Zeit von der Aussendung bis zum Empfangen des Impulses kann die Entfernung des Objektes bestimmt werden. \\
@@ -16,6 +21,7 @@ Prinipbedingt unterliegen Ultraschallsensoren einigen Messfehlern. Dazu gehört,
 
 \newpage
 \section{Der Schrittmotor}
+\label{sec:schrittmotor}
 Der Schrittmotor zählt zu den \acrshort{synchronmaschine}n. Mit den Motoren können Positionen sehr exakt ohne weitere Regler angefahren werden. Schrittmotoren finden sich beispielsweise in Druckern, CD-Laufwerken und computergesteuerte Werkzeugmaschinen.  Schrittmotoren besitzen ein Haltemoment, das ebenfalls in vielen Anwendungen genutzt wird. (vgl. \cite{schrittmotorBa}, S. 2) In \autoref{pic:pmMotor} ist der Aufbau eines Schrittmotors \textit{(hier: PM-Motors)} dargestellt. 
 
 \begin{figure}[h]
@@ -98,11 +104,12 @@ Eine weitere Betriebsart ist der Mikroschrittbetrieb. Dabei wird die Stromstärk
 
 \newpage
 \section{MQTT} %Acronym wieder einfuegen!
+\label{sec:mqtt}
 \acrshort{mqtt} ist ein Protokoll, welches zur digitalen Datenübertragung in ethernet-basierten Systemen dient. Es benötigt nur wenig Bandbreite und Ressourcen und verwendet eine 
 Publish/Subscribe - Architektur. Das bedeutet, dass Nachrichten sogenannter Topics von Publishern bereitgestellt und von Subscribern empfangen werden. Der Datenverkehr wird über einen 
-zentralen Broker verwaltet. Um die Publish Subscribe Architektur zu verstehen ist es hilfreich die Analogie zum Fernsehen zu bilden. Dabei senjdet ein TV-Sender sein Programm an einen bestimmten Kanal.
+zentralen Broker verwaltet. Um die Publish Subscribe Architektur zu verstehen, ist es hilfreich, die Analogie zum Fernsehen zu bilden. Dabei sendet ein TV-Sender sein Programm an einen bestimmten Kanal.
 Auf diesen Kanal können nun beliebig viele Fernseher (Subscriber) zugreifen. Auch wenn keine aktive Verbindung zwischen Sender und Empfänger aufgebaut wird, erhalten beliebig viele Empfänger die benötigten Daten.
-In \autoref{pic:mqttbroker} ist zu erkennen, wie die Daten nicht zwischen Publisher und Subscriber direkt, sondern über den zentralen Broker versendet werden. (Vgl. \cite{mqtt})
+In \autoref{pic:mqttbroker} ist zu erkennen, dass die Daten nicht zwischen Publisher und Subscriber direkt, sondern über den zentralen Broker versendet werden. (Vgl. \cite{mqtt})
 
 \begin{figure}[h]
     \begin{center}
