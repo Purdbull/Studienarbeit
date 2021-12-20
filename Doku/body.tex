@@ -18,7 +18,7 @@ Die Gartenhochbahn stellt ein Transportsystem für Essen und Getränke dar. Haup
 \end{figure}
 \newpage
 
-Der Antrieb der Gondel erfolgt mit einem Gleichstrommotor, der mit \acrfull{pwm} angesteuert wird. Die Kraftübertragung auf das treibende Laufrad erfolgt reibschlüssig. Für die Bereitstellung der Energie ist eine Batterie in der Gondel installiert. Diese wird in der Parkstellung am Ende der Schiene aufgeladen. Als Abschaltung des Motors an den hinteren Endlagen sind Tastsensoren verbaut. Ein \acrshort{reed}-Kontakt in der Gondel erkennt außerdem Magnete entlang der Strecke. Nach Erfassen eines Kontaktes an einer Endlage wird die Geschwindigkeit langsam reduziert bis die Bahn zum Stillstand kommt. Für die Signalverarbeitung und Steuerung des Motors ist ein Arduino Nano im Einsatz. \\
+Der Antrieb der Gondel erfolgt mit einem Gleichstrommotor, der mit \acrfull{pwm} angesteuert wird. Die Kraftübertragung auf das treibende Laufrad erfolgt reibschlüssig. Für die Bereitstellung der Energie ist eine Batterie in der Gondel installiert. Diese wird in der Parkstellung am Ende der Schiene aufgeladen. Als Abschaltung des Motors an den hinteren Endlagen sind Tastsensoren verbaut. Ein \acrshort{reed}-Kontakt in der Gondel erkennt außerdem Magnete entlang der Strecke. Nach Erfassen eines Kontaktes an einer Endlage wird die Geschwindigkeit langsam reduziert. Für die Signalverarbeitung und Steuerung des Motors ist ein Arduino Nano im Einsatz. \\
 
 Mit drei Tastern können verschiedene Stationen auf dem Weg angefahren werden. Damit ist ein einzelner Fahrzyklus bereits automatisiert. Ziel dieses Projektes ist es, den gesamten Bestellprozess mit Liefervorgang zu automatisieren. \\
 
@@ -26,7 +26,7 @@ Der bisherige Gondelaufbau entspricht in vielen Punkten nicht den Anforderungen.
 
 \section{Funktion und Aufbau}
 \label{sec:anforderungFunktionUndAufbau}
-Der Aufbau soll dafür ausgelegt sein, Getränke und Speisen bis zu einem Gewicht von $\approx$ 5 Kg zu transportieren. Um die Bestellung unversehrt liefern zu können, darf ein bestimmter Neigungswinkel nicht überschritten werden. Zu diesem Zweck muss das Kippmoment der Gondel abgefangen werden. Auf den Schienen muss sich die Gondel selbst bei engen Radien zuverlässig fortbewegen können. Damit die Entladespannung der Batterie nicht unterschritten wird, muss diese überwacht werden. Wird eine bestimmte Spannungsschwelle unterschritten, soll ein Zurückfahren in die Ladestation erzwungen werden. Da der größte Teil der Hochbahn überdacht ist, muss keine Rücksicht auf Witterungsbedingungen genommen werden. Die Konzeptionierung des Aufbaus erfolgt in \autoref{sec:konzeptGrundaufbau}.
+Der Aufbau soll dafür ausgelegt sein, Getränke und Speisen bis zu einem Gewicht von $\approx$5Kg zu transportieren. Um die Bestellung unversehrt liefern zu können, darf ein bestimmter Neigungswinkel nicht überschritten werden. Zu diesem Zweck muss das Kippmoment der Gondel abgefangen werden. Auf den Schienen muss sich die Gondel selbst bei engen Radien zuverlässig fortbewegen können. Damit die Entladespannung der Batterie nicht unterschritten wird, muss diese überwacht werden. Wird eine bestimmte Spannungsschwelle unterschritten, soll ein Zurückfahren in die Ladestation erzwungen werden. Da der größte Teil der Hochbahn überdacht ist, muss keine Rücksicht auf Witterungsbedingungen genommen werden. Die Konzeptionierung des Aufbaus erfolgt in \autoref{sec:konzeptGrundaufbau}.
 \newpage
 
 
@@ -46,7 +46,7 @@ Sensorik soll zu folgenden Zwecken eingesetzt werden:
 	
 \end{itemize}
 
-Mit der Positionserkennung soll die Lage der Hochbahn auf der Transportstrecke erfasst werden können. Die Information soll der Steuerung zur Verfügung gestellt werden. Aufgrund der Information soll der Lieferungsvorgang nachvollzogen werden können und die Geschwindigkeitsregelung der Hochbahn eingestellt werden. Mit der Kollisionsvermeidung sollen Hindernisse im Fahrweg der Gondel rechtzeitig erkannt werden. Innerhalb des Warnbereiches soll die Geschwindigkeit stark gedrosselt werden. Wird durch das Hindernis außerdem das Schutzfeld verletzt, muss die Bahn komplett zum Stillstand kommen. Die Konzeptionierung zur Sensorik wird in \autoref{sec:konzeptSensorik} beschrieben.
+Mit der Positionserkennung soll die Lage der Hochbahn auf der Transportstrecke erfasst werden können. Die Information soll der Steuerung zur Verfügung gestellt werden. Aufgrund der Information soll der Lieferungsvorgang nachvollzogen werden können und die Geschwindigkeitsregelung der Hochbahn eingestellt werden. Mit der Kollisionsvermeidung sollen Hindernisse im Fahrweg der Gondel rechtzeitig erkannt werden. Innerhalb eines definierten Warnbereiches soll die Geschwindigkeit stark gedrosselt werden. Wird durch das Hindernis außerdem ein Schutzfeld verletzt, muss die Bahn komplett zum Stillstand kommen. Die Konzeptionierung zur Sensorik wird in \autoref{sec:konzeptSensorik} beschrieben.
 \newpage
 
 
@@ -55,7 +55,7 @@ Mit der Positionserkennung soll die Lage der Hochbahn auf der Transportstrecke e
 
 Das Bestellsystem soll es Nutzern ermöglichen, die Hochbahn von der Terrasse aus mit einem Bestellauftrag zur Küche zu schicken. 
 Dort soll ein Tablet die aktuelle Bestellung anzeigen. Ist alles für den Transport vorbereitet, kann ein Nutzer aus der Küche den Auftrag 
-bestätigen und die Bahn fährt zur gewünschten Position zurück. Ein Webserver soll diese Funktionen über ein benutzerfreundliches \acrfull{gui} bereitstellen, welches über beliebige Engeräte (z.B. Samrtphone oder Tablet) erreichbar ist.
+bestätigen und die Bahn fährt zur gewünschten Position zurück. Ein Webserver soll diese Funktionen über ein benutzerfreundliches \acrfull{gui} bereitstellen, welches über beliebige Endgeräte (z.B. Smartphone oder Tablet) erreichbar ist.
 Zudem soll die Möglichkeit bestehen, den Bestand zu erfassen. Das System soll selbstorganisierend sein, sodass sich auch das Kontingent durch Bestellungen aktualisiert. Dadurch soll verhindert werden, dass mehr bestellt werden kann als vorhanden ist.
 Ebenfalls sollen Nutzer, die etwas bestellt haben, den aktuellen Lieferzustand einsehen können. D. h. es soll angezeigt werden, wo sich die Bahn befindet und welche Bestellung gerade bearbeitet wird.
 
@@ -77,7 +77,7 @@ Die Projektorganisation erfolgte anhand der folgenden Stufen:
 \end{enumerate}
 
 In einem ersten Schritt wurden mithilfe eines Projektstrukturplans die Teilbereiche definiert. Dadurch stellten sich die Wirkzusammenhänge der Bereiche heraus. Nachfolgend wurden die zugehörigen Aufgaben erstellt. Durch die Übersicht in einer Roadmap wurden die Aufgaben in einen zeitlichen Zusammenhang gebracht. 
-In einem letzten Schritt folgte das Definieren der Aufgaben in einem Kanban-Board. 
+In einem letzten Schritt folgte die Definition der Aufgaben in einem Kanban-Board. 
 
 
 \newpage
@@ -92,8 +92,8 @@ In \autoref{pic:structuremech} ist der  Projektstrukturplan mit den mechatronisc
 	\end{center}
 \end{figure}
 
-Das Projekt ist unterglieder in drei Teilaufgaben. Diese werden in der nächsten Ebene in Arbeitspakete untergliedert. 
-Da die Bereiche aufeinander aufbauend sind, können Zusammenhänge analysiert werden. In dem Schaubild sind die Bereiche von links nach rechts in zeitlicher Abfolge aufgetragen. Dementsprechend soll in einem ersten Schritt die Aktorik konzeptioniert werden. Dazu zählt die elektrische und mechanische Komponente des Antriebs. Mit den elektrischen Leistungsdaten der Aktorik wird im nächten Schritt das Energiekonzept ausgearbeitet. Auf diesen Bereich baut final die Konzeptionierungsphase der Sensorik auf. \\ 
+Das Projekt ist untergliedert in drei Teilaufgaben. Diese werden in der nächsten Ebene in Arbeitspakete untergliedert. 
+Da die Bereiche aufeinander aufbauend sind, können Zusammenhänge analysiert werden. In dem Schaubild sind die Bereiche von links nach rechts in zeitlicher Abfolge aufgetragen. Dementsprechend soll in einem ersten Schritt die Aktorik konzeptioniert werden. Dazu zählt die elektrische und mechanische Komponente des Antriebs. Mit den elektrischen Leistungsdaten der Aktorik wird im nächsten Schritt das Energiekonzept ausgearbeitet. Auf diesen Bereich baut final die Konzeptionierungsphase der Sensorik auf. \\ 
 
 \newpage
 \subsection{Projektablaufplan}
@@ -102,7 +102,7 @@ Aus dem Projektstrukturplan geht der Projektablaufplan hervor. Darin werden die 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=17cm]{roadmap.png}
-		\caption{Projaktablaufplan mechatronischer Komponenten}
+		\caption{Projektablaufplan mechatronischer Komponenten}
 		\label{pic:roadmap}
 	\end{center}
 \end{figure}
@@ -112,7 +112,7 @@ Aus dem Projektstrukturplan geht der Projektablaufplan hervor. Darin werden die 
 \newpage
 \subsection{Arbeitsmangement}
 \label{sec:arbeitsmanagement}
-Für das Arbeitsmanagement wird die Kanban-Methode verwendet. Dabei werden die Teilaufgaben dem Bearebeitungsstatus zugeordnet. Im Rahmen des Projektes wurden die Stati \textit{Backlog}, \textit{Todo,  In Progress, Testing} und \textit{Done}  unterschieden. 
+Für das Arbeitsmanagement wird die Kanban-Methode verwendet. Dabei werden die Teilaufgaben dem Bearbeitungsstatus zugeordnet. Im Rahmen des Projektes wurden die Stati \textit{Backlog}, \textit{Todo,  In Progress, Testing} und \textit{Done}  unterschieden. 
 Die Aufgaben wurden mit den Berbeitungszeiträume aus dem Projektablaufplan definiert und dem entsprechenden Bearbeiter zugewiesen. 	
 Für die Kanban-Methode kam das Tool \textit{Trello} zum Einsatz. 
 
@@ -121,11 +121,11 @@ Für die Kanban-Methode kam das Tool \textit{Trello} zum Einsatz.
 
 \chapter{Konzeptionierung}
 \label{cha:konzeptionierung}
-Mit \autoref{cha:anforderungsanalyse} wurden Anforderungen an das Projekt gestellt. Zum Erreichen dieser Anforderungen findet in diesem Kapitel die Konzeptionierung statt. Dazu wird mit \autoref{sec:konzeptGrundaufbau} zunächst der generelle Aufbau betrachtet. Anschließend folgen mit den Abschnitten \ref{sec:konzeptAktorik} bis \ref{sec:konzeptSensorik} die Konzepte zu den mechatronischen Komponenten Aktorik, Energieversorgung und Sensorik. Als Übergang zu den informationstechnischen Konzepten werden mit \autoref{sec:konzeptSchnittstellen} die Schnittstellen ausgearbeitet. \newpage
+Mit \autoref{cha:anforderungsanalyse} wurden Anforderungen an das Projekt gestellt. Zum Erreichen dieser Anforderungen findet in diesem Kapitel die Konzeptionierung statt. Dazu wird mit \autoref{sec:konzeptGrundaufbau} zunächst der generelle Aufbau betrachtet. Anschließend folgen mit den Abschnitten \ref{sec:konzeptAktorik} bis \ref{sec:konzeptSensorik} die Konzepte zu den mechatronischen Komponenten \textit{Aktorik}, \textit{Energieversorgung} und \textit{Sensorik}. Als Übergang zu den informationstechnischen Konzepten werden mit \autoref{sec:konzeptSchnittstellen} die \textit{Schnittstellen} ausgearbeitet. \newpage
 
 \section{Grundaufbau}
 \label{sec:konzeptGrundaufbau}
-Beim Aufbau der neuen Gondel wird das grundlegende Prinzip des bisherigen Aufbaus übernommen. Dazu zählt, dass die Gondel mit zwei Elementen in die Schiene eingehängt wird. Die beiden Baugruppen werden nachfolgend als \textit{Triebwagen} und \textit{Stützwagen} bezeichnet. Beide Elemente besitzen ein Paar Laufrollen für die Fortbewegung auf der Schiene. Im Triebwagen sind zuästzlich Motor und Getriebe verbaut. An den beiden Baugruppen werden nach unten Verbindungselemente für die Befestigung des Tabletts sowie für die Elektronik angebracht. Zur besseren Veranschaulichung ist in  \autoref{pic:grundaufbau} die Konstruktion der beiden Wägen dargstellt. Die Beschreibung folgt im Kapitel \textit{Umsetzung} mit Abschnitt \ref{sec:getriebekonzept}. 
+Beim Aufbau der neuen Gondel wird das grundlegende Prinzip des bisherigen Aufbaus übernommen. Dazu zählt, dass die Gondel mit zwei Elementen in die Schiene eingehängt wird. Die beiden Baugruppen werden nachfolgend als \textit{Triebwagen} und \textit{Stützwagen} bezeichnet. Beide Elemente besitzen ein Paar Laufrollen für die Fortbewegung auf der Schiene. Im Triebwagen sind zusätzlich Motor und Getriebe verbaut. An den beiden Baugruppen werden nach unten Verbindungselemente für die Befestigung des Tabletts sowie für die Elektronik angebracht. Zur besseren Veranschaulichung ist in  \autoref{pic:grundaufbau} die Konstruktion der beiden Wägen dargestellt. Die Beschreibung der Konstruktion folgt im Teil der \textit{Umsetzung} in \autoref{cha:umsetzung}.
 
 
 \begin{figure}[h]
@@ -138,7 +138,7 @@ Eine dringende Anforderung an den Aufbau ist, dass die Gondel stets lotrecht hä
 \newpage
 
 \textbf{Ausgleich des Kippmoments}\\
- Durch die einseite Belastung des Motors ergibt sich vor allem beim Triebwagen ein Kippmoment. Eine mögliche Lösung wäre, das Kippmoment durch eine Laufrolle auf der Seitenfläche der Schiene abzufangen. Aufgrund der Bestigungen der Schiene ist dies jedoch nicht möglich. Aus diesem Grund soll das Kippmoment durch ein entgegengesetztes Drehmoment mit einem Gewicht erzeugt werden. In \autoref{pic:kippmoment} ist der Zusammenhang veranschaulicht. 
+ Durch die einseitige Belastung des Motors ergibt sich vor allem beim Triebwagen ein Kippmoment. Eine mögliche Lösung wäre, das Kippmoment durch eine Laufrolle auf der Seitenfläche der Schiene abzufangen. Aufgrund der Befestigung der Schiene ist dies jedoch nicht möglich. Aus diesem Grund soll das Kippmoment durch ein entgegengesetztes Drehmoment mit einem Gewicht erzeugt werden. In \autoref{pic:kippmoment} ist der Zusammenhang veranschaulicht. 
 
 \begin{figure}[h]
 	\centering
@@ -153,7 +153,7 @@ Der Aufbau dreht sich um den Punkt $D$. Für die lotrechte Ausrichtung der Gonde
 \end{align}
 \newpage 
 
- Der Motor hat mit einer Masse von $300g$ eine Gewichtskraft von $F_{G,M} \approx 2,94N$. Der Hebelarm ist $l_1=70mm$. Dieses positive Dremhmoment soll mit einem negativen Moment durch das Gewicht mit der Kraft $F_{G,G}$ und Hebelarm $l_2$ ausgeglichen werden. Bei gegebenem Hebelarm $l_2$ ergibt sich dabei für die erforderliche Masse des Gewichtes:
+ Der Motor hat mit einer Masse von $300g$ eine Gewichtskraft von $F_{G,M} \approx 2,94N$. Der Hebelarm ist $l_1=70mm$. Dieses positive Drehmoment soll mit einem negativen Moment durch das Gewicht mit der Kraft $F_{G,G}$ und Hebelarm $l_2$ ausgeglichen werden. Bei gegebenem Hebelarm $l_2$ ergibt sich dabei für die erforderliche Masse des Gewichtes:
 
 \begin{align}
 	m_G = m_M \cdot \frac{l_1}{l_2}
@@ -167,12 +167,9 @@ In diesem Abschnitt wird die Konzeptionierung des Antriebs der Gartenhochbahn be
 
 \subsection{Motor}
 \label{sec:konzeptMotor}
-Für den Antrieb der Gartenhochbahn wurde zwischen einem DC-Motor und einem Schrittmotor ausgewählt. 
-Bei einem DC-Motor wird ein \acrshort{pwm}-Signal angelegt. Dieses wird von einem Treiber genertiert.
+Für den Antrieb der Gartenhochbahn wurde zwischen einem DC-Motor und einem Schrittmotor ausgewählt. Bei einem DC-Motor wird ein \acrshort{pwm}-Signal angelegt. Dieses wird von einem Treiber generiert. Bei einem Schrittmotor werden bei der Steuerung von einem Treiber positive Taktflanken des Controllers ausgewertet. Wie in \autoref{sec:schrittmotor} beschrieben, werden je nach Betriebsmodus pro Taktflanke die Spulen des Motors entsprechend bestromt. Durch den Zusammenhang zwischen Taktflanken und  Inkrementalschritten des Motors können Rückschlüsse auf die zurückgelegte Strecke gemacht werden.  
 
-Wie in \autoref{sec:schrittmotor} beschrieben, werden bei der Steuerung eines Schrittmotors von einem Treiber positive Taktflanken ausgewertet. Je nach Betriebsmodus werden bei einer Taktflanke die Spulen des Motors entsprechend bestromt. Durch den Zusammenhang zwischen Taktflanken und  Inkrementalschritten des Motors können  Rückschlüsse auf die zurückgelegte Strecke erfolgen.  
-
-Da die Information der Wegstrecke für die Positionsbestimmung genutzt werden kann, soll für die Gartenhochbahn ein Schrittmotor genutzt werden. Dafür kommt der Motor Nema 17-04 von Joy-IT zum Einsatz. Als Schrittmotortreiber wird der DRV8834 von Texas Instruments verwendet. 
+Da die Information der Wegstrecke für die Positionsbestimmung genutzt werden kann, soll für die Gartenhochbahn ein Schrittmotor verwendet werden. Dafür kommt der Hybrid-Schrittmotor Nema 17-04 von Joy-IT zum Einsatz. Als Schrittmotortreiber wird der DRV8834 von Texas Instruments verwendet. 
 
 
 \subsection{Getriebe}
@@ -185,7 +182,7 @@ Für das Projekt wird ein Zugmittelgetriebe verwendet. Um dabei Schlupf zu verme
 \\
 
 \textbf{Konstruktion und Fertigung}\\
-Der Antrieb besteht aus den folgenden Komponenten: getriebenes- und treibendes Riemenrad, Laufrad und Zahnriemen. Zunächst wird das Konzept für das getriebene Riemenrad und das Laufrad beschrieben. Anschließend erfolgt die Beschreibung des gesamten Antriebs anhand der Konstruktion.  
+Der Antrieb besteht aus den folgenden Komponenten: \textit{getriebenes}- und \textit{treibendes Riemenrad, Laufrad} und \textit{Zahnriemen}. Zunächst wird das Konzept für das getriebene Riemenrad und das Laufrad beschrieben. Anschließend erfolgt die Beschreibung des gesamten Antriebs anhand der Konstruktion.  
 Das Laufrad kommt für den Abtrieb auf der Schiene zum Einsatz. Eine Herausforderung stellt dabei die Kraftübertragung vom Laufrad auf das getriebene Riemenrade dar. Dazu wurden zwei Konzept entwickelt. Die Gegenüberstellung ist in \autoref{pic:abtriebkonzepte} dargestellt.
 \newpage
 
@@ -202,13 +199,13 @@ Bei Konzept a) wird für Lauf- und Riemenrad jeweils ein Normteil verwendet. Die
 
 Bei Konzept b) sind Laufrad und Riemenrad eine Baugruppe. Das kombinierte Bauteil wird additiv gefertigt und ist stehend auf der Welle gelagert. Die Welle selbst ist ebenfalls stehend ausgeführt. Durch die additive Fertigung ist eine CAD-Konstruktion zwingend notwendig. Dadurch ergibt sich in diesem Punkt ein höherer Aufwand als bei der Verwendung von Normteilen. Die Konstruktion bietet jedoch den Vorteil, dass das Laufrad an das Profil der Schiene angepasst werden kann. 
 
-Für die Projekt wird Konzept b) verfolgt. Die additive Fertigung des Bauteils sollte für die Krafteinwirkung ausreichend sein und die Kosten können somit geringer gehalten werden. 
+Für das Projekt wird Konzept b) verfolgt. Die additive Fertigung des Bauteils sollte für die Krafteinwirkung ausreichend sein und die Kosten können somit geringer gehalten werden. 
 
 \newpage
 
 \section{Energieversorgung}
 \label{sec:konzeptEnergieversorgung}
-Die Batterie dient als Energieversorgung für Aktorik, Sensorik und Steuerung. Um für die Komponenten passende Ströme und Spannungen bereitstellen zu können, ist eine Leitsungskonvertierung notwendig. In \autoref{pic:leistungskonvertierung} sind die diesem Zweck verwendeten Komponenten dargestellt und in \autoref{tbl:leistungskonvertierung} aufgelistet. 
+Die Batterie dient als Energieversorgung für Aktorik, Sensorik und Steuerung. Um für die Komponenten passende Ströme und Spannungen bereitstellen zu können, ist eine Leistungskonvertierung notwendig. In \autoref{pic:leistungskonvertierung} sind die zu diesem Zweck verwendeten Komponenten dargestellt und in \autoref{tbl:leistungskonvertierung} aufgelistet. 
 
 \begin{figure}[h]
 	\begin{center}
@@ -238,10 +235,11 @@ Die Batterie dient als Energieversorgung für Aktorik, Sensorik und Steuerung. U
 	\caption{Bezeichnungen verwendeter Komponenten}
 	\label{tbl:leistungskonvertierung}
 \end{table}
+\newpage
 
 Die Li-Ion Batterie darf eine minimale Zellspannung $U_{min} =2,75V$ nicht unterschreiten. Zu diesem Zweck lässt sich die \acrshort{cutoffvoltage} bei den beiden Step-Down Convertern $T1$ und $T2$ einstellen. Damit wird bei  niedrigem Batteriezustand die Leistungselektronik abgeschaltet. Die Steuerung ist anschließend noch immer aktiv, sodass eine Kommunikation mit dem Hochbahncontroller weiterhin möglich bleibt. Im Schema nicht dargestellt ist der Hochbahncontroller ESP32, der die Entladespannung ebenfalls kontinuierlich überprüft und vor Erreichen der \acrshort{cutoffvoltage} die Fahrt zur Ladestation einleitet. Die beiden Konverter $T1$ und $T2$ sind in Reihe geschaltet, um die erforderlichen Leistungen des Schrittmotors bereitstellen zu können. Am Schrittmotortreiber $T4$ lässt sich die für den Motor geforderte Spannung und maximale Stromstärke einstellen. Dafür findet im Treiber ebenfalls eine Leistungskonvertierung von $V_{in}=6,6V$ auf $V_{Motor}=3,3V$ statt. Der Step-Up Converter $T3$ passt die Eingangsspannung an die erforderliche Spannung der Controller an. Die Ausgangsspannung des Converters liegt bei $5 \pm 0,15 V$ \\
 
-Die Li-Ion Batterie soll in der Parkposition der Hochbahn aufgeladen werden. Die Batterie kann bei einer Ladespannung von $4,2V$ aufgeladen werden. Für die Steueurung des Ladevorgangs kommt der Ladecontroller MCP73831/2 von Microchip zum Einsatz. Der Controller lässt einen Ladestrom von $500mA$ zu. 
+Die Li-Ion Batterie soll in der Parkposition der Hochbahn aufgeladen werden. Die Batterie kann bei einer Ladespannung von $4,2V$ aufgeladen werden. Für die Steuerung des Ladevorgangs kommt der Ladecontroller $MCP73831/2$ von Microchip zum Einsatz. Der Controller lässt einen Ladestrom von $500mA$ zu. 
 
 
 \newpage
@@ -273,9 +271,9 @@ Die Breite $b$ des kleinsten zu erfassende Objektes beim Öffnungswinkel $\alpha
 
  Dabei beträgt das kleinste erfassbare Objekt am Ende des Schutzfelds $b_S \approx 0,4m$ und am Ende des Warnfelds $b_W \approx 0,8m$. \\
  
-Der Ultraschallsensor HC-SCR04 Ultraschallsensor verfügt für die Messung der Schalllaufzeit über die beiden Pins \textit{TRIG} und \textit{ECHO}. Die Messung wird durch eine fallende Flanke von 10µs am Triggereingang gestartet. Anschließend werden über den  Piezokristall des Sensors acht aufeinanderfolgende 40Khz Schallwellen ausgesandt. Nach diesen 200µs setzt der Sensor den \textit{ECHO} so lange auf high, bis der Ultraschallimpuls empfangen wurde. Wurde keine Schallreflektion empfangen, verbleibt der \textit{Echo} für max. 38 ms auf HIGH. Eine erneute Messung kann frühestens nach 20ms gestartet werden. (vgl. \cite{hcrs04})
+Der Ultraschallsensor HC-SCR04 Ultraschallsensor verfügt für die Messung der Schalllaufzeit über die beiden Pins \textit{TRIG} und \textit{ECHO}. Die Messung wird durch eine fallende Flanke von 10µs am Triggereingang gestartet. Anschließend werden über den  Piezokristall des Sensors acht aufeinanderfolgende 40Khz Schallwellen ausgesandt. Nach 200µs setzt der Sensor \textit{ECHO} so lange auf high, bis der Ultraschallimpuls empfangen wurde. Wurde keine Schallreflektion empfangen, verbleibt  \textit{Echo} für max. 38 ms auf HIGH. Eine erneute Messung kann frühestens nach 20ms gestartet werden. (vgl. \cite{hcrs04})
 
-Mit einem Arduino Nano werden die Messungen an beiden Sensoren zyklisch durchgeführt. Die Berechnung der Distanz erfolgt anhand der in \autoref{sec:ultraschall} beschriebenen Formel. Tritt eine Schutz- oder Warnfeldverletzung auf, gibt der Arduino ein Signal auf einen entsprechenden Interrupt-Pin am ESP32 als  Hochbahn-Controller. Die verwendeten Interupt-Pins sind nachfolgend dargestellt. \\
+Mit einem Arduino Nano werden die Messungen an beiden Sensoren zyklisch durchgeführt. Die Berechnung der Distanz erfolgt anhand der in \autoref{sec:ultraschall} beschriebenen Formel. Tritt eine Schutz- oder Warnfeldverletzung auf, gibt der Arduino ein Signal auf einen entsprechenden Interrupt-Pin am ESP32 als  Hochbahn-Controller. Die verwendeten Interrupt-Pins sind nachfolgend dargestellt. \\
 
 
 \begin{center}
@@ -299,10 +297,10 @@ Die Position der Hochbahn entlang der Strecke soll kontinuierlich erfasst werden
 
  \begin{itemize}
  	\item [a)] Absolute Positionserfassung durch einen \acrshort{reed}-Kontakt
- 	\item[b)] \acrshort{lagekopplung} auf Basis des Feedbacks der Motorsteueurung  
+ 	\item[b)] \acrshort{lagekopplung} auf Basis des Feedbacks der Motorsteuerung  
  \end{itemize}
 
-Für die absolute Positionserfassung sollen entlang der Strecke Dauermagneten in einem Abstand von 1,5m angebracht werden. Die Magneten schließen den Kontakt des  \acrshort{reed}-Schalters auf der Hochbahn. Zusammen mit der Information zur Fahrtrichtung wird ein Zählwert auf dem Hochbahncontroller ESP32 inkrementiert bzw. dekrementiert. Auf Basis des Feedbacks der Motorsteuerung wird aus der aktuellen Geschwindigkeit die diskrete Position zwischen den Magneten berechnet. Diese Art der \acrshort{lagekopplung} ist prinzipbedingt fehlerbehaftet. Daher wird bei absoluten Marke der Inkrementalwert zurückgesetzt. 
+Für die absolute Positionserfassung sollen entlang der Strecke Dauermagneten in einem Abstand von 1,5m angebracht werden. Die Magneten schließen den Kontakt des  \acrshort{reed}-Schalters auf der Hochbahn. Zusammen mit der Information zur Fahrtrichtung wird ein Zählwert auf dem Hochbahncontroller ESP32 inkrementiert bzw. dekrementiert. Auf Basis des Feedbacks der Motorsteuerung wird aus der aktuellen Geschwindigkeit die diskrete Position zwischen den Magneten berechnet. Diese Art der \acrshort{lagekopplung} ist prinzipbedingt fehlerbehaftet. Daher wird bei absoluten Markern der Inkrementalwert zurückgesetzt. 
 \newpage
 
 \section{Schnittstellen}
@@ -316,14 +314,14 @@ Als Übergang von der Konzeptionierung mechatronischer Komponenten zu den inform
 	\label{pic:schnittstellen}
 \end{figure}
 
-In der Übersicht sind die Komponenten hierarchisch dargestellt. Die Pfeile dazwischen stellen die Schnittstellen dar. Der Webserver kommuniziert mit den Endgeräten der Kunden oder dem Tablet in der Küche über \acrshort{http}. Mit POST-Requests werden Steuerbefehle oder Bestellungen zur weiteren Verarbeitung an den Server geschickt.
-\acrshort{mqtt} dient zur Kommunikation zwischen dem Server und der Hochbahn. Für die Übermittlung der \acrshort{mqtt}-Befehle  befindet sich ein \acrshort{mqttBroker} auf der Kommunikationsebene. Die Hochbahn erhält Information über die Station, die angefahren werden soll. Während der Fahrt gibt die Bahn Rückmeldung über die aktuelle Position. Außerdem sollen Meldungen des Systems zur Kollisionsvermeidung und der Entladespannung der Batterie übertragen werden. Auf der Hochbahn führt ein ESP32 als Controller die Kommunikation durch. Die Steuerung des Motors und die Kollisionsvermeidung sind auf zwei Arduino Nanos ausgelagert. Der ESP32 ist den beiden Controllern übergeordnet. Für die Kommunikation zwischen der Motorsteuerung und dem ESP32 wird \acrshort{uart}zur seriellen Kommunikation verwendet. Der Hochbahncontroller versendet darüber Befehle zur Motorfrequenz und empfängt dafür von der Motorsteuerung die aktuelle Geschwindigkeit. \autoref{sec:motorsteuerung} beschreibt die Umsetzung der Motorsteuerung. Wie in Abschnitt \ref{sec:konzeptKollisionsvermeidung} beschrieben, überprüft die Sicherheitssteuerung kontinuierlich die Distanzwerte der Ultraschallesnsoren. Ist eine Kollision zu erwarten, setzt die Steuerung einen entsprechenden Interrupt am Hochbahn-Controller. Der \acrshort{reed}-Kontakt für die Positionserfassung ist über $I/O$-Pins direkt mit dem Hocbahncontroller verbunden. 
+In dem Schema sind die Komponenten hierarchisch dargestellt. Die Pfeile dazwischen stellen die Schnittstellen dar. Der Webserver kommuniziert mit den Endgeräten der Kunden oder dem Tablet in der Küche über \acrshort{http}. Mit POST-Requests werden Steuerbefehle oder Bestellungen zur weiteren Verarbeitung an den Server geschickt.
+\acrshort{mqtt} dient zur Kommunikation zwischen dem Server und der Hochbahn. Für die Übermittlung der \acrshort{mqtt}-Befehle  befindet sich ein \acrshort{mqtt}-Broker auf der Kommunikationsebene. Die Hochbahn erhält Information über die Station, die angefahren werden soll. Während der Fahrt gibt die Bahn Rückmeldung über die aktuelle Position. Außerdem sollen Meldungen des Systems zur Kollisionsvermeidung und der Entladespannung der Batterie übertragen werden. Auf der Hochbahn führt ein ESP32 als Controller die Kommunikation durch. Die Steuerung des Motors und die Kollisionsvermeidung sind auf zwei Arduino Nanos ausgelagert. Der ESP32 ist den beiden Controllern übergeordnet. Für die Kommunikation zwischen der Motorsteuerung und dem ESP32 wird \acrshort{uart} zur seriellen Kommunikation verwendet. Der Hochbahncontroller versendet darüber Befehle zur Motorfrequenz und empfängt dafür von der Motorsteuerung die aktuelle Geschwindigkeit. \autoref{sec:motorsteuerung} beschreibt die Umsetzung der Motorsteuerung. Wie in Abschnitt \ref{sec:konzeptKollisionsvermeidung} beschrieben, überprüft die Sicherheitssteuerung kontinuierlich die Distanzwerte der Ultraschallsensoren. Ist eine Kollision zu erwarten, setzt die Steuerung einen entsprechenden Interrupt am Hochbahn-Controller. Der \acrshort{reed}-Kontakt für die Positionserfassung ist über $I/O$-Pins direkt mit dem Hochbahncontroller verbunden. 
 
 \section{Software}
 \label{software}
 Es gibt in diesem Projekt zwei Hauptsoftwarekomponenten, welche die Anlage steuern: Der Server, welcher Anfragen und Befehle an die Bahn verwaltet und die Bahn selbst,
 welche für die Steuerung der Hardware zuständig ist. Der Server soll im Heimnetzwerk über die Adresse des Hosting-System erreichbar sein. Befehle an die Hochbahn sollen drahtlos mit \acrshort{mqtt} übertragen werden.
-Auf der Bahn kommuniziert ein ESP32 mit dem Server und steuert gleichzeitig die Bahn. In den folgeneden Abschnitten wird die Konzeption dieser einzelnen Softwareteilen erläutert.
+Auf der Bahn kommuniziert ein ESP32 mit dem Server und steuert gleichzeitig die Bahn. In den folgenden Abschnitten wird die Konzeption dieser einzelnen Softwareteilen erläutert.
 \newpage
 
 \subsection{Web-Applikation}
@@ -355,7 +353,7 @@ In diesem ersten Teil der Studienarbeit stand die Konzeptionierung in \autoref{c
  
 \section{Motorsteuerung}
 \label{sec:motorsteuerung}
-Die Motorsteuerung ist auf einem Arduino Nano ausgelagert. Der Hochbahncontroller ESP32 kann der Steuerung Befehler erteilen und erhält davon die aktuelle Geschwindigkeit. In \autoref{pic:motorsteuerung} ist schematisch der Steuerungsablauf  dargestellt. 
+Die Motorsteuerung ist auf einem Arduino Nano ausgelagert. Der Hochbahncontroller ESP32 kann der Steuerung Befehle erteilen und erhält die aktuelle Geschwindigkeit. In \autoref{pic:motorsteuerung} ist schematisch der Steuerungsablauf  dargestellt. 
 
 \begin{figure}[h]
 	\begin{center}
@@ -367,12 +365,12 @@ Die Motorsteuerung ist auf einem Arduino Nano ausgelagert. Der Hochbahncontrolle
 
 
 
-Für die Motorsteueurung können vom ESP32 Funktionen im Skript ausgeführt werden. Für den Brems- und Beschleunigungsvorgang dienen die beiden Funktionen \textit{ speedUp} und \textit{slowDown}. Als Parameter werden die Start- und Enddrehzahl in $Hz$ sowie der Gradient mitgegeben. Bei einer Fahrt mit gleichbleibender Geschwindigkeit wird \textit{continuos} mit Drehzahlparameter in $Hz$ ausgeführt. Wird das Schutzfeld verletzt, löst der ESP32 die \textit{emergencyBrake} Funktion aus. Die Befehle werden über serielle Kommunikation mit \acrshort{uart} versendet. Der Nothalt wird durch einen Interrupt am Arduino Nano ausgelöst. \\
+Für die Motorsteuerung können vom ESP32 Funktionen im Skript ausgeführt werden. Für den Brems- und Beschleunigungsvorgang dienen die beiden Funktionen \textit{ speedUp} und \textit{slowDown}. Als Parameter werden die Start- und Enddrehzahl in $Hz$ sowie der Gradient mitgegeben. Bei einer Fahrt mit gleichbleibender Geschwindigkeit wird \textit{continuos} mit Drehzahlparameter in $Hz$ ausgeführt. Wird das Schutzfeld verletzt, löst der ESP32 die \textit{emergencyBrake} Funktion aus. Die Befehle werden über serielle Kommunikation mit \acrshort{uart} versendet. Der Nothalt wird durch einen Interrupt am Arduino Nano ausgelöst. \\
 \newpage
 
-Im Skript sind die beiden Variabeln Drehzahl $speed$ und Schrittmodus' $mode$ global angelegt. Diese werden von den Steuerungsfunktionen verändert. Die Variablen dienen den Fukntionen $setMode, hzToPwm$ und $hzToV$ als Grundlage. Diese werden in einer Schleife ausgeführt. $setMode$ stellt den Schrittmodus am Motortreiber über die \acrshort{gpio}-Pins am  Treiber ein. $hzToPwm$ berechnet anhand der aktuellen Drehzahl die Geschwindigkeit in $\frac{m}{s}$. Der Wert wird über die serielle Schnittstelle an den ESP32 zurückgegeben. Die Funktion $hzToPWM$ bestimmt aufgrund der geforderten Drehzahl den \acrshort{pwm}-Wert. Der Wert wird über $I^2C$ an einen  \acrshort{pwm}-Treiber übergeben und dient als Takt für den Schrittmotortreiber. \\
+Im Skript sind die beiden Variablen Drehzahl $speed$ und Schrittmodus' $mode$ global angelegt. Diese werden von den Steuerungsfunktionen verändert. Die Variablen dienen den Funktionen $setMode, hzToPwm$ und $hzToV$ als Grundlage. Diese werden in einer Schleife ausgeführt. $setMode$ stellt den Schrittmodus am Motortreiber über die \acrshort{gpio}-Pins am  Treiber ein. $hzToPwm$ berechnet anhand der aktuellen Drehzahl die Geschwindigkeit in $\frac{m}{s}$. Der Wert wird über die serielle Schnittstelle an den ESP32 zurückgegeben. Die Funktion $hzToPWM$ bestimmt aufgrund der geforderten Drehzahl den \acrshort{pwm}-Wert. Der Wert wird über $I^2C$ an einen  \acrshort{pwm}-Treiber übergeben und dient als Takt für den Schrittmotortreiber. \\
 
-Während ersten Versuchen wurde der Takt für den Schrittmotortreiber vom Mikrocontroller generiert. Dabei zeigte sich, dass die maximale Taktrate stark von der Auslastung des Mikrocontrollers abhängt. Durch die Verwendung des \acrshort{pwm}-Treibers wird die Takterzeugung ausgelagert. Dafür sind die Zeiten $T_{off}$ und $T_{on}$ des \acrshort{pwm}-Signals dieselben. Es wird lediglich die Frequenz des Signals verändert. 
+Während erster Versuche wurde der Takt für den Schrittmotortreiber durch den Mikrocontroller generiert. Dabei zeigte sich, dass die maximale Taktrate stark von der Auslastung des Mikrocontrollers abhängt. Durch die Verwendung des \acrshort{pwm}-Treibers wird die Takterzeugung ausgelagert. Dafür sind die Zeiten $T_{off}$ und $T_{on}$ des \acrshort{pwm}-Signals dieselben. Es wird lediglich die Frequenz des Signals verändert. 
  \newpage
 
 \section{Getriebekonstruktion}
@@ -382,14 +380,14 @@ Wie im Konzeptionierungsteil \ref{sec:getriebekonstruktion} beschrieben, soll f�
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=12cm]{getriebe.pdf}
-		\caption{Gerenderte Konstruktionsansicht der Getriebekonsruktion}
+		\caption{Gerenderte Konstruktionsansicht der Getriebekonstruktion}
 		\label{pic:getriebe}
 	\end{center}
 \end{figure} 
 
 
 
-\underline{Das Laufrad}\\
+\textbf{Das Laufrad}\\
 Beim Laufrad beträgt der Durchmesser der Lauffläche $d=34mm$ bei einer Breite $b=5mm$. Für die Führung auf der Schiene sorgen seitliche Ränder. Diese besitzen eine Breite $b_R=2mm$ sowie einen Durchmesser $d=40mm$. Die Laufräder werden mit einem Rillenkugellager 6000 Welle gelagert. Das Lager wird mit Übermaßpassung verbaut. Das Laufrad ist in \autoref{pic:laufrad}dargestellt. \\
 
 \begin{figure}[h]
@@ -400,10 +398,10 @@ Beim Laufrad beträgt der Durchmesser der Lauffläche $d=34mm$ bei einer Breite 
 \end{figure}
 \newpage
 
-\textbf{Riemenräder}\\   
+\textbf{Die Riemenräder}\\   
 Das Riemengetriebe besteht aus einem treibenden und getriebenen Riemenrad. Zunächst soll das Zahnprofil der beiden Riemenräder ausgelegt werden. Dafür ist die Grundlage der Zahnflachriemen mit einem äußeren Umfang von $U = 206mm$ und einer Riemenbreite von $b=9,5mm$. Die Zähnezahl des Riemens beträgt $z_R=75$. Folglich ist das Modul $m \approx 5$. \\
 
- Für das Zahnprofil muss ebenfalls das Moduel $m=5$ verwendet werden. Die Zähnezahl wird auf $z=22$ festgelegt. Dadurch ergibt sich für den Kopfkreisdurchmesser $d_Z$ des Profils: 
+ Für das Zahnprofil muss ebenfalls das Modul $m=5$ verwendet werden. Die Zähnezahl wird auf $z=22$ festgelegt. Dadurch ergibt sich für den Kopfkreisdurchmesser $d_Z$ des Profils: 
  
  \begin{align}
  	d_Z =  \frac{m \cdot z}{\pi} = \frac{5 \cdot 22}{\pi} \approx 31,05 
@@ -481,3 +479,10 @@ Die Wellen werden axial beansprucht. Damit die Befestigung der Welle die axialen
 %
 %
 %	
+
+
+%-------------------------FAZIT UND AUSBLICK-----------------
+\chapter{Fazit und Ausblick}
+In diesem ersten Teil der Studienarbeit wurden zunächst Grundlagen geschaffen und Anforderungen an die digitalisierte Version der Hochbahn gestellt. Anschließend wurden die Konzepte zum Erreichen der Forderungen erstellt. Im Teil der Umsetzung wurden bereits erste Versuche durchgeführt und Prototypen getestet.\\
+
+Im weiteren Verlauf der Arbeit gilt es nun, die Umsetzung weiter fortzuführen. Dabei steht vor allem die Fertigung der beschriebenen Bauteile an. Anschließend können die informationstechnischen Anwendungen erstmals zusammen mit dem Aufbau getestet werden. Diese Vorhaben sollen vor allem in der folgenden Praxisphase umgesetzt werden. 

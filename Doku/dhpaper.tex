@@ -56,6 +56,11 @@
 \clearpage
 \pagenumbering{roman}
 \setcounter{page}{1}
+
+% list of abbreviations, glossary of terms
+\printglossary[title={Glossar},type=\acronymtype]
+\printglossary
+
 % list of figures
 \listoffigures
 \addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
@@ -88,8 +93,6 @@
 \printbibliography[title={Literaturverzeichnis}]
 \addcontentsline{toc}{chapter}{Literaturverzeichnis}
 
-% list of abbreviations, glossary of terms
-\printglossary[title={Abkürzungsverzeichnis},type=\acronymtype]
-\printglossary
+
 
 \end{document}
