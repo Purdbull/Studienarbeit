@@ -35,7 +35,7 @@ void setup() {
 //###########################MAIN###############
 void loop() {
   //HzToV(3.5, true);
-  //continuosHz(3.5, true); //max 3.5
+  //continuosHz(2, true); //max 3.5
   continuosD(5000, false);
 
 
