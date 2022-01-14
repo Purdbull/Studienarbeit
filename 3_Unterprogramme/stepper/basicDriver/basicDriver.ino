@@ -10,9 +10,9 @@ void loop() {
 
 
   digitalWrite(1,0); 
-  delayMicroseconds(800); 
+  delayMicroseconds(90); 
   digitalWrite(1,1); 
-  delayMicroseconds(800); 
+  delayMicroseconds(90); 
   
 
 }
