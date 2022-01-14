@@ -404,7 +404,7 @@ Das Riemengetriebe besteht aus einem treibenden und getriebenen Riemenrad. Zunä
  Für das Zahnprofil muss ebenfalls das Modul $m=5$ verwendet werden. Die Zähnezahl wird auf $z=22$ festgelegt. Dadurch ergibt sich für den Kopfkreisdurchmesser $d_Z$ des Profils: 
  
  \begin{align}
- 	d_Z =  \frac{m \cdot z}{\pi} = \frac{5 \cdot 22}{\pi} \approx 31,05 
+ 	d_Z =  \frac{m \cdot z}{\pi} = \frac{5 \cdot 22}{\pi} \approx 35,01
  \end{align}
 
 
@@ -434,15 +434,15 @@ Entsprechend der Abmessungen des Riemens wurde der Durchmesser der Zahnflanken a
 
 
 \textbf{Implementierung des Getriebes}\\
-Der äußere Umfang des Riemens beträgt $U = 206mm$. Für die Berechnung des erforderlichen Abstandes $\Delta$ der beiden Wellen zueinander gilt:
+Der äußere Umfang des Riemens beträgt $U = 330mm$. Für die Berechnung des erforderlichen Abstandes $\Delta$ der beiden Wellen zueinander gilt:
 
 \begin{align}
-	U = 2 (r+ \Delta) 
+	U = 2 (r \cdot \pi+ \Delta) 
 \end{align}
 
 Und damit: 
 \begin{align}	
-	\Delta = \frac{U - 2r}{2} = \frac{206mm - 35,01}{2} \approx 85mm 
+	\Delta = \frac{U - 2r \cdot \pi}{2} = \frac{330mm - 35,01 \cdot \pi}{2} \approx 110mm 
 \end{align}
 
 Um den Wellenabstand zu erreichen, wird die Motoraufhängung nach unten entsprechend versetzt. Zusätzlich soll sich die Aufhängung nach der Montage in Y-Richtung justieren lassen. Dadurch kann der Riemen nach dem Einbau auf Spannung gebracht werden. Die Motoraufhängung ist in \autoref{pic:motoraufhaengung} dargestellt. 
