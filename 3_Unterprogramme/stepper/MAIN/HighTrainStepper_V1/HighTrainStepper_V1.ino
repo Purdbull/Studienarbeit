@@ -34,21 +34,58 @@ void setup() {
 }
 
 void loop() { // Hauptschleife - Abfragen des Potentiometers
-  setVelo(100); 
 
+  linear(20, 75, 90);
+  delay(10000);
+  emergencyBrake();
+  delay(5000);  
 }
 
 
+void linear(int x, int y, int acc) {
+  
+  int t = map(acc,0,100,500,10); //Map from acc[%] to t[ms]
+  if (x < y) //acccelerate
+  {
+    Serial.println("---> Accelerate from " + String(x) + "% to " + String(y) + "%" );
+    for (int i = x; i <= y; i++) {
+      setVelo(i);
+      delay(t);
+      Serial.println(String(i) + "%");
+    }
+  }
 
+
+  if (x > y) //decelerate
+  {
+    Serial.println("--->Decelerate from " + String(x) + "% to " + String(y) + " %");
+    for (int i = x; i >= y; i--) {
+      setVelo(i);
+      delay(t);
+      Serial.println(String(i) + "%");
+    }
+  }
+
+  setVelo(y);
+}
+
+
+void emergencyBrake(){
+  setVelo(0); 
+
+
+  
+}
 
 void setVelo(int velo) {
+  setDirection(velo);
+  velo = abs(velo);
   int a = map(velo, 100, 0, 31, 130);
   cli();
   OCR1A = a;
   sei();
 
 }
-
 
 void initInterrupts() {
   cli();                                //stoppe alle Interrupts
@@ -61,6 +98,25 @@ void initInterrupts() {
   OCR1A = 130;//  Aufruffrequenz Timer 1  241 Hz * 2
   TIMSK1 |= (1 << OCIE1A); // Erlaube Timer compare interrupt TIMSK - Timer/Counter Interrupt Mask Register
   sei();//allow interrupts
+
+}
+
+void setDirection(int velo) {
+  if (velo > 0) {
+    digitalWrite(dir, 1);
+
+  }
+
+  if (velo < 0) {
+    digitalWrite(dir, 0);
+
+  }
+
+  else {
+    return;
+    //stopMotor!
+  }
+
 
 }
 
