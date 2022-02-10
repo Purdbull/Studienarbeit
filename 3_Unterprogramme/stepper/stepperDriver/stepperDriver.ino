@@ -1,5 +1,5 @@
-const int dirPin = 2;
-const int stp = 1;
+const int dirPin = 3;
+const int stp = 2;
 const int stepsPerRevolution = 200;
 const int M0 = 10;
 const int M1 = 11;
