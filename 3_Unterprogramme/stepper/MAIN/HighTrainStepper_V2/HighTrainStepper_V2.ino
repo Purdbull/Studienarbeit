@@ -1,6 +1,7 @@
 /*HighTrainStepper Script
    Bantle & Knapp Copyright
-   V1 - 10-02-2022
+   V2 - 15-02-2022
+   globale Vars
 */
 
 #define dir 3
@@ -8,6 +9,10 @@
 #define en 10
 #define m0 4
 #define m1 5
+
+
+
+int currVelo = 0;
 
 
 ISR(TIMER1_COMPA_vect) { //Timer1 interrupt. Schaltet Pin 8 um.
@@ -27,21 +32,33 @@ void setup() {
   //digitalWrite(en, LOW);
 
   initInterrupts();
-  setVelo(50);
-  digitalWrite(dir, 0);
 }
 
-void loop() { // Hauptschleife - Abfragen des Potentiometers
-  stopVelo();
-  delay(5000);  
+void loop() { // Hauptschleife - abfragen des Potentiometers
+
+  linear(50, 90);
+  delay(5000);
+  linear(80, 80);
+  delay(5000);
+  linear(0, 90);
+  delay(5000);
+  linear(20, 70);
+  delay(5000);
 
 }
 
 
-void linear(int x, int y, int acc) {
-  setMode(1); 
-  int t = map(acc, 0, 100, 500, 10); //Map from acc[%] to t[ms]
-  if (x < y) //acccelerate
+void linear(int y, int a) {
+  int t = map(a, 0, 100, 500, 10); //Map from a[%] to t[ms]
+  int x = currVelo;
+
+  if (x == 0) {
+    startVelo(y);
+  }
+
+  setMode(1);
+
+  if (x < y) //accelerate
   {
     Serial.println("---> Accelerate from " + String(x) + "% to " + String(y) + "%" );
     for (int i = x; i <= y; i++) {
@@ -52,9 +69,9 @@ void linear(int x, int y, int acc) {
   }
 
 
-  if (x > y) //decelerate
+  if (x > y) //deccelarate
   {
-    Serial.println("--->Decelerate from " + String(x) + "% to " + String(y) + " %");
+    Serial.println("--->Deccelearte from " + String(x) + "% to " + String(y) + " %");
     for (int i = x; i >= y; i--) {
       setVelo(i);
       delay(t);
@@ -62,18 +79,32 @@ void linear(int x, int y, int acc) {
     }
   }
 
+  if (y == 0) {
+    stopVelo();
+  }
+
   setVelo(y);
 }
 
-void stopVelo(){
-  linear(100,10,50); 
-  setMode(2); 
-  delay(2000); 
-  setMode(4); 
-  delay(3000); 
-  setMode(0); 
-  
-  
+
+void startVelo(int y) {
+  Serial.println("---->Motor start up");
+
+  setDirection(y); 
+  setMode(4);
+  delay(3000);
+  setMode(2);
+  delay(2000);
+}
+
+
+void stopVelo() {
+  setMode(2);
+  delay(2000);
+  setMode(4);
+  delay(3000);
+  setMode(0);
+
 }
 
 void emergencyBrake() {
@@ -88,6 +119,7 @@ void setVelo(int velo) {
   cli();
   OCR1A = a;
   sei();
+  currVelo = velo;
 
 }
 
@@ -133,7 +165,13 @@ void setMode(int mode) {
     digitalWrite(en, 1);
   }
 
-  Serial.println("Mode " + String(mode) + " activated"); 
+  if (mode != 0) {
+    Serial.println("Mode " + String(mode) + " ativated");
+  }
+
+  else {
+    Serial.println("------------Motor disabled----------");
+  }
 
 }
 

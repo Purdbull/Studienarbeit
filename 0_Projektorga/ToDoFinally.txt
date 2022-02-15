@@ -1,0 +1,24 @@
+----------------------------MECHANIGGGER----------------------------
+- Aufbau Unterboden (1 day)
+- Box für Elektronik --> 3D-Druck (?) (2h)
+- Seitenteil A (1,5h)
+- Konstruktion Aufladestation (3h)
+
+
+
+---------------------------ELEKTRONIGGER----------------------------
+- Platine löten (2,5h)
+
+
+---------------------------INFORMATIGGER----------------------------
+- Library schreiben für Motor (4h)
+
+
+- Testprogramme für Komponenten 
+- Richtige Programme für Komponenten 
+- Netzanbindung 
+- Server
+
+
+
+---------------------------
