@@ -318,30 +318,52 @@ In dem Schema sind die Komponenten hierarchisch dargestellt. Die Pfeile dazwisch
 \acrshort{mqtt} dient zur Kommunikation zwischen dem Server und der Hochbahn. Für die Übermittlung der \acrshort{mqtt}-Befehle  befindet sich ein \acrshort{mqtt}-Broker auf der Kommunikationsebene. Die Hochbahn erhält Information über die Station, die angefahren werden soll. Während der Fahrt gibt die Bahn Rückmeldung über die aktuelle Position. Außerdem sollen Meldungen des Systems zur Kollisionsvermeidung und der Entladespannung der Batterie übertragen werden. Auf der Hochbahn führt ein ESP32 als Controller die Kommunikation durch. Die Steuerung des Motors und die Kollisionsvermeidung sind auf zwei Arduino Nanos ausgelagert. Der ESP32 ist den beiden Controllern übergeordnet. Für die Kommunikation zwischen der Motorsteuerung und dem ESP32 wird \acrshort{uart} zur seriellen Kommunikation verwendet. Der Hochbahncontroller versendet darüber Befehle zur Motorfrequenz und empfängt dafür von der Motorsteuerung die aktuelle Geschwindigkeit. \autoref{sec:motorsteuerung} beschreibt die Umsetzung der Motorsteuerung. Wie in Abschnitt \ref{sec:konzeptKollisionsvermeidung} beschrieben, überprüft die Sicherheitssteuerung kontinuierlich die Distanzwerte der Ultraschallsensoren. Ist eine Kollision zu erwarten, setzt die Steuerung einen entsprechenden Interrupt am Hochbahn-Controller. Der \acrshort{reed}-Kontakt für die Positionserfassung ist über $I/O$-Pins direkt mit dem Hochbahncontroller verbunden. 
 
 \section{Software}
-\label{software}
-Es gibt in diesem Projekt zwei Hauptsoftwarekomponenten, welche die Anlage steuern: Der Server, welcher Anfragen und Befehle an die Bahn verwaltet und die Bahn selbst,
-welche für die Steuerung der Hardware zuständig ist. Der Server soll im Heimnetzwerk über die Adresse des Hosting-System erreichbar sein. Befehle an die Hochbahn sollen drahtlos mit \acrshort{mqtt} übertragen werden.
-Auf der Bahn kommuniziert ein ESP32 mit dem Server und steuert gleichzeitig die Bahn. In den folgenden Abschnitten wird die Konzeption dieser einzelnen Softwareteilen erläutert.
-\newpage
+\label{sec:software}
+Die Software der Anlage lässt sich in die zwei Bereiche \textit{Webserver im Heimnetzwerk} und \textit{Client auf der Hochbahn} gliedern. Der Webserver soll ein Interface für Benutzer der Anlage bereitstellen, auf dem die Hochbahn gesteuert werden kann. 
+Der Client bekommt daraufhin Befehle vom Webserver und führt diese, sofern möglich, aus. 
 
-\subsection{Web-Applikation}
-Die Web-Applikation bezeichnet die Benutzeroberfläche, welche sowohl in der Küche zum Einsehen von Bestellungen, als auch von Gästen zum Bestellen und Steuern der Bahn verwendet wird. Jeder Gast soll sich ein Konto erstellen und dabei seine Lieblingsfarbe auswählen können.
-%Bestellt der Gast etwas, kann so die Hochbahn in der individuellen Farbe leuchten. Dies dient zum einen der Freude der Gäste und zum anderen zum Erkennen, für wen die Bestellung ist. 
-Angemeldet, soll ein Nutzer über ein Menü unter folgenden Optionen
-wählen können:
+\subsection{Konzept für die Aufgabenverteilung auf der Hochbahn}
+\label{sec:hochbahnAlsClient}
+Wie schon in \autoref{sec:konzeptSchnittstellen} aufgeführt, sollte die Software in drei Hauptkomponenten getrennt weden:
 \begin{itemize}
-	\item Allgemeines
-	\item Mein Konto
-	\item Bestellen
-	\item Steuern
-	\item Live-Verfolgung
+	\item ESP32 zur Befehlserkennung und Steuerung der Hochbahn
+	\item Arduino Nano zur Motorsteuerung
+	\item Arduino Nano zur Ultraschallüberwachung
 \end{itemize}
-Unter \textit{Allgemeines} werden generelle Infos zur Hochbahn angezeigt. Kontoeinstellungen wie Änderung der E-Mail Adresse oder Lieblingsfarbe werden unter \textit{Mein Konto} getätigt. Unter \textit{Bestellen} kann gewählt werden, was bestellt werden soll.
-Ebenfalls ist dabei anzugeben, wohin die Bahn das Bestellte transportieren soll. Unter \textit{Steuern} kann die Bahn ohne eine Bestellung zu gewünschten Positionen gefahren werden. Die aktuelle Position und ggf. die Bestellung kann unter \textit{Live-Verfolgung} eingesehen werden.
-%\subsection{Server}
-%\subsection{Client}
-%\subsection{Steuerung und Positionserkennung}
+\autoref{sec:konzeptSchnittstellen} stellt das erste Konzept zur Aufteilung der Aufgabenbereiche dar. Nach Evaluierung der hierbei aufkommenden Fehlerquellen sind einige Änderungen getroffen worden.
+Ursprünglich sollte der ESP32 die Hauptsteuerung übernehmen. Er sollte Befehle wie \texttt{beschleunigen} oder \texttt{abbremsen auf Geschwindigkeit x} zur Motorsteuerung geben und dabei die aktuelle Position und damit die nächsten Schritte selbst errechnen. Die Erfahrung zeigt jedoch, dass ESP32 mit hoher Netzlast oder Verbindungsabbrüchen leicht zum Reset oder Abstürzen neigt. Würde das passieren während die Bahn beispielsweise auf die Endstation zurollt, bekäme die Motorsteuerung nicht rechtzeitig den Befehl zum abbremsen udn es käme zu einem Unfall.
+Deswegen wurde die Hauptsteuerung dem Arduino Nano welcher ursprünglich nur den Motor steuern sollte übergeben. Somit ergibt sich folgendes Konzept für die Aufgabenverteilung auf der Hochbahn:
 
+\subsubsection{ESP32 als Schnittstelle zum Server}
+\label{sec:aufgabeESP}
+Der ESP32 nimmt nachwievor Befehle des Webservers entgegen. Er ist ebenfalls mit dem Reedkontakt welcher über Magneten an der Schiene die Position aktualisiert verbunden, kann also Unabhängeíg von der Hauptsteuerung Positionsmeldungen an den Webserver schicken. Zudem gibt er Befehle an die Hauptsteuerung, welche sich allerdings auf die anzufahrende Position beschränken. Die eigentliche Fahrt wird vom Arduino Nano gesteuert:
+
+\subsubsection{Arduino Nano als Hauptsteuerung}
+\label{sec:aufgabeArduinoNanoMotor}
+Die Hauptsteuerung bekommt vom ESP32 Anfahrpositionen zugeschickt. Über den Interrupt des Reedkontakts wie auch beim ESP (\autoref{sec:aufgabeESP}) ist dem Arduino die aktuelle Position bewusst. Daraufhin soll ein individuelles Fahrprogramm vom Schema \textit{Von x nach y} berechnet und ausgeführt werden. Ebenfalls sind zwei Analoge Pins angeschlossen, über jene Auskunft über den Ladezustand der Batteriezellen getroffen werden kann. Der 2. Interrupt, welcher an den Arduino angeschlossen ist, dient der Kollisionserkennung. Diesen bekommt er vom Arduino welcher die Ultraschallsensoren steuert und soll über die Art des Interrupts feststellen ob, und wenn ja, wie stark gebremst werden soll.
+
+\subsubsection{Arduino Nano zur Ultraschallüberwachung}
+\label{sec:aufgabeArduinoNanoUltraschall}
+Dieser Arduino hat nur die Aufgabe beide Ultraschallsensoren (jeweils einer auf jeder Seite des Tabletts) zu überwachen und mit einem Pin Auskunft darüber zu geben, welches Warn- oder Schutzfeld verletzt wurde. Da nur ein Pin zur Verfügung steht, bestimmt die Länge der positiven Interrupt Flanke die Art der Kollisionserkennung.
+
+\subsection{Protokoll der Datenübertragung zwischen Hauptsteuerung und ESP32}
+Die Datenübertragung erfolgt, wie in \autoref{sec:konzeptSchnittstellen}, über \acrshort{uart}. Wie in den Grundlagen TODO zu lesen ist, überträgt \acrshort{uart} die Daten Byteweise. DIe Bytes werden in einen Buffer geschrieben und können auf Anwendungsschicht Byte für Byte ausgelesen werden. Daher ist es logisch, das Protokoll so zu konzeptionieren, dass möglichst wenig, wenn nicht sogar nur ein Byte pro Befehl verwendet wird. 
+
+\subsubsection{Anfragen- und Befehlsarten}
+Anfragen und Befehle können auf zwei wegen erfolgen: Vom ESP zum Arduino und vom Arduino zum ESP. Es gibt insgesamt 5 Kategorien von Datenübertragungen:
+
+\begin{itemize}
+	\item Positionsabfrage vom ESP zum Arduino zur Positionssynchronisation,
+	\item Fahrbefehl vom ESP zum Arduino mit der Position die angefahren werden soll,
+	\item Akkumeldung vom Arduino zum ESP,
+	\item Positionsmeldung vom Arduino zum ESP
+	\item und Akzeptieren oder Ablehnen von Fahrbefehlen.
+\end{itemize}
+
+Da es pro Übertragungsweg nur maximal drei verschiedene Arten von Nachrichten sind, ergeben sich zwei Bits für den Header des Protokolls. Dadurch kann festgestellt werden, um welche Art von Nachricht es sich handelt.
+Soll eine Nachricht nur ein Byte groß sein, bleiben somit sechs Bits für den Body der Nachricht. 
+Folgende Tabelle zeigt den Header einer Nachricht:
+%---------------TODO-------------
 
 
 %------------------------UMSETZUNG-----------------
