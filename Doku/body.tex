@@ -364,7 +364,51 @@ Da es pro Übertragungsweg nur maximal drei verschiedene Arten von Nachrichten s
 Soll eine Nachricht nur ein Byte groß sein, bleiben somit sechs Bits für den Body der Nachricht. 
 Folgende Tabelle zeigt den Header einer Nachricht:
 %---------------TODO-------------
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{m{2cm} | m{2cm} | m{5cm} | m{5cm}}
+			Bit \texttt{0} & Bit \texttt{1} & Bedeutung & Nachrichtenweg\\
+			\hline 
+			\texttt{0} & \texttt{0} & Positionsabfrage  & ESP      ->  Arduino\\
+			\hline 
+			\texttt{0} & \texttt{0} & Akkumeldung & Arduino  ->      ESP\\
+			\hline 
+			\texttt{0} & \texttt{1} & Fahrbefehl & ESP      ->  Arduino\\
+			\hline 
+			\texttt{1} & \texttt{0} & Positionsmeldung & Arduino  ->      ESP\\
+			\hline 
+			\texttt{1} & \texttt{1} & Befehlsakzeptierung & Arduino  ->      ESP\\
+		\end{tabular}
+	\end{center}
+	\caption{Header des Nachrichtenprotokolls}
+\end{table}
 
+\subsubsection{Nachrichtencontext (Body)}
+Der Body einer übertragenen Nachricht wird je nach Header anders interpretiert. Beispielsweise bedeuten übertragene Werte den aktuellen Ladezustand des Akkus oder die Position der Hochbahn. 
+In folgender Tabelle sind die verschiedenen Arten des Context mit den entsprechendem Header aufgelistet:
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{r | l | l}
+			Body & Header & Bedeutung \\
+			\hline
+			\texttt{000000} - \texttt{001111} & \texttt{10} & Positionsmeldungen von 0 - 15 \\
+			\hline
+			\texttt{000000} - \texttt{001111} & \texttt{01} & Fahrbefehle von 0 - 15 \\
+			\hline
+			\texttt{000000} & \texttt{00} & Positionsabfrage \\
+			\hline
+			\texttt{000000} - \texttt{011111} & \texttt{00} & Akkumeldung von 0-100\% in ~ 3\% Schritten \\
+			\hline
+			\texttt{000001} und \texttt{000010} & \texttt{11} & Befehlsakzeptanz \texttt{01} = ja; \texttt{10} = nein\\  
+		\end{tabular}
+	\end{center}
+	\label{tab:body}
+	\caption{Body dess Nachrichtenprotokolls}
+\end{table}
+
+\subsubsection{Tail}
+Wie in \autoref{tab:body} zu erkennen ist, werden nie die letzten beiden Bits verwendet. Diese
 
 %------------------------UMSETZUNG-----------------
 
