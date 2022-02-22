@@ -35,15 +35,12 @@ void setup() {
 }
 
 void loop() { // Hauptschleife - abfragen des Potentiometers
+  int a = 80;
 
-  linear(50, 90);
-  delay(5000);
-  linear(80, 80);
-  delay(5000);
-  linear(0, 90);
-  delay(5000);
-  linear(20, 70);
-  delay(5000);
+  linear(-70, a);
+  linear(-90, a);
+  linear(-20, a);
+  linear(-100, 30);
 
 }
 
@@ -60,11 +57,11 @@ void linear(int y, int a) {
 
   if (x < y) //accelerate
   {
-    Serial.println("---> Accelerate from " + String(x) + "% to " + String(y) + "%" );
-    for (int i = x; i <= y; i++) {
+    Serial.println("---> Accelerate from " + String(x) + "% to " + String(y) + "%");
+    for (double i = x; i <= y; i = i+0.5) {
       setVelo(i);
       delay(t);
-      Serial.println(String(i) + "%");
+      Serial.println(String(i) + "%" );
     }
   }
 
@@ -90,7 +87,7 @@ void linear(int y, int a) {
 void startVelo(int y) {
   Serial.println("---->Motor start up");
 
-  setDirection(y); 
+  setDirection(y);
   setMode(4);
   delay(3000);
   setMode(2);
@@ -112,10 +109,11 @@ void emergencyBrake() {
 
 }
 
-void setVelo(int velo) {
+void setVelo(double velo) {
   setDirection(velo);
   velo = abs(velo);
   int a = map(velo, 100, 0, 31, 130);
+  Serial.println("Clock:" + String(a) + "Hz");
   cli();
   OCR1A = a;
   sei();
@@ -128,7 +126,7 @@ void initInterrupts() {
   TCCR1A = 0;                           // set entire TCCR1A register to 0 TCCR - Timer/Counter Control Register
   TCCR1B = 0;                           // Setze Timer/Counter Control Register TCCR1B auf 0
   TCCR1B |= (1 << WGM12);               // Schalte Clear Timer on Compare (CTC) Modus ein
-  // TCCR1B |= (1 << CS12) | (1 << CS10);  // Setze CS10 und CS12 Bit auf 1 für den 1024 Prescaler. Maximalfrequenz: 7.812 Khz
+  //TCCR1B |= (1 << CS12) | (1 << CS10);  // Setze CS10 und CS12 Bit auf 1 für den 1024 Prescaler. Maximalfrequenz: 7.812 Khz
   TCCR1B |= (1 << CS12);                 // Setze CS12 Bit auf 1 für den 256 Prescaler.
   TCNT1  = 0;                           // Initialisiere Zähler/Zeitgeber Register Wert auf 0
   OCR1A = 130;//  Aufruffrequenz Timer 1  241 Hz * 2
