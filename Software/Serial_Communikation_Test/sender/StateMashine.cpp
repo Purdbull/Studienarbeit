@@ -11,4 +11,5 @@ void StateMashine::handle(String serverMsg){
 
 void StateMashine::handle(byte arduinoMsg){
   int newState = currentState->handle(arduinoMsg);
+  Serial.println(newState);
 }
