@@ -1,12 +1,15 @@
 #include "Arduino.h"
 #include "IdleState.h"
 
-IdleState::IdleState(): State(){}
 
-void IdleState::handle(String serverMsg){
+int IdleState::handle(String serverMsg){
     //Zustandswechsel?
+    return 0;
 }
 
-void IdleState::handle(byte arduinoMsg){
+int IdleState::handle(byte arduinoMsg){
     //wenn header stimmt, akku an server schicken
+
+    //wieder in Idlemodus
+    return 0;
 }

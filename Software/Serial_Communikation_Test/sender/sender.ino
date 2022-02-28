@@ -3,7 +3,6 @@
 #define LED 2
 
 void setup() {
-  IdleState state();
   StateMashine handler();
   //Begin der Seriellen Kommunikation mit 9600 baud 
   Serial.begin(9600);

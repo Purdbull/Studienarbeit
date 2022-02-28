@@ -5,8 +5,8 @@
 
 class State{
     public:
-        State();
-        void handle();
+        virtual int handle(byte);
+        virtual int handle(String);
 };
 
 #endif

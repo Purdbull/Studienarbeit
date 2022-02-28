@@ -2,13 +2,13 @@
 #include "StateMashine.h"
 
 StateMashine::StateMashine(){
-  currentState = IdleState();
+  currentState = new IdleState();
   }
 
 void StateMashine::handle(String serverMsg){
-  currentState:handle(serverMsg);
+  int newState = currentState->handle(serverMsg);
 }
 
 void StateMashine::handle(byte arduinoMsg){
-  currentState:handle(arduinoMsg);
+  int newState = currentState->handle(arduinoMsg);
 }
