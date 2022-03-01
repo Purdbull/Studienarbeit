@@ -1,6 +1,9 @@
 #include "Arduino.h"
 #include "StateMashine.h"
 #include "StartState.h"
+#include "PositionState.h"
+#include "ErrorState.h"
+#include "EndState.h"
 
 #define IDLE_STATE      0
 #define START_STATE     1
@@ -14,15 +17,24 @@ StateMashine::StateMashine() {
 }
 
 void StateMashine::handle(String serverMsg) {
-  int newState = currentState->handle(serverMsg);
-  switch (newState) {
-    case IDLE_STATE:
+  switch (currentState->handle(serverMsg)) {
+    case IDLE_STATE: {
+        delete(currentState);
+        currentState = new ErrorState();
+      }
       break;
 
     case START_STATE: {
         int pos = currentState->driveToPosition;
         delete(currentState);
         currentState = new StartState(pos);
+        int newState = currentState->handle();
+        delete(currentState);
+        if (newState == POSITION_STATE) {
+          currentState = new PositionState();
+        } else {
+          currentState = new ErrorState();
+        }
       }
       break;
 
@@ -30,20 +42,54 @@ void StateMashine::handle(String serverMsg) {
 
       }
       break;
-      
+
     case END_STATE: {
 
       }
       break;
-      
-    case ERROR_STATE: {
 
+    case ERROR_STATE: {
+        delete(currentState);
+        currentState = new ErrorState();
+        Serial.println("Error string");
+        delete(currentState);
+        currentState = new IdleState();
       }
-      
+
       break;
   }
 }
 
 void StateMashine::handle(byte arduinoMsg) {
-  
+  switch (currentState->handle(arduinoMsg)) {
+    case IDLE_STATE:
+      delete(currentState);
+      currentState = new IdleState();
+      break;
+
+    case START_STATE: {
+      }
+      break;
+
+    case POSITION_STATE: {
+
+      }
+      break;
+
+    case END_STATE: {
+        delete(currentState);
+        currentState = new EndState();
+      }
+      break;
+
+    case ERROR_STATE: {
+        delete(currentState);
+        currentState = new ErrorState();
+        Serial.println("Error byte");
+        delete(currentState);
+        currentState = new IdleState();
+      }
+
+      break;
+  }
 }

@@ -10,6 +10,7 @@ class StartState : public State {
         int driveToPosition;  //0-15
         int handle(String);
         int handle(byte);
+        int handle();
 
 };
 

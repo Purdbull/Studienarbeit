@@ -12,3 +12,8 @@ int State::handle(byte arduinoMsg){
     //wieder in Idlemodus
     return 0;
 }
+
+int State::handle(){
+    //prototype
+    return 10;
+}

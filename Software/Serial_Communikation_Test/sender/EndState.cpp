@@ -11,9 +11,14 @@ EndState::EndState(){}
 
 
 int EndState::handle(String serverMsg){
-    return 3;
+    return ERROR_STATE;
 }
 
 int EndState::handle(byte arduinoMsg){
-    return 3;
+    if(true){ //acc
+      Serial.println("acc");
+      return IDLE_STATE;
+    }else{  //dec
+      return ERROR_STATE;
+    }
 }

@@ -7,6 +7,7 @@ class State{
     public:
         virtual int handle(byte);
         virtual int handle(String);
+        virtual int handle();
         int driveToPosition;
 };
 

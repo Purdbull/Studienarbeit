@@ -9,14 +9,17 @@
 
 StartState::StartState(int pos){
   this->driveToPosition=pos;
-  Serial.println(this->driveToPosition);
   }
 
 
 int StartState::handle(String serverMsg){
-    return 1;
+    return ERROR_STATE;
 }
 
 int StartState::handle(byte arduinoMsg){
-    return 1;
+    return ERROR_STATE;
+}
+
+int StartState::handle(){
+  Serial.println(this->driveToPosition);
 }

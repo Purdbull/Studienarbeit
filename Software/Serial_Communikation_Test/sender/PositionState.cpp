@@ -7,13 +7,17 @@
 #define END_STATE       3
 #define ERROR_STATE     4
 
-PositionState::PositionState(){}
+PositionState::PositionState(){
+  Serial.println("constructor positionstate");
+  }
 
 
 int PositionState::handle(String serverMsg){
-    return 2;
+    return ERROR_STATE;
 }
 
 int PositionState::handle(byte arduinoMsg){
-    return 2;
+  //TODO: aktuelle position aktualisieren
+    return END_STATE; //wenn pos erhalten und an arduino geschickt
+    return ERROR_STATE; // sonst
 }

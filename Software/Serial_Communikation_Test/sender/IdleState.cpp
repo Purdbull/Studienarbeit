@@ -17,5 +17,6 @@ int IdleState::handle(String serverMsg){
 }
 
 int IdleState::handle(byte arduinoMsg){
-    return IDLE_STATE;
+    return IDLE_STATE; //TODO: akkustand Nachricht evaluieren
+    return ERROR_STATE;  //sonst
 }
