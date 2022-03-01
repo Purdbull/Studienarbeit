@@ -10,8 +10,8 @@ void setup() {
   Serial.begin(9600);
   pinMode(LED, OUTPUT);
   //senden von "Hallo Welt!" über die Serielle Schnittstelle
-  
+  handler.handle("ghj");
 }
 void loop() {
-  handler.handle(B01);
+  
 }

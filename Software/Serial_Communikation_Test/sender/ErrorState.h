@@ -1,15 +1,14 @@
 #include "Arduino.h"
 #include "State.h"
 
-#ifndef IdleState_h
-#define IdleState_h
+#ifndef ErrorState_h
+#define ErrorState_h
 
-class IdleState : public State {
+class ErrorState : public State {
     public:
-        IdleState();
+        ErrorState();
         int handle(String);
         int handle(byte);
-        
 
 };
 
