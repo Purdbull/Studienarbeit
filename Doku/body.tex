@@ -340,8 +340,15 @@ Generell erfolgt die Kommunikation der beiden Mikrocontroller über \acrshort{ua
 Dabei entsteht folgendes Problem: der Arduino läuft auf der Spannung von 5V, während der ESP32 eine 3,3V Betriebsspannung hat. Dadurch erhielte der ESP32 beim Empfangen von Nachrichten einen zu hohen HIGH-Pegel, während der Arduino Nachrichten mit zu niedriger Spannung bekäme.
 
 \subsection{Level-Shifter}
-Um die Flanken des ESP32 auf die richtige Höhe zu bringen, wird ein sogenannter Level-Shifter verwendet. Dieser gibt die Spannung von 5V an den Arduino, während der ESP32 nur 3,3V ausgibt.
-
+Um die Pulse des ESP32 auf die richtige Spannung zu bringen, wird ein sogenannter Level-Shifter verwendet. Dieser gibt die Spannung von 5V an den Arduino, während der ESP32 nur 3,3V ausgibt.
+Der zugehörige Schaltplan ist in \autoref{pic:levelshift} gezeigt.
+\vspace{1cm}
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=9cm]{levelShifter.PNG}
+		\caption{\label{pic:levelshift}Schaltplan des Level-Shifters}
+	\end{center}
+\end{figure}
 
 \chapter{Konzeption der Software-Komponenten}
 \label{sec:software}
