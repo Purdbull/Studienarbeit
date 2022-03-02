@@ -119,7 +119,7 @@ Für die Kanban-Methode kam das Tool \textit{Trello} zum Einsatz.
 
 %----------------------KONZEPT-------------------------
 
-\chapter{Konzeptionierung}
+\chapter{Konzeptionierung der mechatronischen Komponenten}
 \label{cha:konzeptionierung}
 Mit \autoref{cha:anforderungsanalyse} wurden Anforderungen an das Projekt gestellt. Zum Erreichen dieser Anforderungen findet in diesem Kapitel die Konzeptionierung statt. Dazu wird mit \autoref{sec:konzeptGrundaufbau} zunächst der generelle Aufbau betrachtet. Anschließend folgen mit den Abschnitten \ref{sec:konzeptAktorik} bis \ref{sec:konzeptSensorik} die Konzepte zu den mechatronischen Komponenten \textit{Aktorik}, \textit{Energieversorgung} und \textit{Sensorik}. Als Übergang zu den informationstechnischen Konzepten werden mit \autoref{sec:konzeptSchnittstellen} die \textit{Schnittstellen} ausgearbeitet. \newpage
 
@@ -317,12 +317,38 @@ Als Übergang von der Konzeptionierung mechatronischer Komponenten zu den inform
 In dem Schema sind die Komponenten hierarchisch dargestellt. Die Pfeile dazwischen stellen die Schnittstellen dar. Der Webserver kommuniziert mit den Endgeräten der Kunden oder dem Tablet in der Küche über \acrshort{http}. Mit POST-Requests werden Steuerbefehle oder Bestellungen zur weiteren Verarbeitung an den Server geschickt.
 \acrshort{mqtt} dient zur Kommunikation zwischen dem Server und der Hochbahn. Für die Übermittlung der \acrshort{mqtt}-Befehle  befindet sich ein \acrshort{mqtt}-Broker auf der Kommunikationsebene. Die Hochbahn erhält Information über die Station, die angefahren werden soll. Während der Fahrt gibt die Bahn Rückmeldung über die aktuelle Position. Außerdem sollen Meldungen des Systems zur Kollisionsvermeidung und der Entladespannung der Batterie übertragen werden. Auf der Hochbahn führt ein ESP32 als Controller die Kommunikation durch. Die Steuerung des Motors und die Kollisionsvermeidung sind auf zwei Arduino Nanos ausgelagert. Der ESP32 ist den beiden Controllern übergeordnet. Für die Kommunikation zwischen der Motorsteuerung und dem ESP32 wird \acrshort{uart} zur seriellen Kommunikation verwendet. Der Hochbahncontroller versendet darüber Befehle zur Motorfrequenz und empfängt dafür von der Motorsteuerung die aktuelle Geschwindigkeit. \autoref{sec:motorsteuerung} beschreibt die Umsetzung der Motorsteuerung. Wie in Abschnitt \ref{sec:konzeptKollisionsvermeidung} beschrieben, überprüft die Sicherheitssteuerung kontinuierlich die Distanzwerte der Ultraschallsensoren. Ist eine Kollision zu erwarten, setzt die Steuerung einen entsprechenden Interrupt am Hochbahn-Controller. Der \acrshort{reed}-Kontakt für die Positionserfassung ist über $I/O$-Pins direkt mit dem Hochbahncontroller verbunden. 
 
-\section{Software}
+\chapter{Entwicklung der Platine}
+In \autoref{sec:konzeptSchnittstellen} wurde bereits angedeutet dass auf der Hochbahn mehrere elektronische Komponenten zusammenarbeiten müssen (Arduino, ESP32, etc.). Daher ist es logisch diese Komponenten auf einer Hauptplatine zu einem System zu vereinen. 
+Im folgenden wird die Entwicklung dieser Platine erläutert.
+
+\section{Anforderungen an die Platine}
+Die Platine muss folgende Anforderungen erfüllen: 
+\begin{center}
+	\begin{itemize}
+		\item Kommunikation zwischen ESP32 und Arduino,
+		\item Spannungsversorgung der einzelnen Mikrokontroller,
+		\item Spannungsüberwachung beider Batteriezellen,
+		\item Interruptleitungen von Reed-Kontakt und Kollisionsvorbeugung,
+		\item Selbstabschaltung des Systems
+		\item und Anschluss des Motortreibers.
+	\end{itemize}
+\end{center}
+All diese Anforderungen sollen möglichst gering im Leistungsverbrauch sein. Das bedeutet, dass beispielsweise Spannungsteiler für die Spannungsüberwachung nur dann in Aktion treten, wenn auch wirklich Spannung gemessen wird. Hierbei würde sonst beständig Strom verbraucht werden.
+
+\section{Kommunikation zwischen ESP32 und Arduino}
+Generell erfolgt die Kommunikation der beiden Mikrocontroller über \acrshort{uart}. Daraus folgt, dass der Pin \acrfull{rx} vom ESP32 mit \acrfull{tx} des Arduinos und \acrshort{rx} des Arduinos mit \acrshort{tx} des ESP32 verbunden sein muss. 
+Dabei entsteht folgendes Problem: der Arduino läuft auf der Spannung von 5V, während der ESP32 eine 3,3V Betriebsspannung hat. Dadurch erhielte der ESP32 beim Empfangen von Nachrichten einen zu hohen HIGH-Pegel, während der Arduino Nachrichten mit zu niedriger Spannung bekäme.
+
+\subsection{Level-Shifter}
+Um die Flanken des ESP32 auf die richtige Höhe zu bringen, wird ein sogenannter Level-Shifter verwendet. Dieser gibt die Spannung von 5V an den Arduino, während der ESP32 nur 3,3V ausgibt.
+
+
+\chapter{Konzeption der Software-Komponenten}
 \label{sec:software}
 Die Software der Anlage lässt sich in die zwei Bereiche \textit{Webserver im Heimnetzwerk} und \textit{Client auf der Hochbahn} gliedern. Der Webserver soll ein Interface für Benutzer der Anlage bereitstellen, auf dem die Hochbahn gesteuert werden kann. 
 Der Client bekommt daraufhin Befehle vom Webserver und führt diese, sofern möglich, aus. 
 
-\subsection{Konzept für die Aufgabenverteilung auf der Hochbahn}
+\section{Konzept für die Aufgabenverteilung auf der Hochbahn}
 \label{sec:hochbahnAlsClient}
 Wie schon in \autoref{sec:konzeptSchnittstellen} aufgeführt, sollte die Software in drei Hauptkomponenten getrennt weden:
 \begin{itemize}
@@ -334,22 +360,22 @@ Wie schon in \autoref{sec:konzeptSchnittstellen} aufgeführt, sollte die Softwar
 Ursprünglich sollte der ESP32 die Hauptsteuerung übernehmen. Er sollte Befehle wie \texttt{beschleunigen} oder \texttt{abbremsen auf Geschwindigkeit x} zur Motorsteuerung geben und dabei die aktuelle Position und damit die nächsten Schritte selbst errechnen. Die Erfahrung zeigt jedoch, dass ESP32 mit hoher Netzlast oder Verbindungsabbrüchen leicht zum Reset oder Abstürzen neigt. Würde das passieren während die Bahn beispielsweise auf die Endstation zurollt, bekäme die Motorsteuerung nicht rechtzeitig den Befehl zum abbremsen udn es käme zu einem Unfall.
 Deswegen wurde die Hauptsteuerung dem Arduino Nano welcher ursprünglich nur den Motor steuern sollte übergeben. Somit ergibt sich folgendes Konzept für die Aufgabenverteilung auf der Hochbahn:
 
-\subsubsection{ESP32 als Schnittstelle zum Server}
+\subsection{ESP32 als Schnittstelle zum Server}
 \label{sec:aufgabeESP}
 Der ESP32 nimmt nachwievor Befehle des Webservers entgegen. Er ist ebenfalls mit dem Reedkontakt welcher über Magneten an der Schiene die Position aktualisiert verbunden, kann also Unabhängeíg von der Hauptsteuerung Positionsmeldungen an den Webserver schicken. Zudem gibt er Befehle an die Hauptsteuerung, welche sich allerdings auf die anzufahrende Position beschränken. Die eigentliche Fahrt wird vom Arduino Nano gesteuert:
 
-\subsubsection{Arduino Nano als Hauptsteuerung}
+\subsection{Arduino Nano als Hauptsteuerung}
 \label{sec:aufgabeArduinoNanoMotor}
 Die Hauptsteuerung bekommt vom ESP32 Anfahrpositionen zugeschickt. Über den Interrupt des Reedkontakts wie auch beim ESP (\autoref{sec:aufgabeESP}) ist dem Arduino die aktuelle Position bewusst. Daraufhin soll ein individuelles Fahrprogramm vom Schema \textit{Von x nach y} berechnet und ausgeführt werden. Ebenfalls sind zwei Analoge Pins angeschlossen, über jene Auskunft über den Ladezustand der Batteriezellen getroffen werden kann. Der 2. Interrupt, welcher an den Arduino angeschlossen ist, dient der Kollisionserkennung. Diesen bekommt er vom Arduino welcher die Ultraschallsensoren steuert und soll über die Art des Interrupts feststellen ob, und wenn ja, wie stark gebremst werden soll.
 
-\subsubsection{Arduino Nano zur Ultraschallüberwachung}
+\subsection{Arduino Nano zur Ultraschallüberwachung}
 \label{sec:aufgabeArduinoNanoUltraschall}
 Dieser Arduino hat nur die Aufgabe beide Ultraschallsensoren (jeweils einer auf jeder Seite des Tabletts) zu überwachen und mit einem Pin Auskunft darüber zu geben, welches Warn- oder Schutzfeld verletzt wurde. Da nur ein Pin zur Verfügung steht, bestimmt die Länge der positiven Interrupt Flanke die Art der Kollisionserkennung.
 
-\subsection{Protokoll der Datenübertragung zwischen Hauptsteuerung und ESP32}
+\section{Protokoll der Seriellen Schnittstelle}
 Die Datenübertragung erfolgt, wie in \autoref{sec:konzeptSchnittstellen}, über \acrshort{uart}. Wie in den Grundlagen TODO zu lesen ist, überträgt \acrshort{uart} die Daten Byteweise. DIe Bytes werden in einen Buffer geschrieben und können auf Anwendungsschicht Byte für Byte ausgelesen werden. Daher ist es logisch, das Protokoll so zu konzeptionieren, dass möglichst wenig, wenn nicht sogar nur ein Byte pro Befehl verwendet wird. 
 
-\subsubsection{Anfragen- und Befehlsarten}
+\subsection{Anfragen- und Befehlsarten}
 Anfragen und Befehle können auf zwei wegen erfolgen: Vom ESP zum Arduino und vom Arduino zum ESP. Es gibt insgesamt 5 Kategorien von Datenübertragungen:
 
 \begin{itemize}
@@ -362,7 +388,7 @@ Anfragen und Befehle können auf zwei wegen erfolgen: Vom ESP zum Arduino und vo
 
 Da es pro Übertragungsweg nur maximal drei verschiedene Arten von Nachrichten sind, ergeben sich zwei Bits für den Header des Protokolls. Dadurch kann festgestellt werden, um welche Art von Nachricht es sich handelt.
 Soll eine Nachricht nur ein Byte groß sein, bleiben somit sechs Bits für den Body der Nachricht. 
-Folgende Tabelle zeigt den Header einer Nachricht:
+\autoref{tab:header} zeigt den Header einer Nachricht:
 %---------------TODO-------------
 \begin{table}[h]
 	\begin{center}
@@ -380,10 +406,10 @@ Folgende Tabelle zeigt den Header einer Nachricht:
 			\texttt{1} & \texttt{1} & Befehlsakzeptierung & Arduino  ->      ESP\\
 		\end{tabular}
 	\end{center}
-	\caption{Header des Nachrichtenprotokolls}
+	\caption{\label{tab:header}Header des Nachrichtenprotokolls}
 \end{table}
 
-\subsubsection{Nachrichtencontext (Body)}
+\subsection{Nachrichtencontext (Body)}
 Der Body einer übertragenen Nachricht wird je nach Header anders interpretiert. Beispielsweise bedeuten übertragene Werte den aktuellen Ladezustand des Akkus oder die Position der Hochbahn. 
 In folgender Tabelle sind die verschiedenen Arten des Context mit den entsprechendem Header aufgelistet:
 
@@ -398,19 +424,67 @@ In folgender Tabelle sind die verschiedenen Arten des Context mit den entspreche
 			\hline
 			\texttt{000000} & \texttt{00} & Positionsabfrage \\
 			\hline
-			\texttt{000000} - \texttt{011111} & \texttt{00} & Akkumeldung von 0-100\% in ~ 3\% Schritten \\
+			\texttt{000000} - \texttt{001111} & \texttt{00} & Akkumeldung von 0-100\% in ~ 6\% Schritten \\
 			\hline
 			\texttt{000001} und \texttt{000010} & \texttt{11} & Befehlsakzeptanz \texttt{01} = ja; \texttt{10} = nein\\  
 		\end{tabular}
 	\end{center}
-	\label{tab:body}
-	\caption{Body dess Nachrichtenprotokolls}
+	\caption{\label{tab:body}Body dess Nachrichtenprotokolls}
 \end{table}
 
-\subsubsection{Tail}
-Wie in \autoref{tab:body} zu erkennen ist, werden nie die letzten beiden Bits verwendet. Diese
+\subsection{Tail}
+Wie in \autoref{tab:body} zu erkennen ist, werden nie die letzten beiden Bits verwendet. Diese dienen dazu den Transportweg der Nachricht zu erkennen. Dadurch ist es möglich zu erkennen, ob es sich beim Header \texttt{00} um eine Positionsabfrage oder eine Akkumeldung handelt.
+Ist das Tail mit \texttt{01} gekennzeichnet, handelt es sich um eine Nachricht vom ESP zum Arduino. \texttt{10} steht für die andere Richtung.
+Im folgenden sind zwei Beispielnachrichten genannt, welche den Anforderungen des Protokolls entsprechen:
 
+\begin{center}
+	\begin{itemize}
+		\item \texttt{01000000}; Positionsabfrage vom ESP zum Arduino
+		\item \texttt{10001110}; Positionsmeldung mit dem Context: Position 3  
+	\end{itemize}
+\end{center}
+\newpage
+\section{Zustandsautomat des ESP32}
+\label{sec:stateESP}
+Die Software des EPSs wird als Zustandsautomat realisiert. Dieser hat, wie schon in \autoref{sec:aufgabeESP} erwähnt, die Aufgabe zwischen Server und Hauptsteuereung auf dem Arduino zu vermitteln.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=14cm]{stateMaschineESP.PNG}
+		\caption{\label{pic:statemaschineESP}Zustandsautomat auf dem ESP als Grafik}
+	\end{center}
+\end{figure}
+
+In \autoref{pic:statemaschineESP} sind die verschiedenen Zustände und Übergänge zu anderen gezeigt. Das Programm startet im Zustand: Idle. Ein wechsel kann durch eine Nachricht vom Server oder vom Arduino erfolgen. Eine Akkumeldung des Arduinos führt zu einer Akkumeldung zum Server und bleibt dabei im Idle-Zustand.
+Erhält der ESP einen Fahrbefehl vom Server, wechselt er in den Zustand: Start. Dieser beginnt eine Folge an Nachrichten und Handlungen mit folgendem Ziel: die aktuelle Position der Hochbahn ist synchronisiert und die Bahn führt den Befehl aus. \\
+Dazu wird erst eine Positionsanfrage an den Arduino geschickt und in den Zustand Position gewechselt. Erhält der ESP daraufhin die Position kann er die eigens gespeicherte aktualisieren und den Fahrbefehl an den Arduino schicken. Ist dies geschehen, befindet der ESP sich im End-ZUstand und wartet auf eine Akzeptierung seitens des Arduinos. Wird akzeptiert, befindet sich der ESP wieder im IDLE-Zustand und die Kette beginnt wieder von vorne. Sollte der Arduino die Anfrage ablehnen oder sonst auf diesem Weg irgendwas schiefgehen, wird die Kette unterbrochen und in den Error-Zustand gewechselt. Dieser kann mittels des vorherigem Zustand eine Fehlermeldung an den Server schicken, welche dem Nutzer angezeigt wird. Daraufhin kann ein neuer Fahrbefehl oder Akkuzustand empfangen werden. 
+
+\section{Zustandsautomat der Hauptsteuerung}
+\label{sec:stateARD}
+Ähnlich wie in \autoref{sec:stateESP} wird auch die Software der Hauptsteuerung (Arduino) als Zustandsautomat realisiert. 
+Der Automat ist in \autoref{pic:statemaschineARD} gezeigt.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=14cm]{stateMaschineARD.pdf}
+		\caption{\label{pic:statemaschineARD}Zustandsautomat der Hauptsteuerung als Grafik}
+	\end{center}
+\end{figure}
+
+Zu sehen ist dabei wieder eine Kreisstruktur, bei der die einzelnen Zustände über ERROR unterbrechen und wieder in IDLE rücksetzen können. Der generelle Ablauf welcher in einer erfolgreich ausgeführten Fahr mündet ergibt sich wie folgt:
+
+\begin{center}
+	\begin{itemize}
+		\item 1. Eine Nachricht mit Positionsanfrage vom ESP wurde empfangen,
+		\item 2. Die aktuelle Position wurde zurückgeschickt und ein Befehl wird erwartet.
+		\item 3. EIn Fahrbefehl wurde empfangen und akzeptiert.
+		\item 4. Die gewünschte Position wurde angefahren.
+	\end{itemize}
+\end{center}
+
+Zusätzlich werden im IDLE-Zustand die Batteriespannungen überprüft um rechtzeitig zur Ladestation zu fahren, falls sie zu leer sind. In diesem Fall schaltet sich die Bahn ab, sobald sie beim Laden angedockt ist. TODO IN GRAFIK!! Dieser Vorgang wird ebenfalls ausgelöst, falls über einen längeren Zeitraum keine Fahrbefehle erhalten wurden.
 %------------------------UMSETZUNG-----------------
+
 
 \chapter{Umsetzung}
 \label{cha:umsetzung}
