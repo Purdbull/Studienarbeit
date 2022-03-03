@@ -343,12 +343,58 @@ Dabei entsteht folgendes Problem: der Arduino läuft auf der Spannung von 5V, w�
 Um die Pulse des ESP32 auf die richtige Spannung zu bringen, wird ein sogenannter Level-Shifter verwendet. Dieser gibt die Spannung von 5V an den Arduino, während der ESP32 nur 3,3V ausgibt.
 Der zugehörige Schaltplan ist in \autoref{pic:levelshift} gezeigt.
 \vspace{1cm}
+
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=9cm]{levelShifter.PNG}
 		\caption{\label{pic:levelshift}Schaltplan des Level-Shifters}
 	\end{center}
 \end{figure}
+
+Angenommen \textit{data in} ist mit 0V vom ESP32 verbunden. Durch 3,3V am Gate des Mosfets schaltet sich dieses ein. Somit wird \textit{data out} durch das Mosfet ebenfalls auf 0V gezogen. 
+Liegt \textit{data in} jedoch auf 3,3V, gibt es keinen Spannungsunterschied zwischen Gate und Source des Mosfets. Das schaltet das Mosfet aus, sodass \textit{data out} auf die 5V gezogen wird. 
+Somit erzeugt eine positive Flanke von 3,3V des ESP32 eine Flanke von 5V am Arduino.
+
+\subsection{Spannungsteiler}
+Um die 5V Pulse auf 3,3V zu ziehen ist nicht zwingend eine Mosfet oder Transistorschaltung benötigt. Einfacher gestaltet sich die Verwendung eines Spannungsteilers. Dieser ist in \autoref{pic:spannungsteiler} gezeigt.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=9cm]{spannungsteiler.PNG}
+		\caption{\label{pic:spannungsteiler} Spannungsteiler zur Kommunikation von Arduino zu ESP32}
+	\end{center}
+\end{figure}
+
+Mit dem Verhältnis von $1 \div 1,6$ der beiden Widerstandsgrößen wird eine Ausgansspannung von ca. 3,08V bei einem 5V Pegel erzeugt. Diese wird in jedem Fall als logisches HIGH erkannt und der Spannungsteiler erfüllt so seinen Zweck.
+
+\section{Spannungsmessungen an den Batteriezellen}
+Die Stromversorgung der Hochbahn stellen zwei in Reihe geschaltete Lithium Ionen Akkus zur Verfügung. Diese Reihenschaltung ist in \autoref{pic:messfalsch} gezeigt. Während bei einfachen Batterien die Gesamtspannung gemessen werden kann, müssen hier die beiden Zellen einzeln betrachtet werden.
+Um die einzelnen Zelen zu messen, soll die Spannung jeweils am + Pol abgegriffen werden. Somit muss die Messeinrichtung von der Gesamtspannung die Spannung der ersten Zelle abziehen, um die Spannung der zweiten Zelle zu erhalten. Dieser Vorgang ist erforderlich, da kein Spannungsunterschied zwischen + und - der oberen Zelle gemessen werden kann. Grund dafür ist, dass der negative Pol des Arduinos gleich dem negativen Pol der unteren Zelle ist, nicht der oberen.
+\\Verbände man, wie in \autoref{pic:messfalsch} gezeigt, zwei analoge Pins direkt mit den + Polen, wäre eine Spannungsmessung in der Theorie möglich.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=8cm]{wrongMeasure.PNG}
+		\caption{\label{pic:messfalsch} Einfache Spannungsmessung der Zellen}
+	\end{center}
+\end{figure}
+\newpage
+In der Praxis ergeben sich dabei jedoch zwei Probleme:
+
+\begin{center}
+	\begin{itemize}
+		\item 1. Wenn die Spannungsversorgung der Platine abgeschaltet ist, würde ein Arduino sich über die analogen Pins selbst versorgen, wodurch ein unnötiger STromverbrauch entstände.
+		\item 2. Ein Arduino kann nur Spannungen zwischen 0V und 5V messen, wodurch eine Reihenschaltung der beiden 3,7V Zellen auch im entladenen Zustand am analogen Input die volle Spannung erzeugen. 
+	\end{itemize}
+\end{center}
+
+Die im folgenden erklärte Schaltung soll diese Probleme umgehen:
+
+\subsection{Mosfetschaltung zur aktivierbaren Spannungsmessung}
+Diese Schaltung soll es ermöglichen die Spannungsmessung an- und abzuschalten. Ein digitaler Pin des Arduinos soll die MEssung mit einem 5V Pegel aktivieren und mit 0V deaktivieren können. Aktiviert, sollen ähnlich wie in \autoref{pic:messfalsch} beide Spannungen abgegriffen werden.
+%TODO Abbildung schaltung und erklären
+\subsection{Spannungteiler für die zweite Zelle}
+
 
 \chapter{Konzeption der Software-Komponenten}
 \label{sec:software}
