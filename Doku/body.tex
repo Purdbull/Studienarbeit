@@ -368,9 +368,10 @@ Um die 5V Pulse auf 3,3V zu ziehen ist nicht zwingend eine Mosfet oder Transisto
 Mit dem Verhältnis von $1 \div 1,6$ der beiden Widerstandsgrößen wird eine Ausgansspannung von ca. 3,08V bei einem 5V Pegel erzeugt. Diese wird in jedem Fall als logisches HIGH erkannt und der Spannungsteiler erfüllt so seinen Zweck.
 
 \section{Spannungsmessungen an den Batteriezellen}
+\label{sec:mess}
 Die Stromversorgung der Hochbahn stellen zwei in Reihe geschaltete Lithium Ionen Akkus zur Verfügung. Diese Reihenschaltung ist in \autoref{pic:messfalsch} gezeigt. Während bei einfachen Batterien die Gesamtspannung gemessen werden kann, müssen hier die beiden Zellen einzeln betrachtet werden.
 Um die einzelnen Zelen zu messen, soll die Spannung jeweils am + Pol abgegriffen werden. Somit muss die Messeinrichtung von der Gesamtspannung die Spannung der ersten Zelle abziehen, um die Spannung der zweiten Zelle zu erhalten. Dieser Vorgang ist erforderlich, da kein Spannungsunterschied zwischen + und - der oberen Zelle gemessen werden kann. Grund dafür ist, dass der negative Pol des Arduinos gleich dem negativen Pol der unteren Zelle ist, nicht der oberen.
-\\Verbände man, wie in \autoref{pic:messfalsch} gezeigt, zwei analoge Pins direkt mit den + Polen, wäre eine Spannungsmessung in der Theorie möglich.
+\newpage Verbände man, wie in \autoref{pic:messfalsch} gezeigt, zwei analoge Pins direkt mit den + Polen, wäre eine Spannungsmessung in der Theorie möglich.
 
 \begin{figure}[h]
 	\begin{center}
@@ -378,7 +379,7 @@ Um die einzelnen Zelen zu messen, soll die Spannung jeweils am + Pol abgegriffen
 		\caption{\label{pic:messfalsch} Einfache Spannungsmessung der Zellen}
 	\end{center}
 \end{figure}
-\newpage
+
 In der Praxis ergeben sich dabei jedoch zwei Probleme:
 
 \begin{center}
@@ -388,13 +389,33 @@ In der Praxis ergeben sich dabei jedoch zwei Probleme:
 	\end{itemize}
 \end{center}
 
-Die im folgenden erklärte Schaltung soll diese Probleme umgehen:
-
+Die im folgenden erklärte Schaltung soll diese Probleme umgehen.
+\newpage
 \subsection{Mosfetschaltung zur aktivierbaren Spannungsmessung}
-Diese Schaltung soll es ermöglichen die Spannungsmessung an- und abzuschalten. Ein digitaler Pin des Arduinos soll die MEssung mit einem 5V Pegel aktivieren und mit 0V deaktivieren können. Aktiviert, sollen ähnlich wie in \autoref{pic:messfalsch} beide Spannungen abgegriffen werden.
-%TODO Abbildung schaltung und erklären
-\subsection{Spannungteiler für die zweite Zelle}
+Diese Schaltung soll es ermöglichen die Spannungsmessung an- und abzuschalten. Ein digitaler Pin des Arduinos soll die Messung mit einem 5V Pegel aktivieren und mit 0V deaktivieren können. Aktiviert, sollen ähnlich wie in \autoref{pic:messfalsch} beide Spannungen abgegriffen werden.
 
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=11cm]{messRichtig.PNG}
+		\caption{\label{pic:messrichtig} Mosfetschaltung zur aktivierbaren Spannungsmessung}
+	\end{center}
+\end{figure}
+
+Die Mosfetschaltung zur Messung der ersten unten liegenden Zelle ist in \autoref{pic:messrichtig} gezeigt.
+Zu sehen sind ein p- und ein n-Kanal Mosfet. Das unten geschaltete n-Kanal-Mosfet verbindet bei einer posiiven Spannung von \textit{digital in} das Gate vom p-Kanal-Mosfet mit \gls{gnd}. Dadurch wird das p-Kanal-Mosfet geschaltet, wodurch bei \textit{voltage out} eine Spannung gemessen wird. Die Spannung ist jene, die am 1M$\Omega$ Widerstand abfällt. Der Widerstand bildet einen Spannungsteiler mit 10K$\Omega$. Da 1M$\Omega$ im Verhältnis jedoch viel größer ist, fällt fast die gesamte Spannung an diesem Widerstand ab, sodass diese auch an \textit{voltage out} gemessen werden kann.
+
+\subsection{Spannungteiler für die zweite Zelle}
+In \autoref{sec:mess} wurde beriets erwähnt, dass die gemessene Spannung an der zweiten Zelle zu hoch für den Arduino wäre. Deshalb muss die Schaltung aus \autoref{pic:messrichtig} folgendermaßen erweitert werden:
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=9cm]{messMitTeiler.PNG}
+		\caption{\label{pic:messrichtigmitteiler} Mosfetschaltung zur aktivierbaren Spannungsmessung mit Spannungsteiler}
+	\end{center}
+\end{figure}
+\newpage
+In \autoref{pic:messrichtigmitteiler} ist zu sehen, dass die Schaltung mit einem Spannungsteiler erweitert wurde. Da beide Widerstände den gleichen Wert haben, kann zwischen ihnen die halbierte Spannung gemessen werden. 
+Um in der Software die richtige Spannung der Zelle zu erhalten, muss der gemessene Wert verdoppelt werden. Zieht man nun die Spannung der ersten Zelle ab, ergibt das den Wert für die zweite Zelle.
 
 \chapter{Konzeption der Software-Komponenten}
 \label{sec:software}
@@ -519,11 +540,11 @@ Der Automat ist in \autoref{pic:statemaschineARD} gezeigt.
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=14cm]{stateMaschineARD.pdf}
+		\includegraphics[width=10cm]{stateMaschineARD.pdf}
 		\caption{\label{pic:statemaschineARD}Zustandsautomat der Hauptsteuerung als Grafik}
 	\end{center}
 \end{figure}
-
+\newpage
 Zu sehen ist dabei wieder eine Kreisstruktur, bei der die einzelnen Zustände über ERROR unterbrechen und wieder in IDLE rücksetzen können. Der generelle Ablauf welcher in einer erfolgreich ausgeführten Fahr mündet ergibt sich wie folgt:
 
 \begin{center}
