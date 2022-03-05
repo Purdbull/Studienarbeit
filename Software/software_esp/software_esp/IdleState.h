@@ -6,10 +6,11 @@
 
 class IdleState : public State {
     public:
-        IdleState() : State();
-        void handle(String serverMsg);
-        void handle(byte arduinoMsg);
+        IdleState();
+        int handle(String);
+        int handle(byte);
+        
 
-}
+};
 
 #endif
