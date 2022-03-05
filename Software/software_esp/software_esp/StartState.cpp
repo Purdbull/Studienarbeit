@@ -21,5 +21,6 @@ int StartState::handle(byte arduinoMsg){
 }
 
 int StartState::handle(){
-  Serial.println(this->driveToPosition);
+  //TODO pos anfrage an server schicken
+  return POSITION_STATE;
 }
