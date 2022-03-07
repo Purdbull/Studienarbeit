@@ -1,12 +1,22 @@
 #include "Arduino.h"
 #include "IdleState.h"
 
-IdleState::IdleState(): State(){}
+#define IDLE_STATE      0
+#define START_STATE     1
+#define POSITION_STATE  2
+#define END_STATE       3
+#define ERROR_STATE     4
 
-void IdleState::handle(String serverMsg){
-    //Zustandswechsel?
+IdleState::IdleState(){
+  }
+
+
+int IdleState::handle(String serverMsg){
+    this->driveToPosition=2; //this is just for testing. TODO: evaluate message
+    return START_STATE;
 }
 
-void IdleState::handle(byte arduinoMsg){
-    //wenn header stimmt, akku an server schicken
+int IdleState::handle(byte arduinoMsg){
+    return IDLE_STATE; //TODO: akkustand Nachricht evaluieren
+    return ERROR_STATE;  //sonst
 }

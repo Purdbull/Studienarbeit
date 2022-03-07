@@ -5,8 +5,10 @@
 
 class State{
     public:
-        State();
-        void handle();
+        virtual int handle(byte);
+        virtual int handle(String);
+        virtual int handle();
+        int driveToPosition;
 };
 
 #endif

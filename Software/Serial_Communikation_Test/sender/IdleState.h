@@ -7,8 +7,9 @@
 class IdleState : public State {
     public:
         IdleState();
-        void handle(String);
-        void handle(byte);
+        int handle(String);
+        int handle(byte);
+        
 
 };
 

@@ -6,7 +6,7 @@
 #define StateMashine_h
 
 class StateMashine{
-  State currentState;
+  State *currentState;
 
   public:
     StateMashine();

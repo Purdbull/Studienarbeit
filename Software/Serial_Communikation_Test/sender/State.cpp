@@ -1,9 +1,19 @@
 #include "Arduino.h"
 #include "State.h"
 
-State::State(){
+int State::handle(String serverMsg){
+    //Zustandswechsel?
+    return 0;
 }
 
-void State::handle(){}
+int State::handle(byte arduinoMsg){
+    //wenn header stimmt, akku an server schicken
 
+    //wieder in Idlemodus
+    return 0;
+}
 
+int State::handle(){
+    //prototype
+    return 10;
+}
