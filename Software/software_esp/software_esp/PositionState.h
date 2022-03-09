@@ -7,8 +7,9 @@
 
 class PositionState : public State {
     public:
+        int driveToPosition; 
         Decoder* jarvis;
-        PositionState();
+        PositionState(int);
         int handle(String);
         int handle(byte);
 

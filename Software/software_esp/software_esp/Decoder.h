@@ -9,6 +9,7 @@ class Decoder{
         int getHeader(byte);
         int getBody(byte);
         int getTail(byte);
+        int getPosition(String);
 };
 
 #endif

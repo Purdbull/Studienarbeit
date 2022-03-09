@@ -26,8 +26,9 @@ StateMashine::StateMashine() {
 void StateMashine::handle(String serverMsg) {
   switch (currentState->handle(serverMsg)) {
     case IDLE_STATE: {
+        String msg = currentState->errorMsg;
         delete(currentState);
-        currentState = new ErrorState();
+        currentState = new ErrorState(msg);
       }
       break;
 
@@ -35,12 +36,17 @@ void StateMashine::handle(String serverMsg) {
         int pos = currentState->driveToPosition;
         delete(currentState);
         currentState = new StartState(pos);
-        int newState = currentState->handle();
+        int newState = currentState->handleWithoutParam();
         delete(currentState);
         if (newState == POSITION_STATE) {
-          currentState = new PositionState();
+          currentState = new PositionState(pos);
         } else {
-          currentState = new ErrorState();
+          String msg = currentState->errorMsg;
+          delete(currentState);
+          currentState = new ErrorState(msg);
+          currentState->handle();
+          delete(currentState);
+          currentState = new IdleState();
         }
       }
       break;
@@ -56,9 +62,9 @@ void StateMashine::handle(String serverMsg) {
       break;
 
     case ERROR_STATE: {
+        String msg = currentState->errorMsg;
         delete(currentState);
-        currentState = new ErrorState();
-        Serial.println("Error string");
+        currentState = new ErrorState(msg);
         delete(currentState);
         currentState = new IdleState();
       }
@@ -90,9 +96,10 @@ void StateMashine::handle(byte arduinoMsg) {
       break;
 
     case ERROR_STATE: {
+        String msg = currentState->errorMsg;
         delete(currentState);
-        currentState = new ErrorState();
-        Serial.println("Error byte");
+        currentState = new ErrorState(msg);
+        currentState->handle();
         delete(currentState);
         currentState = new IdleState();
       }

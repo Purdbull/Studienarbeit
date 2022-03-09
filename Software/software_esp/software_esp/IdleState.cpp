@@ -21,7 +21,7 @@ IdleState::IdleState(){
 
 
 int IdleState::handle(String serverMsg){
-    this->driveToPosition=2; //this is just for testing. TODO: evaluate message
+    this->driveToPosition=jarvis->getPosition(serverMsg); 
     return START_STATE;
 }
 

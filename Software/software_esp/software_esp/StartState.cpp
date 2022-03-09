@@ -13,14 +13,16 @@ StartState::StartState(int pos){
 
 
 int StartState::handle(String serverMsg){
+    this->errorMsg = "startstate called with string";
     return ERROR_STATE;
 }
 
 int StartState::handle(byte arduinoMsg){
+    this->errorMsg = "startstate called with byte";
     return ERROR_STATE;
 }
 
-int StartState::handle(){
-  //TODO pos anfrage an server schicken
+int StartState::handleWithoutParam(){
+  //TODO pos an server schicken
   return POSITION_STATE;
 }

@@ -7,13 +7,21 @@
 #define END_STATE       3
 #define ERROR_STATE     4
 
-ErrorState::ErrorState(){}
+ErrorState::ErrorState(String msg){
+    this->errorMsg = msg;
+  }
 
 
 int ErrorState::handle(String serverMsg){
-    return 4;
+  this->errorMsg = "error handler with param called";
+    return ERROR_STATE;
 }
 
 int ErrorState::handle(byte arduinoMsg){
-    return 4;
+  this->errorMsg = "error handler with param called";
+    return ERROR_STATE;
+}
+
+void ErrorState::handle(){
+  //errorMsg an server schicken TODO
 }

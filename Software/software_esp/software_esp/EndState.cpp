@@ -20,6 +20,7 @@ EndState::EndState() {
 
 
 int EndState::handle(String serverMsg) {
+  this->errorMsg = "Endstate Handler with string called";
   return ERROR_STATE;
 }
 
@@ -33,5 +34,6 @@ int EndState::handle(byte arduinoMsg) {
       Serial.println("abgelehnt");
     }
   }
+  this->errorMsg = "order declined";
   return ERROR_STATE; 
 }

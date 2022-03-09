@@ -5,10 +5,12 @@
 #define ErrorState_h
 
 class ErrorState : public State {
-    public:
-        ErrorState();
-        int handle(String);
-        int handle(byte);
+  public:
+    String errorMsg;
+    ErrorState(String);
+    int handle(String);
+    int handle(byte);
+    void handle();
 
 };
 

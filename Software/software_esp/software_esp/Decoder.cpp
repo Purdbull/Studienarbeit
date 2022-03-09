@@ -31,3 +31,7 @@ int Decoder::getTail(byte message) {
   byte result = message & tailMask;
   return (int)(result >> 6);
 }
+
+int Decoder::getPosition(String message){
+  return message.toInt();
+}

@@ -15,8 +15,9 @@
 #define HEADER_ASK        4
 #define HEADER_ERROR      5
 
-PositionState::PositionState() {
+PositionState::PositionState(int pos) {
   this->jarvis = new Decoder();
+  this->driveToPosition = pos;
 }
 
 
@@ -29,7 +30,7 @@ int PositionState::handle(byte arduinoMsg) {
     Serial.print("Position erhalten!");
     Serial.print("Position = ");
     Serial.println(jarvis->getBody(arduinoMsg));
-    //TODO: aktuelle position aktualisieren
+    //TODO: aktuelle position aktualisieren und fahrbefehl schicken
     return END_STATE;
   }
   return ERROR_STATE;
