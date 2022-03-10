@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "1AU1PO98O2SJlJ5h2VLhH+tJLQ0CNc08qxAo3ohCp9+Ycx4T4uZrI5KwIrqsFeRw254UFUFBTBMpf3y8S1efGA==",
+  "dgSpecHash": "R3+/3g215Vr5hWZCic6gB3HvRrMIX4UVjzKutVhLvDwBt1JWOQmVkWYcFoO1pt5p561B2Y1wGCXBbVcKehNtww==",
   "success": true,
   "projectFilePath": "D:\\DH\\T3000_B\\Studienarbeit\\WebServer\\HighTrainServer\\HighTrainServer\\HighTrainServer.csproj",
   "expectedPackageFiles": [
@@ -108,7 +108,8 @@
     "C:\\Users\\morit\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\morit\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
     "C:\\Users\\morit\\.nuget\\packages\\system.xml.xmldocument\\4.3.0\\system.xml.xmldocument.4.3.0.nupkg.sha512",
-    "C:\\Users\\morit\\.nuget\\packages\\system.xml.xmlserializer\\4.3.0\\system.xml.xmlserializer.4.3.0.nupkg.sha512"
+    "C:\\Users\\morit\\.nuget\\packages\\system.xml.xmlserializer\\4.3.0\\system.xml.xmlserializer.4.3.0.nupkg.sha512",
+    "C:\\Users\\morit\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.22\\microsoft.netcore.app.host.win-x64.3.1.22.nupkg.sha512"
   ],
   "logs": []
 }
