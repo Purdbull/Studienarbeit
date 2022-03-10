@@ -1,23 +1,22 @@
 #include "Arduino.h"
 #include "State.h"
 
-#ifndef sCharge_h
-#define sCharge_h
+#ifndef sError_h
+#define sError_h
 
-/* Charge State
+/* Error State
  * -----------------------------------------------------------
  * 2 tasks:
- * - driving back to chargingstation
- * - turning off when arrived
+ * - validate error
+ * - change back or hard fault
  * -----------------------------------------------------------
  * state change:
- * - sError; if its not able to drive back or not arrived
- * - sOff;   turning it off
+ * - sIdle; when error is validated
  */
 
-class sCharge : public State{
+class sError : public State{
   public:
-    sCharge();
+    sError();
     void handle();
     int handleWithoutParam();
 };
