@@ -1,11 +1,6 @@
 #include "Arduino.h"
 #include "StartState.h"
-
-#define IDLE_STATE      0
-#define START_STATE     1
-#define POSITION_STATE  2
-#define END_STATE       3
-#define ERROR_STATE     4
+#include "State.h";
 
 StartState::StartState(int pos){
   this->driveToPosition=pos;
@@ -23,6 +18,6 @@ int StartState::handle(byte arduinoMsg){
 }
 
 int StartState::handleWithoutParam(){
-  //TODO pos an server schicken
+  //TODO positionsanfrage an arduino schicken
   return POSITION_STATE;
 }

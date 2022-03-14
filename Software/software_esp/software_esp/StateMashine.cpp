@@ -4,23 +4,11 @@
 #include "PositionState.h"
 #include "ErrorState.h"
 #include "EndState.h"
+#include "State.h";
 
-#define IDLE_STATE        0
-#define START_STATE       1
-#define POSITION_STATE    2
-#define END_STATE         3
-#define ERROR_STATE       4
-
-#define HEADER_BATTERY    0
-#define HEADER_ORDER      1
-#define HEADER_POSITION   2
-#define HEADER_ACC        3
-#define HEADER_ASK        4
-
-
-
-StateMashine::StateMashine() {
+StateMashine::StateMashine(EspMQTTClient* MQTTptr) {
   this->currentState = new IdleState();
+  this->clientPtr = MQTTptr;
 }
 
 void StateMashine::handle(String serverMsg) {
@@ -28,11 +16,14 @@ void StateMashine::handle(String serverMsg) {
     case IDLE_STATE: {
         String msg = currentState->errorMsg;
         delete(currentState);
-        currentState = new ErrorState(msg);
+        currentState = new ErrorState(msg, this->clientPtr);
+        currentState->handle();
+        delete(currentState);
+        currentState = new IdleState();
       }
       break;
 
-    case START_STATE: {
+  case START_STATE: {
         int pos = currentState->driveToPosition;
         delete(currentState);
         currentState = new StartState(pos);
@@ -43,7 +34,7 @@ void StateMashine::handle(String serverMsg) {
         } else {
           String msg = currentState->errorMsg;
           delete(currentState);
-          currentState = new ErrorState(msg);
+          currentState = new ErrorState(msg, this->clientPtr);
           currentState->handle();
           delete(currentState);
           currentState = new IdleState();
@@ -64,7 +55,8 @@ void StateMashine::handle(String serverMsg) {
     case ERROR_STATE: {
         String msg = currentState->errorMsg;
         delete(currentState);
-        currentState = new ErrorState(msg);
+        currentState = new ErrorState(msg, this->clientPtr);
+        currentState->handle();
         delete(currentState);
         currentState = new IdleState();
       }
@@ -98,7 +90,7 @@ void StateMashine::handle(byte arduinoMsg) {
     case ERROR_STATE: {
         String msg = currentState->errorMsg;
         delete(currentState);
-        currentState = new ErrorState(msg);
+        currentState = new ErrorState(msg, this->clientPtr);
         currentState->handle();
         delete(currentState);
         currentState = new IdleState();

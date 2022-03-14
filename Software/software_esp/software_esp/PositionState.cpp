@@ -1,19 +1,8 @@
 #include "Arduino.h"
 #include "PositionState.h"
 #include "Decoder.h"
-
-#define IDLE_STATE        0
-#define START_STATE       1
-#define POSITION_STATE    2
-#define END_STATE         3
-#define ERROR_STATE       4
-
-#define HEADER_BATTERY    0
-#define HEADER_ORDER      1
-#define HEADER_POSITION   2
-#define HEADER_ACC        3
-#define HEADER_ASK        4
-#define HEADER_ERROR      5
+#include "State.h"
+#include <EEPROM.h>
 
 PositionState::PositionState(int pos) {
   this->jarvis = new Decoder();
@@ -22,6 +11,7 @@ PositionState::PositionState(int pos) {
 
 
 int PositionState::handle(String serverMsg) {
+  this->errorMsg = "position state handler with string called";
   return ERROR_STATE;
 }
 
@@ -29,8 +19,15 @@ int PositionState::handle(byte arduinoMsg) {
   if (jarvis->getHeader(arduinoMsg) == HEADER_POSITION) {
     Serial.print("Position erhalten!");
     Serial.print("Position = ");
-    Serial.println(jarvis->getBody(arduinoMsg));
-    //TODO: aktuelle position aktualisieren und fahrbefehl schicken
+    byte pos = (byte)jarvis->getBody(arduinoMsg);
+    if(EEPROM.read(42) != pos){
+      EEPROM.write(42, pos);
+      this->errorMsg = "position was not in sync";
+      return ERROR_STATE;
+    }
+    EEPROM.write(42, (byte)jarvis->getBody(arduinoMsg));
+    Serial.println(EEPROM.read(42));
+    //fahrbefehl schicken TODO
     return END_STATE;
   }
   return ERROR_STATE;
