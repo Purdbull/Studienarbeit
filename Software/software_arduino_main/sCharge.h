@@ -19,6 +19,7 @@ class sCharge : public State{
   public:
     sCharge();
     void handle();
+    int handle(byte);
     int handleWithoutParam();
 };
 

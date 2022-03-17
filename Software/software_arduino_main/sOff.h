@@ -17,6 +17,7 @@ class sOff : public State{
   public:
     sOff();
     void handle();
+    int handle(byte);
     int handleWithoutParam();
 };
 

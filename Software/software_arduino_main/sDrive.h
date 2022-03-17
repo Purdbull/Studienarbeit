@@ -20,6 +20,7 @@ class sDrive : public State{
   public:
     sDrive();
     void handle();
+    int handle(byte);
     int handleWithoutParam();
 };
 

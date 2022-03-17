@@ -18,6 +18,8 @@
 class sWait : public State {
   public:
     sWait();
+    void handle();
+    int handle(byte);
     int handleWithoutParam();
 };
 

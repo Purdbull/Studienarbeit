@@ -9,7 +9,7 @@ IdleState::IdleState(){
 
 
 int IdleState::handle(String serverMsg){
-    this->driveToPosition=jarvis->getPosition(serverMsg); 
+    this->driveToPosition=this->jarvis->getPosition(serverMsg); 
     return START_STATE;
 }
 

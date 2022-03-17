@@ -6,6 +6,7 @@
 
 int eepromPositionAddr = 42;
 bool isDrivingForward = true;
+
 EspMQTTClient client(
   "WifiSSID",
   "WifiPassword",
