@@ -29,18 +29,31 @@ void setup() {
   pinMode(m0, OUTPUT);
   pinMode(m1, OUTPUT);
 
+
   //digitalWrite(en, LOW);
 
   initInterrupts();
+
 }
 
 void loop() { // Hauptschleife - abfragen des Potentiometers
-  int a = 80;
+  linear(80,80); 
+  linear(40,80); 
+  linear(0,80); 
+  
+  
+}
 
-  linear(-70, a);
-  linear(-90, a);
-  linear(-20, a);
-  linear(-100, 30);
+
+void setVeloDirect() {
+  Serial.println("Hello");
+  for (int i = 31; i <= 130*8; i++) {
+    Serial.println(String(i));
+    delay(200);
+    OCR1A = i;
+    sei();
+  }
+
 
 }
 
@@ -58,7 +71,7 @@ void linear(int y, int a) {
   if (x < y) //accelerate
   {
     Serial.println("---> Accelerate from " + String(x) + "% to " + String(y) + "%");
-    for (double i = x; i <= y; i = i+0.5) {
+    for (double i = x; i <= y; i = i + 0.5) {
       setVelo(i);
       delay(t);
       Serial.println(String(i) + "%" );
@@ -112,22 +125,23 @@ void emergencyBrake() {
 void setVelo(double velo) {
   setDirection(velo);
   velo = abs(velo);
-  int a = map(velo, 100, 0, 31, 130);
+  double a = map(velo, 100, 0, 31, 130);
   Serial.println("Clock:" + String(a) + "Hz");
-  cli();
+  //cli();
   OCR1A = a;
   sei();
   currVelo = velo;
 
 }
 
+
 void initInterrupts() {
-  cli();                                //stoppe alle Interrupts
+  cli();                                //clear local interrupt flag
   TCCR1A = 0;                           // set entire TCCR1A register to 0 TCCR - Timer/Counter Control Register
   TCCR1B = 0;                           // Setze Timer/Counter Control Register TCCR1B auf 0
   TCCR1B |= (1 << WGM12);               // Schalte Clear Timer on Compare (CTC) Modus ein
   //TCCR1B |= (1 << CS12) | (1 << CS10);  // Setze CS10 und CS12 Bit auf 1 für den 1024 Prescaler. Maximalfrequenz: 7.812 Khz
-  TCCR1B |= (1 << CS12);                 // Setze CS12 Bit auf 1 für den 256 Prescaler.
+  TCCR1B |= (1 << CS12) ;                 // Setze CS12 Bit auf 1 für den 64 Prescaler.
   TCNT1  = 0;                           // Initialisiere Zähler/Zeitgeber Register Wert auf 0
   OCR1A = 130;//  Aufruffrequenz Timer 1  241 Hz * 2
   TIMSK1 |= (1 << OCIE1A); // Erlaube Timer compare interrupt TIMSK - Timer/Counter Interrupt Mask Register
