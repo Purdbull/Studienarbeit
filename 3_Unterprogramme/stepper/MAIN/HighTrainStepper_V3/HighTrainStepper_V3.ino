@@ -19,10 +19,10 @@
 #define aMin 5
 
 int y = Max; //target speed
-int k; //counter for ISR Prescaler
+unsigned long k; //counter for ISR Prescaler, Iportant: LONG (!), overflow causes acc. stop
 int a; //accelecaration (modulo)
-
 bool yDone = false;
+int s;
 
 //-------------setup---------------
 void setup() {
@@ -33,27 +33,35 @@ void setup() {
   pinMode(m0, OUTPUT);
   pinMode(m1, OUTPUT);
   initInterrupts();
+  linear(100);
 
 }
 
 //-------------main--------------
 void loop() {
-  delay(100); //important Delay after writing new int value while executing ISR
+  linear(100);
+  linear(100);
 
-  linear(10);
-  delay(6000);
-
+  delay(8000);
   linear(50);
-  delay(5000);
+  linear(50);
+  linear(50);
+  delay(8000);
 
-  linear(80);
-  delay(5000);
+  /*
+    linear(10);
+    delay(6000);
 
-  linear(20);
-  delay(5000);
 
-  linear(0, 100);
-  delay(7000);
+
+
+    linear(100,20);
+    delay(5000);
+
+    linear(20);
+    delay(5000);
+  */
+
 
 }
 
@@ -183,20 +191,24 @@ ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
     cli();
     OCR1A = OCR1A - 10;
     sei();
+    Serial.println(k);
+
   }
 
   if (OCR1A < y && k % a == 1) {
     cli();
     OCR1A = OCR1A + 10;
     sei();
+    Serial.println(k);
+
+
   }
 
-
-  if (abs(OCR1A - y) <= 10) {
-    OCR1A = y;
-  }
-
-  yDone = y == OCR1A;
+  
+    if (abs(OCR1A - y) <= 10) {
+      OCR1A = y;
+    }
+  
 
 
 }
