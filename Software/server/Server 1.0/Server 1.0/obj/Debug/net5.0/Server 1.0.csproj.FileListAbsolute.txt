@@ -37,3 +37,44 @@ D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\D
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.genruntimeconfig.cache
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\ref\Server 1.0.dll
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.csproj.CopyComplete
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\appsettings.Development.json
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\appsettings.json
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.exe
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.deps.json
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.runtimeconfig.json
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.runtimeconfig.dev.json
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.dll
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\ref\Server 1.0.dll
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.pdb
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.Views.dll
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.Views.pdb
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.csproj.AssemblyReference.cache
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.GeneratedMSBuildEditorConfig.editorconfig
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.AssemblyInfoInputs.cache
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.AssemblyInfo.cs
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.csproj.CoreCompileInputs.cache
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.MvcApplicationPartsAssemblyInfo.cache
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.RazorAssemblyInfo.cache
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.RazorAssemblyInfo.cs
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\scopedcss\bundle\Server 1.0.styles.css
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\staticwebassets\Server 1.0.StaticWebAssets.Manifest.cache
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.TagHelpers.input.cache
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.TagHelpers.output.cache
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.RazorCoreGenerate.cache
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\Home\Index.cshtml.g.cs
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\Home\Privacy.cshtml.g.cs
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\Shared\Error.cshtml.g.cs
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\Shared\_Layout.cshtml.g.cs
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\Shared\_ValidationScriptsPartial.cshtml.g.cs
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\_ViewImports.cshtml.g.cs
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\_ViewStart.cshtml.g.cs
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.RazorTargetAssemblyInfo.cache
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.RazorTargetAssemblyInfo.cs
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.Views.pdb
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.dll
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\ref\Server 1.0.dll
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.pdb
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.genruntimeconfig.cache
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.csproj.CopyComplete
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\MQTTnet.dll
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\MQTTnet.AspNetCore.dll

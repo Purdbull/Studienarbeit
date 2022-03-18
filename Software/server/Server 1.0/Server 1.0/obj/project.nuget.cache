@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "0K837+IFZF0CeA54YSnSlXUzYTscRWAV69GjY+YKEesYVGbopDf6SGYwHorYG1U5G8e1c4KfjVrF4J2y34jAEA==",
+  "dgSpecHash": "BmUAuIJLOGxLxS5tRwaIp5ozJkMDHqugFFFgvN4L9eYncE68tZ7z0mdOMqZdBE5xI5OksRilXtWYFytFfeLh5A==",
   "success": true,
-  "projectFilePath": "D:\\Skywalker\\DH\\T3000B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "D:\\DH\\T3000_B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\morit\\.nuget\\packages\\mqttnet\\3.1.2\\mqttnet.3.1.2.nupkg.sha512",
+    "C:\\Users\\morit\\.nuget\\packages\\mqttnet.aspnetcore\\3.1.2\\mqttnet.aspnetcore.3.1.2.nupkg.sha512",
+    "C:\\Users\\morit\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\5.0.14\\microsoft.netcore.app.host.win-x64.5.0.14.nupkg.sha512"
+  ],
   "logs": []
 }
