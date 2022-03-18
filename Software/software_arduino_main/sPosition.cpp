@@ -15,7 +15,9 @@ int sPosition::handle(byte espMsg){
 
 
 int sPosition::handleWithoutParam(){
+  delay(5000); // wait for the buffer on esp to be cleared
   //TODO: send its current position
+  Serial.write(B10001110);  //FAKE! position 3
   //if interrupted return error
   //else
   return WAIT_STATE;

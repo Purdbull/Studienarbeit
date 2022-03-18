@@ -36,7 +36,8 @@ void IRAM_ATTR ISR() {
 
 void setup() {
   Serial.begin(9600);
-  attachInterrupt(REED_PIN, ISR, RISING);
+  //attachInterrupt(REED_PIN, ISR, RISING);
+  EEPROM.write(42, B00000011); //Fake position 3 for testing
 }
 
 
@@ -62,7 +63,7 @@ void clearSerialBuffer() {
 
 
 void loop() {
-  client.loop();
+  //client.loop(); testing
   if (Serial.available() > 0) {
     handler.handle(Serial.read());
     clearSerialBuffer();

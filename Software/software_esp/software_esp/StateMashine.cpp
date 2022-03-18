@@ -23,11 +23,16 @@ void StateMashine::handle(String serverMsg) {
       }
       break;
 
-  case START_STATE: {
+    case START_STATE: {
         int pos = currentState->driveToPosition;
         delete(currentState);
-        currentState = new StartState(pos);
+        currentState = new StartState();
         int newState = currentState->handleWithoutParam();
+        delay(500);//wait for arduino to change to position state and stop sending battery
+        char c; //clear serial buffer
+        while (Serial.available() > 0) {
+          c = Serial.read();
+        }
         delete(currentState);
         if (newState == POSITION_STATE) {
           currentState = new PositionState(pos);
@@ -43,12 +48,22 @@ void StateMashine::handle(String serverMsg) {
       break;
 
     case POSITION_STATE: {
-
+        String msg = currentState->errorMsg;
+        delete(currentState);
+        currentState = new ErrorState(msg, this->clientPtr);
+        currentState->handle();
+        delete(currentState);
+        currentState = new IdleState();
       }
       break;
 
     case END_STATE: {
-
+        String msg = currentState->errorMsg;
+        delete(currentState);
+        currentState = new ErrorState(msg, this->clientPtr);
+        currentState->handle();
+        delete(currentState);
+        currentState = new IdleState();
       }
       break;
 

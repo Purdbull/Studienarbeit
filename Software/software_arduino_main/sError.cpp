@@ -6,7 +6,8 @@ sError::sError(){
 }
 
 void sError::handle(){
-  
+  //TODO emergency break!
+  //if fatal error while true
 }
 
 int sError::handle(byte espMsg){
@@ -14,8 +15,5 @@ int sError::handle(byte espMsg){
 }
 
 int sError::handleWithoutParam(){
-  //TODO emergency break!
-  //if fatal error while true
-  //else
-  return IDLE_STATE;
+  return ERROR_STATE;
 }

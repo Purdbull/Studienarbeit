@@ -2,8 +2,7 @@
 #include "StartState.h"
 #include "State.h";
 
-StartState::StartState(int pos){
-  this->driveToPosition=pos;
+StartState::StartState(){
   }
 
 

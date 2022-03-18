@@ -35,7 +35,6 @@ int sIdle::handleWithoutParam() {
   }
   else {
     sendBattery(cell1, cell2);
-
     return IDLE_STATE;
   }
   return ERROR_STATE;

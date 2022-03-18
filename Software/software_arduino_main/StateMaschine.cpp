@@ -31,6 +31,12 @@ void StateMaschine::StateHandle(byte espMsg) {
       break;
 
     case ERROR_STATE:
+      //todo: errormsg handleing
+      delete(currentState);
+      currentState = new sError();
+      currentState->handle();
+      delete(currentState);
+      currentSTate = new sIdle();
       break;
 
 
@@ -40,6 +46,8 @@ void StateMaschine::StateHandle(byte espMsg) {
 void StateMaschine::StateHandle() {
   switch (currentState->handleWithoutParam()) {
     case IDLE_STATE:
+      delete(currentState);
+      currentState = new sIdle();
       break;
 
     case POSITION_STATE:
@@ -58,12 +66,22 @@ void StateMaschine::StateHandle() {
       break;
 
     case CHARGE_STATE:
+      delete(currentState);
+      currentState = new sCharge();
       break;
 
     case OFF_STATE:
+      delete(currentState);
+      currentState = new sOff();
       break;
 
     case ERROR_STATE:
+      //todo: errormsg handleing
+      delete(currentState);
+      currentState = new sError();
+      currentState->handle();
+      delete(currentState);
+      currentSTate = new sIdle();
       break;
   }
 }

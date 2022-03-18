@@ -7,7 +7,7 @@
 
 class StartState : public State {
     public:
-        StartState(int);
+        StartState();
         int handle(String);
         int handle(byte);
         int handleWithoutParam();
