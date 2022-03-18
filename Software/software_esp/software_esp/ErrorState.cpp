@@ -10,12 +10,12 @@ ErrorState::ErrorState(String msg, EspMQTTClient* ptr){
 
 int ErrorState::handle(String serverMsg){
   this->errorMsg = "error handler with param called";
-    return ERROR_STATE;
+  return ERROR_STATE;
 }
 
 int ErrorState::handle(byte arduinoMsg){
   this->errorMsg = "error handler with param called";
-    return ERROR_STATE;
+  return ERROR_STATE;
 }
 
 void ErrorState::handle(){

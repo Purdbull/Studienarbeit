@@ -4,7 +4,6 @@
 
 #define REED_PIN 4
 
-int eepromPositionAddr = 42;
 bool isDrivingForward = true;
 
 EspMQTTClient client(
@@ -19,16 +18,20 @@ EspMQTTClient* clientPtr = &client;
 StateMashine handler(clientPtr);
 
 void IRAM_ATTR ISR() {
- if(isDrivingForward){
-  byte pos = EEPROM.read(42);
-  if(pos<15){pos++;}
-  EEPROM.write(42, pos);
- }
- else {
-  byte pos = EEPROM.read(42);
-  if (pos!=0){pos--;}
-  EEPROM.write(42, pos);
- }
+  if (isDrivingForward) {
+    byte pos = EEPROM.read(42);
+    if (pos < 15) {
+      pos++;
+    }
+    EEPROM.write(42, pos);
+  }
+  else {
+    byte pos = EEPROM.read(42);
+    if (pos != 0) {
+      pos--;
+    }
+    EEPROM.write(42, pos);
+  }
 }
 
 void setup() {
@@ -43,9 +46,7 @@ void onConnectionEstablished()
   // Subscribe to "mytopic/test" and display received message to Serial
   client.subscribe("train/driveToPosition", [](const String & payload) {
     handler.handle(payload);
-    if(payload.toInt() > EEPROM.read(42)){
-      isDrivingForward = true;
-    }
+    isDrivingForward = (payload.toInt() > EEPROM.read(42));
   });
 
   // Publish a message to "mytopic/test"
@@ -63,7 +64,7 @@ void clearSerialBuffer() {
 void loop() {
   client.loop();
   if (Serial.available() > 0) {
-    handler.handle((byte)Serial.read());
+    handler.handle(Serial.read());
     clearSerialBuffer();
   }
 }

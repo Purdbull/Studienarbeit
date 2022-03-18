@@ -1,8 +1,8 @@
 #include "Arduino.h"
 #include "sDrive.h"
 
-sDrive::sDrive(){
-  
+sDrive::sDrive(int pos){
+  this->driveToPosition = pos;
 }
 
 void sDrive::handle(){

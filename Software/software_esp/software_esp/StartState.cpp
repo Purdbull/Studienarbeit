@@ -18,6 +18,6 @@ int StartState::handle(byte arduinoMsg){
 }
 
 int StartState::handleWithoutParam(){
-  //TODO positionsanfrage an arduino schicken
+  Serial.write(B01000000);
   return POSITION_STATE;
 }

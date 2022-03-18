@@ -15,13 +15,10 @@ int IdleState::handle(String serverMsg){
 
 int IdleState::handle(byte arduinoMsg){
     if(jarvis->getHeader(arduinoMsg) == HEADER_BATTERY){
+      float bat = jarvis->getBody(arduinoMsg)*6.25;
       //TODO: schick battery an server
-      Serial.println("akku erhalten, jaja");
-      Serial.print("akku liegt bei ");
-      Serial.println(jarvis->getBody(arduinoMsg));
       return IDLE_STATE;
     } 
-    //TODO: errorMessage
-    Serial.println("huch, kein akku! komisch...");
+    this->errorMsg = "idle handle with byte called no battery";
     return ERROR_STATE;  //only battery is allowed
 }

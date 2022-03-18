@@ -54,7 +54,7 @@ void StateMashine::handle(String serverMsg) {
 
     case ERROR_STATE: {
         String msg = currentState->errorMsg;
-        delete(curre  ntState);
+        delete(currentState);
         currentState = new ErrorState(msg, this->clientPtr);
         currentState->handle();
         delete(currentState);

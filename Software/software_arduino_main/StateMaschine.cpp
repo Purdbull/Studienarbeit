@@ -50,7 +50,11 @@ void StateMaschine::StateHandle() {
       currentState = new sWait();
       break;
 
-    case DRIVE_STATE:
+    case DRIVE_STATE: {
+        int pos = currentState->driveToPosition;
+        delete(currentState);
+        currentState = new sDrive(pos);
+      }
       break;
 
     case CHARGE_STATE:

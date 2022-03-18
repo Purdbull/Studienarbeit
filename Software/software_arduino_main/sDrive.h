@@ -18,7 +18,7 @@
 
 class sDrive : public State{
   public:
-    sDrive();
+    sDrive(int);
     void handle();
     int handle(byte);
     int handleWithoutParam();

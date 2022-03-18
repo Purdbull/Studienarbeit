@@ -14,6 +14,6 @@ int sOff::handle(byte espMsg){
 }
 
 int sOff::handleWithoutParam(){
-  //turn off
+  //digitalWrite(OFF_PIN, HIGH);
   return ERROR_STATE;
 }

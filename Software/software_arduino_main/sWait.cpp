@@ -12,6 +12,13 @@ int sWait::handle(byte espMsg){
   return ERROR_STATE;
 }
 
+void sWait::clearSerialBuffer() {
+  char c;
+  while (Serial.available()) {
+    c = Serial.read();
+  }
+}
+
 int sWait::handleWithoutParam(){
   int _time = millis();
   while(Serial.available() == 0){
@@ -19,7 +26,17 @@ int sWait::handleWithoutParam(){
       return ERROR_STATE;
     }
   }
-  //TODO evaluate position. if wrong send dec
-  //else this->driveToPosition = pos &
-  return DRIVE_STATE;
+  int pos = 17;
+  byte espMsg = Serial.read();
+  sWait::clearSerialBuffer();
+  if (jarvis->getHeader(espMsg) == HEADER_POSITION){
+    pos = jarvis->getBody(espMsg);
+  }
+  if (pos>=0 && pos <=15){
+    this->driveToPosition = pos;
+    Serial.write(B10000111); //acc
+    return DRIVE_STATE;
+  }
+  Serial.write(B10001011); //dec
+  return ERROR_STATE;
 }
