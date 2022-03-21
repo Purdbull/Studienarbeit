@@ -28,6 +28,7 @@ int PositionState::handle(byte arduinoMsg) {
       byte positionMsg = (byte)this->driveToPoition;
       positionMsg << 2;
       positionMsg = positionMsg | B01000001;
+      delay(500);
       Serial.write(positionMsg);
       return END_STATE;
     }

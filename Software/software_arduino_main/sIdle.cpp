@@ -15,8 +15,9 @@ void sIdle::sendBattery(float s1, float s2) {
   s /= 6.25;
   byte msg = (byte)round(s);
   msg << 2;
-  msg = msg & B10000000;
+  msg = msg | B10000000;
   Serial.write(msg);
+  delay(100); //to not fill the other buffer
 }
 
 int sIdle::handle(byte espMsg) {

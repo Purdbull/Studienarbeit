@@ -22,7 +22,7 @@ void sWait::clearSerialBuffer() {
 int sWait::handleWithoutParam(){
   int _time = millis();
   while(Serial.available() == 0){
-    if((millis()-_time)>5000){
+    if((millis()-_time)>10000){
       return ERROR_STATE;
     }
   }

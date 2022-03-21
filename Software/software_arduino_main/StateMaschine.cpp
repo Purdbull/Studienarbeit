@@ -36,7 +36,7 @@ void StateMaschine::StateHandle(byte espMsg) {
       currentState = new sError();
       currentState->handle();
       delete(currentState);
-      currentSTate = new sIdle();
+      currentState = new sIdle();
       break;
 
 
@@ -81,7 +81,7 @@ void StateMaschine::StateHandle() {
       currentState = new sError();
       currentState->handle();
       delete(currentState);
-      currentSTate = new sIdle();
+      currentState = new sIdle();
       break;
   }
 }
@@ -94,6 +94,9 @@ void StateMaschine::handle() {
   else {
     StateMaschine::StateHandle();
   }
+   
+  //StateMaschine::StateHandle(B01000000);
+  //StateMaschine::StateHandle(B01001101);
 }
 
 void StateMaschine::clearSerialBuffer() {
