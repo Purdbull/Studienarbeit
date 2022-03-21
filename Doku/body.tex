@@ -675,12 +675,94 @@ Die Wellen werden axial beansprucht. Damit die Befestigung der Welle die axialen
 \chapter{Fertigung der Platine}
 
 \chapter{Implementierung der Zustandsautomaten}
-Im folgenden wird die zuvor unter \autoref{sec:stateESP} konzeptionierte Logik des Zustandsautomaten implementiert.
-C++ ist die hierbei verwendete Programmiersprache. 
+Im folgenden wird die zuvor unter \autoref{sec:stateARD} konzeptionierte Logik des Zustandsautomaten der Hauptsteuerung implementiert.
+C++ ist die hierbei verwendete Programmiersprache. Die Idee ist eine State Maschine, die zu jeder zeit einen aktuellen State (\texttt{currentState}) hat, welcher sich abhängig von der Eingabe verändert.
 
 \section{Die State Klassen}
+Um den Validierungsaufwand innerhalb der State-Maschine zu verringern, d.h. die Maschine muss nicht schauen, was für ein State \texttt{currentState} ist, erben alle Zustände von einer State-Klasse. Somit muss die Maschine später nur wissen, dass sie einen State hat und nicht welchen.
+\autoref{code:state.h} zeigt die Header-Datei dieser State-Klasse.
 
-\section{Die State Maschine}
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+	class State{
+		public:
+			int driveToPosition;
+			String errorMsg;
+
+			virtual int handle(byte);
+			virtual int handle(String);
+			virtual int handleWithoutParam();
+			
+			virtual void handle();
+	};
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:state.h} State-Klasse}
+
+Die beiden Klassenvariablen \texttt{driveToPosition} und \texttt{errorMsg} werden verwendet, um State-übergreifende Parameter zu übergeben. Beispielsweise legt ein \texttt{Position-State} als \texttt{errorMsg} den String ''\textit{received invalid position}'' und übergibt diesen an Error-State, welcher die Nachricht an den Server schickt.
+Die \texttt{handle}-Methoden geben jeweils ein \texttt{int} zurück, welches signalisiert in welchen Zustandn zu wechseln ist.
+Im Folgendem wird die Implementierung der \texttt{handle}-Methoden am Beispiel des Idle-States erklärt:
+
+\subsubsection{Die Idle State Klasse}
+\label{sec:IdleState}
+Der Zustandsautomat der Hauptsteuerung ist in \autoref{pic:statemaschineARD} zu sehen.
+Idle-State hat dabei drei Aufgaben:
+\begin{center}
+	\begin{itemize}
+		\item Batteriezellenzustände überprüfen und an den Esp schicken,
+		\item das Zurückfahren zur Ladestation initialisieren falls nötig (Batterie leer)
+		\item und das Warten auf eine Positionsanfrage seitens des ESPs.
+	\end{itemize}
+\end{center}
+ Durch diese Aufgaben ergeben sich drei mögliche Zustandswechsel:
+ \begin{center}
+	\begin{itemize}
+		\item \textit{Position State}, sobald eine Positionsanfrage erhalten wurde,
+		\item \textit{Charge State}, wenn die BAtterie leer ist
+		\item und \textit{Idle-State} nach Messen und verschicken der Batteriezustände.
+	\end{itemize}
+\end{center}
+Hierbei ist zu bemerken, dass der Übergang $Idle State \Rightarrow  Idle State$ ebenfalls als Zustadswechsel angesehen wird.
+Abhängig davon ob empfangene bytes im seriellen Puffer liegen oder nicht (d.h. es wurde eine Nachricht empfangen oder nicht), wird die jeweilige \texttt{handle} - Methode mit oder ohne Parameter aufgerufen. Der Parameter ist die empfangene Nachricht als byte.
+Gibt es keine Empfangene Nachricht, führt Idle-State die Aufgabe \textit{Batterie messen} durch. Die Implementierung ist in \autoref{code:IdleState:handleWithoutParam} gezeigt.
+\newpage
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+	int sIdle::handleWithoutParam() {
+		float cell1 = batteryMeasure->getCellOneInPercent();
+		float cell2 = batteryMeasure->getCellTwoInPercent();
+
+		if (cell1 < 10.0 | cell2 < 10.0) {
+			return CHARGE_STATE;
+		}
+		else {
+			sIdle::sendBattery(cell1, cell2);
+			return IDLE_STATE;
+		}
+		return ERROR_STATE;
+	}
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:IdleState:handleWithoutParam}Batteriemessung der Idle-State Klasse}
+	\vspace{0.5cm}
+\texttt{batteryMeasure} aus \autoref{code:IdleState:handleWithoutParam} ist ein Pointer auf eine Instanz der Klasse Battery Master, welche im späteren Verlauf erklärt wird TODO!. 
+Die Methoden \texttt{getCellOneInPercent} und \texttt{getCellTwoInPercent} geben jeweils den Batteriezustand der Zelle in Prozent zurück. Liegen beide unter dem Schwellwert von 10\%, wird \texttt{CHARGE\_STATE} zurückgegeben, wodurch die Statemaschine daraufhin in den Zustand wechselt, welcher die Bahn zur Ladestation zurückfährt.
+Ansonsten wird der Batteriezustand an den Arduino geschickt, und die Maschine wechselt wieder zu \texttt{IDLE}.
+Wird eine Nachricht vom ESP empfangen, wird folgende Methode im Idle-Zustand aufgerufen: 
+\vspace{0.5cm}
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+	int sIdle::handle(byte espMsg) {
+		if (messageHandler->getHeader(espMsg) == HEADER_ASK) {
+		  return POSITION_STATE;
+		}
+		return ERROR_STATE;
+	  }
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:IdleState:handleByte}Nachrichtenvalidierung innerhalb der Idle-State KLasse}
+\vspace{0.5cm}
+
+\texttt{messageHandler} aus \autoref{code:IdleState:handleByte} ist ein Pointer auf eine Instanz der Klasse Decoder. Diese KLasse bietet mehrere Methoden, um Header, Body und Tail einer Nachricht einzeln als \texttt{int} zu erhalten um die Evaluation von Nachrichten zu vereinfachen.
+Die Methode aus \autoref{code:IdleState:handleByte} überprüft, ob es sich bei der NAchricht um eine Positionsanfrage handelt. Ist dies der Fall, wechselt die Maschine den Zustand zu \texttt{POSITION\_STATE}, andernfalls zu \texttt{ERROR}, da diese handle-Methode nur mit Positionsanfragen aufgerufen werden darf.
+Die anderen States implementieren auf ähnliche Weise die handle-Methode mit und ohne Parameter. Sie führen die Aufgaben des States durch und geben als \texttt{int} den neuen State zurück. 
+
+\section{State Maschine}
+Die State Maschine ist ein Klasse, welche die Zustandsübergänge verwaltet. Sie hat Zugriff auf emfangene Nachrichten und ruft jenachdem ob es eine neue Nachricht gibt die handle-Methode des aktuellen Zustands mit oder ohne byte-Parameter aus.
 
 
 %

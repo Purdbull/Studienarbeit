@@ -17,9 +17,11 @@ class StateMaschine{
 
   public:
     StateMaschine();
-    void StateHandle(byte);
+    
     void handle();
+    void StateHandle(byte);
     void StateHandle();
+    
     void clearSerialBuffer();
 };
 

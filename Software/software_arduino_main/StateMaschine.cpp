@@ -51,6 +51,8 @@ void StateMaschine::StateHandle() {
       break;
 
     case POSITION_STATE:
+      delete(currentState);
+      currentState = new sError();
       break;
 
     case WAIT_STATE:

@@ -21,14 +21,16 @@
 
 class sIdle : public State {
     public:
-    Decoder* jarvis;
+        Decoder* jarvis;
         BatteryMaster* batteryMeasure;
+        
         sIdle();
+        
         void sendBattery(float, float);
         void handle();
+        
         int handle(byte);
         int handleWithoutParam();
-
 };
 
 #endif
