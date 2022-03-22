@@ -25,7 +25,7 @@ int PositionState::handle(byte arduinoMsg) {
         return ERROR_STATE;
       }
 
-      byte positionMsg = (byte)this->driveToPoition;
+      byte positionMsg = (byte)this->driveToPosition;
       positionMsg << 2;
       positionMsg = positionMsg | B01000001;
       delay(500);

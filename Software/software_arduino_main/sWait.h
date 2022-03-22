@@ -19,6 +19,7 @@
 class sWait : public State {
   public:
     sWait();
+    ~sWait();
     Decoder* jarvis;
     void handle();
     void clearSerialBuffer();

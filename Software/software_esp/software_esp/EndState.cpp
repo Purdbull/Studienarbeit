@@ -16,6 +16,9 @@ int EndState::handle(byte arduinoMsg) {
   if (jarvis->getHeader(arduinoMsg) == HEADER_ACC) {
     if (jarvis->getBody(arduinoMsg) == 1) {
       //Serial.println("akzeptiert");
+      digitalWrite(2, HIGH);
+      delay(1000);
+      digitalWrite(2, LOW);
       return IDLE_STATE;
     }
     if (jarvis->getBody(arduinoMsg) == 2) {

@@ -17,6 +17,9 @@ int IdleState::handle(byte arduinoMsg){
     if(jarvis->getHeader(arduinoMsg) == HEADER_BATTERY){
       float bat = jarvis->getBody(arduinoMsg)*6.25;
       //TODO: schick battery an server
+      digitalWrite(2, HIGH);
+      delay(40);
+      digitalWrite(2, LOW);
       return IDLE_STATE;
     } 
     this->errorMsg = "idle handle with byte called no battery";

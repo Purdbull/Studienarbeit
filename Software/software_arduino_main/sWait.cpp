@@ -2,10 +2,14 @@
 #include "sWait.h"
 
 sWait::sWait(){
+  jarvis = new Decoder();
+}
+
+sWait::~sWait(){
+  delete(jarvis);
 }
 
 void sWait::handle(){
-  
 }
 
 int sWait::handle(byte espMsg){
@@ -29,7 +33,7 @@ int sWait::handleWithoutParam(){
   int pos = 17;
   byte espMsg = Serial.read();
   sWait::clearSerialBuffer();
-  if (jarvis->getHeader(espMsg) == HEADER_POSITION){
+  if (jarvis->getHeader(espMsg) == HEADER_ORDER){
     pos = jarvis->getBody(espMsg);
   }
   if (pos>=0 && pos <=15){
