@@ -4,7 +4,6 @@
 
 
 StateMaschine::StateMaschine() {
-  Serial.begin(9600);
   currentState = new sIdle();
 }
 
@@ -44,10 +43,12 @@ void StateMaschine::StateHandle(byte espMsg) {
 }
 
 void StateMaschine::StateHandle() {
-  switch (currentState->handleWithoutParam()) {
+
+  
+ switch (this->currentState->handleWithoutParam()) {
     case IDLE_STATE:
-      delete(currentState);
-      currentState = new sIdle();
+      delete (this->currentState);
+      this->currentState = new sIdle;
       break;
 
     case POSITION_STATE:
@@ -89,21 +90,19 @@ void StateMaschine::StateHandle() {
 }
 
 void StateMaschine::handle() {
-  if (Serial.available()) {
-    StateMaschine::StateHandle(Serial.read());
+  if (Serial.available() > 0) {
+    byte msg = Serial.read();
     StateMaschine::clearSerialBuffer();
+    StateMaschine::StateHandle(msg);
   }
   else {
     StateMaschine::StateHandle();
   }
-   
-  //StateMaschine::StateHandle(B01000000);
-  //StateMaschine::StateHandle(B01001101);
 }
 
 void StateMaschine::clearSerialBuffer() {
   char c;
-  while (Serial.available()) {
+  while (Serial.available()>0) {
     c = Serial.read();
   }
 }

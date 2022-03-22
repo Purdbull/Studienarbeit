@@ -21,10 +21,13 @@
 
 class sIdle : public State {
     public:
+        sIdle();
+        ~sIdle();
+    
         Decoder* jarvis;
         BatteryMaster* batteryMeasure;
         
-        sIdle();
+        
         
         void sendBattery(float, float);
         void handle();

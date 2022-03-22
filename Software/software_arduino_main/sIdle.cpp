@@ -2,8 +2,14 @@
 #include "sIdle.h"
 
 sIdle::sIdle() {
-  batteryMeasure = new BatteryMaster(1, 2, 3); //TODO::right numbers
-  jarvis = new Decoder();
+  this->batteryMeasure = new BatteryMaster(1,2,3); //TODO::right numbers
+  this->jarvis = new Decoder;
+  //Serial.print("hellothere");
+}
+
+sIdle::~sIdle(){
+  delete (this->batteryMeasure);
+  delete (this->jarvis);
 }
 
 void sIdle::handle() {
@@ -12,7 +18,7 @@ void sIdle::handle() {
 
 void sIdle::sendBattery(float s1, float s2) {
   float s = (s1 + s2) / 2;
-  s /= 6.25;
+  s /= 6.25; 
   byte msg = (byte)round(s);
   msg << 2;
   msg = msg | B10000000;
@@ -28,10 +34,10 @@ int sIdle::handle(byte espMsg) {
 }
 
 int sIdle::handleWithoutParam() {
-  float cell1 = batteryMeasure->getCellOneInPercent();
-  float cell2 = batteryMeasure->getCellTwoInPercent();
+  float cell1 = this->batteryMeasure->getCellOneInPercent();
+  float cell2 = this->batteryMeasure->getCellTwoInPercent();
 
-  if (cell1 < 10.0 | cell2 < 10.0) {
+  if (11.0 < 10.0 | 11.0 < 10.0) { //cell1 cell 2
     return CHARGE_STATE;
   }
   else {
