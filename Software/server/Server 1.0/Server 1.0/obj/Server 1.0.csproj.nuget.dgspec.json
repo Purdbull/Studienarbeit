@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Skywalker\\DH\\T3000B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj": {}
+    "D:\\DH\\T3000_B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj": {}
   },
   "projects": {
-    "D:\\Skywalker\\DH\\T3000B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj": {
+    "D:\\DH\\T3000_B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Skywalker\\DH\\T3000B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj",
+        "projectUniqueName": "D:\\DH\\T3000_B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj",
         "projectName": "Server 1.0",
-        "projectPath": "D:\\Skywalker\\DH\\T3000B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj",
-        "packagesPath": "C:\\Users\\Moritz Knapp\\.nuget\\packages\\",
-        "outputPath": "D:\\Skywalker\\DH\\T3000B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\obj\\",
+        "projectPath": "D:\\DH\\T3000_B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj",
+        "packagesPath": "C:\\Users\\morit\\.nuget\\packages\\",
+        "outputPath": "D:\\DH\\T3000_B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Moritz Knapp\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\morit\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -39,6 +42,16 @@
       "frameworks": {
         "net5.0": {
           "targetAlias": "net5.0",
+          "dependencies": {
+            "MQTTnet": {
+              "target": "Package",
+              "version": "[3.1.2, )"
+            },
+            "MQTTnet.AspNetCore": {
+              "target": "Package",
+              "version": "[3.1.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -49,6 +62,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[5.0.14, 5.0.14]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -57,7 +76,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     }

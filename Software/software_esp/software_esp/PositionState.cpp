@@ -17,18 +17,24 @@ int PositionState::handle(String serverMsg) {
 
 int PositionState::handle(byte arduinoMsg) {
   if (jarvis->getHeader(arduinoMsg) == HEADER_POSITION) {
-    Serial.print("Position erhalten!");
-    Serial.print("Position = ");
     byte pos = (byte)jarvis->getBody(arduinoMsg);
-    if(EEPROM.read(42) != pos){
-      EEPROM.write(42, pos);
-      this->errorMsg = "position was not in sync";
-      return ERROR_STATE;
+    if (pos >= 0 && pos <= 15) {
+      if (EEPROM.read(42) != pos) {
+        EEPROM.write(42, pos);
+        this->errorMsg = "position was not in sync";
+        return ERROR_STATE;
+      }
+
+      byte positionMsg = (byte)this->driveToPosition;
+      positionMsg << 2;
+      positionMsg = positionMsg | B01000001;
+      delay(500);
+      Serial.write(positionMsg);
+      return END_STATE;
     }
-    EEPROM.write(42, (byte)jarvis->getBody(arduinoMsg));
-    Serial.println(EEPROM.read(42));
-    //fahrbefehl schicken TODO
-    return END_STATE;
+    this->errorMsg = "invalid position received";
+    return ERROR_STATE;
   }
+  this->errorMsg = "position msg with wrong header";
   return ERROR_STATE;
 }

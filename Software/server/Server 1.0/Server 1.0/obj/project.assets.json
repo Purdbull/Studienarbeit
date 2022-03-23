@@ -1,26 +1,102 @@
 {
   "version": 3,
   "targets": {
-    "net5.0": {}
+    "net5.0": {
+      "MQTTnet/3.1.2": {
+        "type": "package",
+        "compile": {
+          "lib/net5.0/MQTTnet.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/MQTTnet.dll": {}
+        }
+      },
+      "MQTTnet.AspNetCore/3.1.2": {
+        "type": "package",
+        "dependencies": {
+          "MQTTnet": "3.1.2"
+        },
+        "compile": {
+          "lib/net5.0/MQTTnet.AspNetCore.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/MQTTnet.AspNetCore.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "MQTTnet/3.1.2": {
+      "sha512": "074AmNXQSs6S3vKyWqYIVvVCeyydCYhOLqfTfRXTaOihQTLAeKRnZh8c3Xhsvct4Rn+tCORFpUdLE35lH4c5Aw==",
+      "type": "package",
+      "path": "mqttnet/3.1.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "images/Logo_128x128.png",
+        "lib/net452/MQTTnet.dll",
+        "lib/net461/MQTTnet.dll",
+        "lib/net5.0/MQTTnet.deps.json",
+        "lib/net5.0/MQTTnet.dll",
+        "lib/netcoreapp3.1/MQTTnet.deps.json",
+        "lib/netcoreapp3.1/MQTTnet.dll",
+        "lib/netstandard1.3/MQTTnet.deps.json",
+        "lib/netstandard1.3/MQTTnet.dll",
+        "lib/netstandard2.0/MQTTnet.deps.json",
+        "lib/netstandard2.0/MQTTnet.dll",
+        "lib/netstandard2.1/MQTTnet.deps.json",
+        "lib/netstandard2.1/MQTTnet.dll",
+        "lib/uap10.0/MQTTnet.dll",
+        "lib/uap10.0/MQTTnet.pri",
+        "mqttnet.3.1.2.nupkg.sha512",
+        "mqttnet.nuspec"
+      ]
+    },
+    "MQTTnet.AspNetCore/3.1.2": {
+      "sha512": "ZNRmoKqxyE7MbkNtSo8TRzi59K9JUv/7li7CzSlShiUxDdus823o3nhz0RnBl3kD2tlVn57Qlo4Ao4cWSyoAQg==",
+      "type": "package",
+      "path": "mqttnet.aspnetcore/3.1.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "images/Logo_128x128.png",
+        "lib/net5.0/MQTTnet.AspNetCore.deps.json",
+        "lib/net5.0/MQTTnet.AspNetCore.dll",
+        "lib/netcoreapp3.1/MQTTnet.AspNetCore.deps.json",
+        "lib/netcoreapp3.1/MQTTnet.AspNetCore.dll",
+        "lib/netstandard2.0/MQTTnet.AspNetCore.deps.json",
+        "lib/netstandard2.0/MQTTnet.AspNetCore.dll",
+        "mqttnet.aspnetcore.3.1.2.nupkg.sha512",
+        "mqttnet.aspnetcore.nuspec"
+      ]
+    }
+  },
   "projectFileDependencyGroups": {
-    "net5.0": []
+    "net5.0": [
+      "MQTTnet >= 3.1.2",
+      "MQTTnet.AspNetCore >= 3.1.2"
+    ]
   },
   "packageFolders": {
-    "C:\\Users\\Moritz Knapp\\.nuget\\packages\\": {}
+    "C:\\Users\\morit\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Skywalker\\DH\\T3000B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj",
+      "projectUniqueName": "D:\\DH\\T3000_B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj",
       "projectName": "Server 1.0",
-      "projectPath": "D:\\Skywalker\\DH\\T3000B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj",
-      "packagesPath": "C:\\Users\\Moritz Knapp\\.nuget\\packages\\",
-      "outputPath": "D:\\Skywalker\\DH\\T3000B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\obj\\",
+      "projectPath": "D:\\DH\\T3000_B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj",
+      "packagesPath": "C:\\Users\\morit\\.nuget\\packages\\",
+      "outputPath": "D:\\DH\\T3000_B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Moritz Knapp\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\morit\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -45,6 +121,16 @@
     "frameworks": {
       "net5.0": {
         "targetAlias": "net5.0",
+        "dependencies": {
+          "MQTTnet": {
+            "target": "Package",
+            "version": "[3.1.2, )"
+          },
+          "MQTTnet.AspNetCore": {
+            "target": "Package",
+            "version": "[3.1.2, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",
@@ -55,6 +141,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[5.0.14, 5.0.14]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -63,7 +155,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200\\RuntimeIdentifierGraph.json"
       }
     }
   }

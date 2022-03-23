@@ -15,11 +15,14 @@ int EndState::handle(String serverMsg) {
 int EndState::handle(byte arduinoMsg) {
   if (jarvis->getHeader(arduinoMsg) == HEADER_ACC) {
     if (jarvis->getBody(arduinoMsg) == 1) {
-      Serial.println("akzeptiert");
+      //Serial.println("akzeptiert");
+      digitalWrite(2, HIGH);
+      delay(1000);
+      digitalWrite(2, LOW);
       return IDLE_STATE;
     }
     if (jarvis->getBody(arduinoMsg) == 2) {
-      Serial.println("abgelehnt");
+      //Serial.println("abgelehnt");
       this->errorMsg = "order declined";
     }
   } else{

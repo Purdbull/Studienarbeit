@@ -1,3 +1,5 @@
+using MQTTnet.AspNetCore.Extensions;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -6,6 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+
+
+
 
 namespace Server_1._0
 {
@@ -20,7 +26,18 @@ namespace Server_1._0
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                   
+                    webBuilder.UseKestrel(
+                    o =>
+                    {
+                        o.ListenAnyIP(1883, l => l.UseMqtt()); // MQTT pipeline
+                        o.ListenAnyIP(5000); // Default HTTP pipeline
+                    });
+                   
+
                     webBuilder.UseStartup<Startup>();
                 });
+
+
     }
 }

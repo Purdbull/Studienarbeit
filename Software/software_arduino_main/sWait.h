@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include "State.h"
+#include "Decoder.h"
 
 #ifndef sWait_h
 #define sWait_h
@@ -18,6 +19,11 @@
 class sWait : public State {
   public:
     sWait();
+    ~sWait();
+    Decoder* jarvis;
+    void handle();
+    void clearSerialBuffer();
+    int handle(byte);
     int handleWithoutParam();
 };
 

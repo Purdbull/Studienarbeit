@@ -1,5 +1,7 @@
 #include "Arduino.h"
 #include "State.h"
+#include "BatteryMaster.h"
+#include "Decoder.h"
 
 #ifndef sIdle
 #define sIdle_h
@@ -20,9 +22,18 @@
 class sIdle : public State {
     public:
         sIdle();
+        ~sIdle();
+    
+        Decoder* jarvis;
+        BatteryMaster* batteryMeasure;
+        
+        
+        
+        void sendBattery(float, float);
+        void handle();
+        
         int handle(byte);
         int handleWithoutParam();
-
 };
 
 #endif

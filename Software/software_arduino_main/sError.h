@@ -18,6 +18,7 @@ class sError : public State{
   public:
     sError();
     void handle();
+    int handle(byte);
     int handleWithoutParam();
 };
 
