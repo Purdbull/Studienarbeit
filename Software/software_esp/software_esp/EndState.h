@@ -7,8 +7,9 @@
 
 class EndState : public State {
     public:
-        Decoder* jarvis;
         EndState();
+        ~EndState();
+        Decoder* jarvis;
         int handle(String);
         int handle(byte);
 

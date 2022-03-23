@@ -5,6 +5,10 @@ sOff::sOff(){
   
 }
 
+sOff::~sOff(){
+  
+}
+
 void sOff::handle(){
   
 }

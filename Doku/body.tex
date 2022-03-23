@@ -761,10 +761,69 @@ Wird eine Nachricht vom ESP empfangen, wird folgende Methode im Idle-Zustand auf
 Die Methode aus \autoref{code:IdleState:handleByte} überprüft, ob es sich bei der NAchricht um eine Positionsanfrage handelt. Ist dies der Fall, wechselt die Maschine den Zustand zu \texttt{POSITION\_STATE}, andernfalls zu \texttt{ERROR}, da diese handle-Methode nur mit Positionsanfragen aufgerufen werden darf.
 Die anderen States implementieren auf ähnliche Weise die handle-Methode mit und ohne Parameter. Sie führen die Aufgaben des States durch und geben als \texttt{int} den neuen State zurück. 
 
-\section{State Maschine}
-Die State Maschine ist ein Klasse, welche die Zustandsübergänge verwaltet. Sie hat Zugriff auf emfangene Nachrichten und ruft jenachdem ob es eine neue Nachricht gibt die handle-Methode des aktuellen Zustands mit oder ohne byte-Parameter aus.
+\section{State-Machine}
+Die State-Machine ist ein Klasse, dessen Objekt alle Zustandsübergänge verwaltet. Sie hat Zugriff auf emfangene Nachrichten und ruft, jenachdem ob es eine neue Nachricht gibt, die Methode \texttt{handle} des aktuellen Zustands mit oder ohne byte-Parameter auf. Abhängig vom Rückgabewert der Funktion wird der aktuelle State geköscht, und der korrekte neue State initialisiert. \autoref{code:machineHandle} zeigt einen Ausschnitt einer solchen Methode der ZUstandsmaschine auf der Hauptsteuerung. ZUm Vergleich ist der Zustandsautomat aus \autoref{pic:statemaschineARD} einzusehen.
+\vspace{0.5cm}
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+void StateMaschine::StateHandle() { 
+	switch (this->currentState->handleWithoutParam()) {
+		case IDLE_STATE:
+		delete (this->currentState);
+		this->currentState = new sIdle;
+		break;
 
+		case POSITION_STATE:
+		delete(this->currentState);
+		this->currentState = new sError();
+		break;
 
+		//other states
+
+		case ERROR_STATE:
+		delete(this->currentState);
+		this->currentState = new sError();
+		this->currentState->handle();
+		delete(this->currentState);
+		this->currentState = new sIdle();
+		break;
+	}
+}
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:machineHandle}Handle-Methode zum Zustandsübergang ohne empfangene Nachricht}
+
+Das Switch-Case dient dazu den richtigen State zu initialisieren. In diesem Beispiel würde im Fall \texttt{IDLE\_STATE} ein neuer Idle-State initialisiert. Im Falle \texttt{POSITION\_STATE} erfolgt ein wechsel zu Error-State, da es keinen Fall geben sollte indem ohne \texttt{byte}-Parameter (Positionsabfrage) zu \texttt{POSITOIN\_STATE} gewechselt werden kann. Gibt ein Zustand selbst, aufgrund von Fehlern bei der Ausführung, \texttt{ERROR\_STATE} zurück, wird ein Error-State initialisiert und ausgeführt. Die Ausführung validiert, im Falle der Hauptsteuerung, wie gravierend bzw gefährlich der Fehler ist und führt falls nötig einen Nothalt aus. In diesem Fall müsste die Bahn in Anfangsposition neugestartet werden. Ist kein Nothalt nötig, wird ein Fehler mit einer Status-LED signalisiert, und die Maschine wechselt wieder zu Idle. 
+\\ Die weiteren States und Übergangsfunktionen werden auf gleiche Weise mit ihren jeweiligen Anpassungen (z.B. IdleState der Hauptsteuerung misst die Batterie wenn keine Nachricht emfangen wurde) implementiert. Somit ergeben sich folgende Klassen für die Zustandsmaschinen von Arduino und ESP:
+
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+//State-Machine Arduino
+class StateMachine{
+	private:
+		State *currentState;
+	public:
+		StateMachine();
+		~StateMachine();
+		void StateHandle(byte);
+		void StateHandle();
+		void handle();
+		void clearSerialBuffer();
+};
+//State-Machine ESP
+class StateMachine{
+	private:
+		State *currentState;
+	public:
+		StateMachine();
+		~StateMachine();
+		void StateHandle(byte);
+		void StateHandle(String);
+		void StateHandle();
+		void handle();
+		void clearSerialBuffer();
+};
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:stateMachines} State-Maschinen von ESP und Arduino}
+
+In \autoref{code:stateMachines} sind die KLassendefinitionen der Zustandsmaschinen von ESP und Arduino gezeigt. Zu erkennen ist dabei, dass jene des ESPs eine weitere Überladung der funktion \texttt{StateHandle} mit einem \texttt{String} als übergabeparameter hat. Diese dient dazu, Nachrichten die vom Server mit \acrshort{mqtt} übertragen wurden evaluieren zu lassen. die Methode \texttt{handle} wird aus der \texttt{main} aufgerufen und verwaltet Nachrichten. D.h. sie ruft je nach Nachrichteneingang die Methode \texttt{StateHandle} ohne oder mit den entsprechenden Parametern auf. 
 %
 %\section{Fertigungsverfahren}\\
 %Für die vorgestellten Bauteile soll nun das Fertigungsverfahren ausgewählt weden. Dabei besteht die Möglichkeit konventionelle- und adaptiven Fertigungsverfahren zur Auswahl.

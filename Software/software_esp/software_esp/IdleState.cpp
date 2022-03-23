@@ -7,6 +7,10 @@ IdleState::IdleState(){
     this->jarvis = new Decoder();
   }
 
+IdleState::~IdleState(){
+  delete (this->jarvis);
+}
+
 
 int IdleState::handle(String serverMsg){
     this->driveToPosition=this->jarvis->getPosition(serverMsg); 

@@ -6,6 +6,9 @@ EndState::EndState() {
   this->jarvis = new Decoder();
 }
 
+EndState::~EndState(){
+  delete (this->jarvis);
+}
 
 int EndState::handle(String serverMsg) {
   this->errorMsg = "Endstate Handler with string called";

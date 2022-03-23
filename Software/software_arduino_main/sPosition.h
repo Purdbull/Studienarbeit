@@ -16,6 +16,7 @@
 class sPosition : public State {
   public:
     sPosition();
+    ~sPosition();
     void handle();
     int handle(byte);
     int handleWithoutParam();

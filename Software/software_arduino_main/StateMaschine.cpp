@@ -42,9 +42,7 @@ void StateMaschine::StateHandle(byte espMsg) {
   }
 }
 
-void StateMaschine::StateHandle() {
-
-  
+void StateMaschine::StateHandle() { 
  switch (this->currentState->handleWithoutParam()) {
     case IDLE_STATE:
       delete (this->currentState);

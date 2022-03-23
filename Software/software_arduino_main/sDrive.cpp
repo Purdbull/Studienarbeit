@@ -5,6 +5,10 @@ sDrive::sDrive(int pos){
   this->driveToPosition = pos;
 }
 
+sDrive::~sDrive(){
+  //todo
+}
+
 void sDrive::handle(){
   
 }

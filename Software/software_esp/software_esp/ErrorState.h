@@ -8,6 +8,8 @@
 class ErrorState : public State {
   public:
     //EspMQTTClient* clientPtr;
+    ErrorState();
+    ~ErrorState();
     ErrorState(String); //, EspMQTTClient*
     int handle(String);
     int handle(byte);

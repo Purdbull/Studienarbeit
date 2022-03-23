@@ -5,6 +5,10 @@ sError::sError(){
   
 }
 
+sError::~sError(){
+  
+}
+
 void sError::handle(){
   //TODO emergency break!
   //if fatal error while true

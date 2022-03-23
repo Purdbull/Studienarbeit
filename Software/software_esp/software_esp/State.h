@@ -17,6 +17,8 @@
 
 class State{
     public:
+        State();
+        virtual ~State();
         virtual int handle(byte);
         virtual int handle(String);
         virtual int handleWithoutParam();

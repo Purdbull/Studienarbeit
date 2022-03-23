@@ -6,9 +6,10 @@
 #define IdleState_h
 
 class IdleState : public State {
-    public:
-        Decoder* jarvis;
+    public:    
         IdleState();
+        ~IdleState();
+        Decoder* jarvis;
         int handle(String);
         int handle(byte);
         

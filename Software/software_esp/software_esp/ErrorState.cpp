@@ -7,6 +7,10 @@ ErrorState::ErrorState(String msg){ //, EspMQTTClient* ptr
     //this->clientPtr = ptr;
   }
 
+ErrorState::~ErrorState(){
+  //delete (this->clientPtr);
+}
+
 
 int ErrorState::handle(String serverMsg){
   this->errorMsg = "error handler with param called";

@@ -9,6 +9,10 @@ PositionState::PositionState(int pos) {
   this->driveToPosition = pos;
 }
 
+PositionState::~PositionState(){
+  delete (this->jarvis);
+}
+
 
 int PositionState::handle(String serverMsg) {
   this->errorMsg = "position state handler with string called";

@@ -5,6 +5,10 @@ sPosition::sPosition(){
   
 }
 
+sPosition::~sPosition(){
+  
+}
+
 void sPosition::handle(){
   
 }
