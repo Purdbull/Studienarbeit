@@ -35,38 +35,27 @@ void setup() {
   pinMode(m1, OUTPUT);
   pinMode(led, OUTPUT);
   initInterrupts();
-  linear(100);
-
-}
-
-//-------------main--------------
-void loop() {
-  linear(100); 
-  delay(12000); 
-  mode(3); 
-  delay(10000); 
-  linear(100,100); 
-  delay(5000); 
-  mode(1); 
-  delay(5000); 
-  
-  
-
-
-
 
 }
 
 
 //------------functions----------
 
-
-void linear(int s, int b) {
+//-->driving<----
+void linear(int s, int b = 40) {
   //s = newSpeed, b = acceleration
 
   mode(0); //enable motor
-
+    
   if (y != s) {
+    setDir(s); 
+    if (y == 0) {
+      // Motor StartUp
+      stepMode(4);
+      delay(1000);
+      stepMode(2);
+      delay(1000);
+    }
     y = map(s, 0, 100, Max, Min);
     Serial.println("---->Acc./ Dec. to " + String(s) + " %<---");
 
@@ -77,28 +66,9 @@ void linear(int s, int b) {
   }
 
 
-
 }
 
-void linear(int s) {
-  //s = newSpeed, b = acceleration
-
-  mode(0); //enable motor
-
-  if (y != s) {
-
-    y = map(s, 0, 100, Max, Min);
-    Serial.println("---->Acc./ Dec. to " + String(s) + " %<---");
-  }
-
-  if (a != 10) {
-    a = map(40, 0, 100, aMax, aMin);
-  }
-
-
-}
-
-
+//--->modes<----
 void mode(int n) {
   //idleMode
   if (n == 0) {
@@ -150,28 +120,6 @@ void mode(int n) {
   }
 }
 
-void en() {
-  digitalWrite(enbl, 1);
-}
-
-void dis() {
-  digitalWrite(enbl, 0);
-  Serial.println("disabled");
-}
-
-void initInterrupts() {
-  cli();                                //clear local interrupt flag
-  TCCR1A = 0;                           // set entire TCCR1A register to 0 TCCR - Timer/Counter Control Register
-  TCCR1B = 0;                           // Setze Timer/Counter Control Register TCCR1B auf 0
-  TCCR1B |= (1 << WGM12);               // Schalte Clear Timer on Compare (CTC) Modus ein
-  //TCCR1B |= (1 << CS12) | (1 << CS10);  // Setze CS10 und CS12 Bit auf 1 für den 1024 Prescaler. Maximalfrequenz: 7.812 Khz
-  TCCR1B |=  (1 << CS11);                 // CS11 & CS01 für 64 Prescaler.
-  TCNT1  = 0;                           // Initialisiere Zähler/Zeitgeber Register Wert auf 0
-  OCR1A = Max;//  Aufruffrequenz Timer 1  241 Hz * 2
-  TIMSK1 |= (1 << OCIE1A); // Erlaube Timer compare interrupt TIMSK - Timer/Counter Interrupt Mask Register
-  sei();//allow interrupts
-
-}
 
 void stepMode(int mode) {
   //keep in mind: enable negative logic!
@@ -198,28 +146,50 @@ void stepMode(int mode) {
 
 }
 
-void setDirection(int velo) {
-  if (velo > 0) {
+//-->dis/en/dir<----
+void en() {
+  digitalWrite(enbl, 1);
+}
+
+void dis() {
+  digitalWrite(enbl, 0);
+  Serial.println("disabled");
+}
+
+void setDir(int s) {
+  if (s < 0) {
     digitalWrite(dir, 1);
-
   }
 
-  if (velo < 0) {
+  if (s > 0) {
     digitalWrite(dir, 0);
-
   }
 
-  else {
+  if (s * y < 0) {
+    //illegal, error!
     return;
-    //stopMotor!
   }
 
 }
 
 
+//---->Interrupts<----
+void initInterrupts() {
+  cli();                                //clear local interrupt flag
+  TCCR1A = 0;                           // set entire TCCR1A register to 0 TCCR - Timer/Counter Control Register
+  TCCR1B = 0;                           // Setze Timer/Counter Control Register TCCR1B auf 0
+  TCCR1B |= (1 << WGM12);               // Schalte Clear Timer on Compare (CTC) Modus ein
+  //TCCR1B |= (1 << CS12) | (1 << CS10);  // Setze CS10 und CS12 Bit auf 1 für den 1024 Prescaler. Maximalfrequenz: 7.812 Khz
+  TCCR1B |=  (1 << CS11);                 // CS11 & CS01 für 64 Prescaler.
+  TCNT1  = 0;                           // Initialisiere Zähler/Zeitgeber Register Wert auf 0
+  OCR1A = Max;//  Aufruffrequenz Timer 1  241 Hz * 2
+  TIMSK1 |= (1 << OCIE1A); // Erlaube Timer compare interrupt TIMSK - Timer/Counter Interrupt Mask Register
+  sei();//allow interrupts
 
-//
-//---------ISR----------
+}
+
+
+//-----------------ISR-----------------
 
 ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
   digitalWrite(clk, !(digitalRead(clk)));
@@ -257,6 +227,22 @@ ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
     yDone = false;
     digitalWrite(led, 0);
   }
+
+
+}
+
+
+//-------------main--------------
+void loop() {
+  linear(100);
+  delay(12000);
+  mode(3);
+  delay(10000);
+  linear(100, 100);
+  delay(5000);
+  mode(1);
+  delay(5000);
+
 
 
 
