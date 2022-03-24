@@ -41,24 +41,16 @@ void setup() {
 
 //-------------main--------------
 void loop() {
-  linear(50, 70);
-  delay(6000);
-
-  mode(1);
-  delay(5000);
-
-  linear(100, 100);
-  delay(5000);
-
-  mode(2);
-  delay(8000);
-  linear(40);
-  delay(2000);
-  mode(3);
-  delay(6000);
-  mode(4);
-  delay(8000);
-
+  linear(100); 
+  delay(12000); 
+  mode(3); 
+  delay(10000); 
+  linear(100,100); 
+  delay(5000); 
+  mode(1); 
+  delay(5000); 
+  
+  
 
 
 
@@ -117,7 +109,7 @@ void mode(int n) {
   //emergencyStopMode
   if (n == 1) {
     Serial.println("---->EmergencyStop<----");
-    linear(0, 90);
+    linear(0, 100);
     delay(1);
     while (!yDone) {
       delay(1);
