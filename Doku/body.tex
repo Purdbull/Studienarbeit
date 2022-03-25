@@ -318,6 +318,7 @@ In dem Schema sind die Komponenten hierarchisch dargestellt. Die Pfeile dazwisch
 \acrshort{mqtt} dient zur Kommunikation zwischen dem Server und der Hochbahn. Für die Übermittlung der \acrshort{mqtt}-Befehle  befindet sich ein \acrshort{mqtt}-Broker auf der Kommunikationsebene. Die Hochbahn erhält Information über die Station, die angefahren werden soll. Während der Fahrt gibt die Bahn Rückmeldung über die aktuelle Position. Außerdem sollen Meldungen des Systems zur Kollisionsvermeidung und der Entladespannung der Batterie übertragen werden. Auf der Hochbahn führt ein ESP32 als Controller die Kommunikation durch. Die Steuerung des Motors und die Kollisionsvermeidung sind auf zwei Arduino Nanos ausgelagert. Der ESP32 ist den beiden Controllern übergeordnet. Für die Kommunikation zwischen der Motorsteuerung und dem ESP32 wird \acrshort{uart} zur seriellen Kommunikation verwendet. Der Hochbahncontroller versendet darüber Befehle zur Motorfrequenz und empfängt dafür von der Motorsteuerung die aktuelle Geschwindigkeit. \autoref{sec:motorsteuerung} beschreibt die Umsetzung der Motorsteuerung. Wie in Abschnitt \ref{sec:konzeptKollisionsvermeidung} beschrieben, überprüft die Sicherheitssteuerung kontinuierlich die Distanzwerte der Ultraschallsensoren. Ist eine Kollision zu erwarten, setzt die Steuerung einen entsprechenden Interrupt am Hochbahn-Controller. Der \acrshort{reed}-Kontakt für die Positionserfassung ist über $I/O$-Pins direkt mit dem Hochbahncontroller verbunden. 
 
 \chapter{Entwicklung der Platine}
+\label{sec:ecardConcept}
 In \autoref{sec:konzeptSchnittstellen} wurde bereits angedeutet dass auf der Hochbahn mehrere elektronische Komponenten zusammenarbeiten müssen (Arduino, ESP32, etc.). Daher ist es logisch diese Komponenten auf einer Hauptplatine zu einem System zu vereinen. 
 Im folgenden wird die Entwicklung dieser Platine erläutert.
 
@@ -673,6 +674,27 @@ Die Wellen werden axial beansprucht. Damit die Befestigung der Welle die axialen
 \newpage
 
 \chapter{Fertigung der Platine}
+\section{Schaltplan}
+\autoref{pic:schaltplan} zeigt den gesamten Schaltplan für die Platine. Zu sehen sind ESP32, zwei Arduini, sowie Steppertreiber, ein Relais und diverse \textcolor{magenta}{Schraubklemmen} um beispielsweise die beiden \textcolor{orange}{Ultraschallsensoren} anzuschließen. Der Einsatz des \textcolor{red}{Relais} wird in TODO erklärt.Die \textcolor{blue}{Kommunikation zwischen Arduino und ESP} ist in TODO aufgeführt. Unter TODO ist die \textcolor{green}{Mosfetschaltung zur Spannungsmessung} erklärt. All diese Komponenten sind farblich im Schaltplan markiert. In (TODO) wurde das Energieversorgungskonzept erklärt, welches ebenfalls auf der Platine vorhanden sein muss.
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=13.3cm]{schaltplan.jpg}
+		\caption{\label{pic:schaltplan} Schaltplan der Platine}
+	\end{center}
+\end{figure}
+
+\subsection{Spannungsversorgung}
+Auf der Platine gibt es drei unterschiedliche Betriebsspannungen: 
+\begin{center}
+	\begin{itemize}
+		\item 3,3V für den ESP32,
+		\item 5V für beide Arduini und Stepper-Driver
+		\item und 10V für den Schrittmotor.
+	\end{itemize}
+\end{center}
+All diese Spannungen kommen aus einer Spannungsquelle, welche aus den beiden Zellen des Litium-Ionen Akkus besteht. Die Spannungsquelle schwankt je nach Ladezustand zwischen ca. 7,4V und 8,2V. Da schwankende Spannungen unbrauchbar für die Komponenten sind, werden Spannungsregler benötigt. 
+Ein DCDC Wandler regelt die Ausgangsspannung der beiden Batterien auf stabile 5V. der ESP32 besitzt selbst einen Spannungsregler von 5V auf 3,3V, sodass dieser ebenfalls an die Arduino-Versorgungsleitung gelegt werden kann. Wie schon in TODO erwähnt, regelt ein Step-Up-Wandler die Spannung der beiden Zellen auf 10V für den Motortreiber und Schrittmotor. 
 
 \chapter{Implementierung der Zustandsautomaten}
 Im folgenden wird die zuvor unter \autoref{sec:stateARD} konzeptionierte Logik des Zustandsautomaten der Hauptsteuerung implementiert.
@@ -802,9 +824,9 @@ class StateMachine{
 	public:
 		StateMachine();
 		~StateMachine();
-		void StateHandle(byte);
-		void StateHandle();
 		void handle();
+		void StateHandle();
+		void StateHandle(byte);
 		void clearSerialBuffer();
 };
 //State-Machine ESP
@@ -814,16 +836,16 @@ class StateMachine{
 	public:
 		StateMachine();
 		~StateMachine();
+		void handle();
+		void StateHandle();
 		void StateHandle(byte);
 		void StateHandle(String);
-		void StateHandle();
-		void handle();
 		void clearSerialBuffer();
 };
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:stateMachines} State-Maschinen von ESP und Arduino}
 
-In \autoref{code:stateMachines} sind die KLassendefinitionen der Zustandsmaschinen von ESP und Arduino gezeigt. Zu erkennen ist dabei, dass jene des ESPs eine weitere Überladung der funktion \texttt{StateHandle} mit einem \texttt{String} als übergabeparameter hat. Diese dient dazu, Nachrichten die vom Server mit \acrshort{mqtt} übertragen wurden evaluieren zu lassen. die Methode \texttt{handle} wird aus der \texttt{main} aufgerufen und verwaltet Nachrichten. D.h. sie ruft je nach Nachrichteneingang die Methode \texttt{StateHandle} ohne oder mit den entsprechenden Parametern auf. 
+In \autoref{code:stateMachines} sind die KLassendefinitionen der Zustandsmaschinen von ESP und Arduino gezeigt. Die Klasse auf dem ESP hat im Vergleich zur Zustandsmaschine auf dem Arduino eine weitere Überladung der Methode \texttt{StateHandle} mit einem \texttt{String} als übergabeparameter. Diese dient dazu, Nachrichten die vom Server mit \acrshort{mqtt} übertragen wurden evaluieren zu lassen. die Methode \texttt{handle} wird aus der \texttt{main} aufgerufen und verwaltet Nachrichten. D.h. sie ruft je nach Nachrichteneingang die Methode \texttt{StateHandle} ohne oder mit entsprechendem Parametern auf. 
 %
 %\section{Fertigungsverfahren}\\
 %Für die vorgestellten Bauteile soll nun das Fertigungsverfahren ausgewählt weden. Dabei besteht die Möglichkeit konventionelle- und adaptiven Fertigungsverfahren zur Auswahl.
