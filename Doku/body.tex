@@ -368,6 +368,18 @@ Um die 5V Pulse auf 3,3V zu ziehen ist nicht zwingend eine Mosfet oder Transisto
 
 Mit dem Verhältnis von $1 \div 1,6$ der beiden Widerstandsgrößen wird eine Ausgansspannung von ca. 3,08V bei einem 5V Pegel erzeugt. Diese wird in jedem Fall als logisches HIGH erkannt und der Spannungsteiler erfüllt so seinen Zweck.
 
+\subsection{Spannungsversorgung}
+Auf der Platine gibt es drei unterschiedliche Betriebsspannungen: 
+\begin{center}
+	\begin{itemize}
+		\item 3,3V für den ESP32,
+		\item 5V für beide Arduini und Stepper-Driver
+		\item und 10V für den Schrittmotor.
+	\end{itemize}
+\end{center}
+All diese Spannungen kommen aus einer Spannungsquelle, welche aus den beiden Zellen des Litium-Ionen Akkus besteht. Die Spannungsquelle schwankt je nach Ladezustand zwischen ca. 7,4V und 8,2V. Da schwankende Spannungen unbrauchbar für die Komponenten sind, werden Spannungsregler benötigt. 
+Ein DCDC Wandler regelt die Ausgangsspannung der beiden Batterien auf stabile 5V. der ESP32 besitzt selbst einen Spannungsregler von 5V auf 3,3V, sodass dieser ebenfalls an die Arduino-Versorgungsleitung gelegt werden kann. Wie schon in TODO erwähnt, regelt ein Step-Up-Wandler die Spannung der beiden Zellen auf 10V für den Motortreiber und Schrittmotor. 
+
 \section{Spannungsmessungen an den Batteriezellen}
 \label{sec:mess}
 Die Stromversorgung der Hochbahn stellen zwei in Reihe geschaltete Lithium Ionen Akkus zur Verfügung. Diese Reihenschaltung ist in \autoref{pic:messfalsch} gezeigt. Während bei einfachen Batterien die Gesamtspannung gemessen werden kann, müssen hier die beiden Zellen einzeln betrachtet werden.
@@ -675,6 +687,7 @@ Die Wellen werden axial beansprucht. Damit die Befestigung der Welle die axialen
 
 \chapter{Fertigung der Platine}
 \section{Schaltplan}
+\label{sec:eCardPlan}
 \autoref{pic:schaltplan} zeigt den gesamten Schaltplan für die Platine. Zu sehen sind ESP32, zwei Arduini, sowie Steppertreiber, ein Relais und diverse \textcolor{magenta}{Schraubklemmen} um beispielsweise die beiden \textcolor{orange}{Ultraschallsensoren} anzuschließen. Der Einsatz des \textcolor{red}{Relais} wird in TODO erklärt.Die \textcolor{blue}{Kommunikation zwischen Arduino und ESP} ist in TODO aufgeführt. Unter TODO ist die \textcolor{green}{Mosfetschaltung zur Spannungsmessung} erklärt. All diese Komponenten sind farblich im Schaltplan markiert. In (TODO) wurde das Energieversorgungskonzept erklärt, welches ebenfalls auf der Platine vorhanden sein muss.
 
 \begin{figure}[h]
@@ -684,17 +697,40 @@ Die Wellen werden axial beansprucht. Damit die Befestigung der Welle die axialen
 	\end{center}
 \end{figure}
 
-\subsection{Spannungsversorgung}
-Auf der Platine gibt es drei unterschiedliche Betriebsspannungen: 
-\begin{center}
-	\begin{itemize}
-		\item 3,3V für den ESP32,
-		\item 5V für beide Arduini und Stepper-Driver
-		\item und 10V für den Schrittmotor.
-	\end{itemize}
-\end{center}
-All diese Spannungen kommen aus einer Spannungsquelle, welche aus den beiden Zellen des Litium-Ionen Akkus besteht. Die Spannungsquelle schwankt je nach Ladezustand zwischen ca. 7,4V und 8,2V. Da schwankende Spannungen unbrauchbar für die Komponenten sind, werden Spannungsregler benötigt. 
-Ein DCDC Wandler regelt die Ausgangsspannung der beiden Batterien auf stabile 5V. der ESP32 besitzt selbst einen Spannungsregler von 5V auf 3,3V, sodass dieser ebenfalls an die Arduino-Versorgungsleitung gelegt werden kann. Wie schon in TODO erwähnt, regelt ein Step-Up-Wandler die Spannung der beiden Zellen auf 10V für den Motortreiber und Schrittmotor. 
+
+
+\section{PCB-Design}
+Der fertige Schaltplan aus \autoref{sec:eCardPlan} ist nun in ein fräsbereites Platinen Design umzuwandeln. Um den Fräsaufwand so gering wie möglich zu halten, werden alle elektronischen Verbindungen auf einer Seite platiert. Daraus folgt, dass es zu keinen Überlappungen von Verbindungen geben darf, da sonst der Stromfluss nicht mehr logisch getrennt wäre. Um den Verbindungsaufwand zu verringern, wurde \gls{gnd} auf die Kupferschicht gelegt. Da alle Komponenten den gleichen $-Pol$ haben, müssen sie an der entsprechenden Stelle lediglich an die Schicht gebunden werden, welche somit eine \gls{gnd}-Leitung ersetzt.
+\vspace{0.5cm}
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width = 12cm]{pcbDesign.png}
+		\caption{\label{pic:pcbDesign} PCB-Design der Platine}
+	\end{center}
+\end{figure}
+
+\autoref{pic:pcbDesign} zeigt den PCB-Entwurf für die Hauptplatine. Zu erkennen sind alle zuvor erwähnten Komponenten. Ebenfalls ersichtlich ist (weiß markiert) die 5V Versorgungsleitung. An die unten rechts platzierte Schraubklemme wird der StepUp Wandler für 10V angeschlossen. Dabei ist zu erkennen, dass diese Leitungen besonders dick (2mm) sind. Es handelt sich um die Versorgungsleitung für alle Komponenten, wodurch hier der meiste Strom fließt. Die Dicke verhindert eine Hitzeüberlastung der Leitung. Datensignale sind mit 0.3mm am dünnsten.[TODO: Bib mit dickenliste]
+Ebenfalls ersichtlich wird, dass das Relais die Stromleitung der Batterie bereits vor dem Step-Up Wandler trennt. Der Grund dafür ist, dass im ausgeschaltenen Zustand kein Strom aus den Batterien fließen soll, was bei angeschlossenem Wandler der Fall wäre. 
+
+\section{Fertigung}
+Gefräst wurde die Platine in der Ausbildungsabteilung der SICK AG. Die bereits mit (todo acr) smd-Teilen bestückte Platine ist in \autoref{pic:ecardCopper} zu sehen. 
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width = 10cm]{eCardCopper.jpg}
+		\caption{\label{pic:ecardCopper}Mit SMD-Teilen bestückte Platine}
+	\end{center}
+\end{figure}
+
+Nach Verlöten der übrigen Komponenten und Anschluss von Step-Up-Wandler und Batterien konnte die Spannungsversorgung erfolgreich getestet werden. Dass die LEDs der Arduinos leuchten zeigt, dass kein Kurzschluss herrscht. Mit dem Multimeter konnten zudem alle Spannungen überprüft werden. In \autoref{pic:ecardLights} ist die fertig bestückte Platine im aktivierten Zustand gezeigt.
+
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=10cm]{ecardLight.jpg}
+		\caption{\label{pic:ecardLights}Fertig bestückte Platine}
+	\end{center}
+\end{figure}
 
 \chapter{Implementierung der Zustandsautomaten}
 Im folgenden wird die zuvor unter \autoref{sec:stateARD} konzeptionierte Logik des Zustandsautomaten der Hauptsteuerung implementiert.
