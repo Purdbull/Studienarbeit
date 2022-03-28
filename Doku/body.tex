@@ -441,7 +441,7 @@ Wie schon in \autoref{sec:konzeptSchnittstellen} aufgeführt, sollte die Softwar
 \begin{itemize}
 	\item ESP32 zur Befehlserkennung und Steuerung der Hochbahn
 	\item Arduino Nano zur Motorsteuerung
-	\item Arduino Nano zur Ultraschallüberwachung
+	\item Arduino Nano zur Ultraschallüberwachung %@moritz: Bereichsüberwachung statt Ultraschallüberwachung
 \end{itemize}
 \autoref{sec:konzeptSchnittstellen} stellt das erste Konzept zur Aufteilung der Aufgabenbereiche dar. Nach Evaluierung der hierbei aufkommenden Fehlerquellen sind einige Änderungen getroffen worden.
 Ursprünglich sollte der ESP32 die Hauptsteuerung übernehmen. Er sollte Befehle wie \texttt{beschleunigen} oder \texttt{abbremsen auf Geschwindigkeit x} zur Motorsteuerung geben und dabei die aktuelle Position und damit die nächsten Schritte selbst errechnen. Die Erfahrung zeigt jedoch, dass ein ESP32 mit hoher Netzlast oder Verbindungsabbrüchen leicht zum Neustart oder gar Abstürzen neigt. Würde das passieren während die Bahn beispielsweise auf die Endstation zurollt, bekäme die Motorsteuerung nicht rechtzeitig den Befehl zum abbremsen und es käme zu einem Unfall.
@@ -451,11 +451,12 @@ Deswegen wurde die Hauptsteuerung an den Arduino Nano, welcher ursprünglich nur
 \label{sec:aufgabeESP}
 Der ESP32 nimmt nachwievor Befehle des Webservers entgegen. Er ist ebenfalls mit dem Reedkontakt welcher über Magneten an der Schiene die Position aktualisiert, verbunden. Das ermöglicht ihm, unabhängeíg von der Hauptsteuerung Positionsmeldungen an den Webserver schicken. Zudem gibt er Befehle an die Hauptsteuerung, welche sich allerdings auf die anzufahrende Position beschränken. Die Fahrt selbst wird vom Arduino Nano gesteuert:
 
+%@moritz: Motorsteuerung besser als Hauptsteuerung (etws verwirrend, da zuvor immer ESP32 als Hauptsteuerung bezeichnet wurde  und auch oben so bezeichnet wird)
 \subsection{Arduino Nano als Hauptsteuerung}
 \label{sec:aufgabeArduinoNanoMotor}
 Die Hauptsteuerung erhält vom ESP32 Anfahrpositionen. Über den Interrupt des Reedkontakts, wie auch beim ESP (\autoref{sec:aufgabeESP}), ist dem Arduino die aktuelle Position bekannt. Daraufhin soll ein individuelles Fahrprogramm des Schemas \textit{Von x nach y} berechnet und ausgeführt werden. Ebenfalls sind zwei analoge Pins angeschlossen, über jene Auskunft über den Ladezustand der Batteriezellen getroffen werden kann. Der zweite an den Arduino angeschlossene Interrupt dient der Kollisionserkennung. Dieser wird vom Arduino, welcher die Ultraschallsensoren steuert, übermittelt. Dabei gibt die Länge des Pulses Auskunft darüber, um welche Art der Kollisionserkennung es sich handelt.
 
-\subsection{Arduino Nano zur Ultraschallüberwachung}
+\subsection{Arduino Nano zur Ultraschallüberwachung} 
 \label{sec:aufgabeArduinoNanoUltraschall}
 Dieser Arduino hat nur die Aufgabe beide Ultraschallsensoren (jeweils einer auf jeder Seite des Tabletts) zu überwachen und mit einem Pin Auskunft darüber zu geben, welches Warn- oder Schutzfeld verletzt wurde. Da nur ein Pin zur Verfügung steht, bestimmt die Länge des \texttt{High}-Signals die Art der Kollisionserkennung.
 
@@ -464,6 +465,7 @@ Die Datenübertragung erfolgt, wie in \autoref{sec:konzeptSchnittstellen} erwäh
 
 \subsection{Anfragen- und Befehlsarten}
 Anfrage- oder Befehlsnachrichten können auf zwei Wegen erfolgen: Von ESP zu Arduino und umgekehrt. Es gibt insgesamt fünf Kategorien von Datenübertragungen:
+%@moritz: nochmal nennen, welcher Arduino gemeint ist 
 
 \begin{itemize}
 	\item Positionsabfrage zur Positionssynchronisation,
@@ -520,7 +522,7 @@ In folgender Tabelle sind die verschiedenen Arten des Contexts mit entsprechende
 \end{table}
 
 \subsection{Tail}
-In \autoref{tab:body} istzu erkennen, dass nie die letzten beiden Bits verwendet werden. Diese dienen dazu, den Transportweg der Nachricht zu erkennen. Dadurch ist eine Aussagen darüber, ob es sich beim Header \texttt{00} um eine Positionsabfrage oder eine Akkumeldung handelt, möglich.
+In \autoref{tab:body} ist zu erkennen, dass nie die letzten beiden Bits verwendet werden. Diese dienen dazu, den Transportweg der Nachricht zu erkennen. Dadurch ist eine Aussagen darüber, ob es sich beim Header \texttt{00} um eine Positionsabfrage oder eine Akkumeldung handelt, möglich.
 Ist das Tail mit \texttt{01} gekennzeichnet, handelt es sich um eine Nachricht von ESP32 zu Arduino. \texttt{10} steht für die umgekehrte Richtung.
 In folgendem sind zwei Beispielnachrichten genannt, welche der Definition des Protokolls entsprechen:
 
@@ -544,7 +546,7 @@ Die Software des EPS32 wird als Zustandsautomat realisiert. Dieser hat, wie scho
 		\caption{\label{pic:statemaschineESP}Zustandsautomat des ESP32 grafisch dargestellt}
 	\end{center}
 \end{figure}
-
+%@moritz: Habe in der Word Vorschläge aufgeschrieben
 In \autoref{pic:statemaschineESP} sind alle Zustände, sowie Zustandsübergänge gezeigt. Das Programm startet im Zustand \texttt{IDLE}. Ein Zustandswechsel kann durch eine Nachricht vom Server oder Arduino erfolgen. Eine Akkumeldung des Arduinos führt zu einer Akkumeldung zum Server und bleibt dabei im Zustand \texttt{IDLE}.
 Erhält der ESP einen Fahrbefehl vom Server, wechselt er zu Zustand \texttt{START}. Dieser beginnt eine Folge von Nachrichten und Handlungen mit dem Ziel \textit{die aktuelle Position der Hochbahn zu synchronisieren und den Fahrbefehl auszuführen}. \\
 Dazu wird erst eine Positionsanfrage an den Arduino geschickt und in den Zustand Position gewechselt. Erhält der ESP daraufhin die Position kann er die eigens gespeicherte aktualisieren und den Fahrbefehl an den Arduino schicken. Ist dies geschehen, befindet der ESP sich im End-ZUstand und wartet auf eine Akzeptierung seitens des Arduinos. Wird akzeptiert, befindet sich der ESP wieder im IDLE-Zustand und die Kette beginnt wieder von vorne. Sollte der Arduino die Anfrage ablehnen oder sonst auf diesem Weg irgendwas schiefgehen, wird die Kette unterbrochen und in den Error-Zustand gewechselt. Dieser kann mittels des vorherigem Zustand eine Fehlermeldung an den Server schicken, welche dem Nutzer angezeigt wird. Daraufhin kann ein neuer Fahrbefehl oder Akkuzustand empfangen werden. 
@@ -563,6 +565,7 @@ Der Automat ist in \autoref{pic:statemaschineARD} gezeigt.
 \newpage
 Zu sehen ist dabei wieder eine Kreisstruktur, bei der die einzelnen Zustände über ERROR unterbrechen und wieder in IDLE rücksetzen können. Der generelle Ablauf welcher in einer erfolgreich ausgeführten Fahr mündet ergibt sich wie folgt:
 
+%@moritz: Der Ablauf gilt ja generell für die Kommunikation und den beschreibst du ja auch vorher schon. Macht es dann nicht Sinn, den auch beim ESP schon zu erläutern? 
 \begin{center}
 	\begin{itemize}
 		\item 1. Eine Nachricht mit Positionsanfrage vom ESP wurde empfangen,
