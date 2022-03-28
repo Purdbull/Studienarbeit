@@ -319,11 +319,11 @@ In dem Schema sind die Komponenten hierarchisch dargestellt. Die Pfeile dazwisch
 
 \chapter{Entwicklung der Platine}
 \label{sec:ecardConcept}
-In \autoref{sec:konzeptSchnittstellen} wurde bereits angedeutet dass auf der Hochbahn mehrere elektronische Komponenten zusammenarbeiten müssen (Arduino, ESP32, etc.). Daher ist es logisch diese Komponenten auf einer Hauptplatine zu einem System zu vereinen. 
-Im folgenden wird die Entwicklung dieser Platine erläutert.
+In \autoref{sec:konzeptSchnittstellen} wurde bereits angedeutet, dass auf der Hochbahn mehrere elektronische Komponenten zusammenarbeiten müssen (Arduino, ESP32, etc.). Daher werden diese Komponenten, sowie benötigte Peripherie, auf einer Platine zu einem verteilten System vereint. 
+Die Entwicklung dieser Platine wird in Folgendem erläutert.
 
 \section{Anforderungen an die Platine}
-Die Platine muss folgende Anforderungen erfüllen: 
+Folgende Anforderungen an die Platine müssen erfüllt sein: 
 \begin{center}
 	\begin{itemize}
 		\item Kommunikation zwischen ESP32 und Arduino,
@@ -334,14 +334,14 @@ Die Platine muss folgende Anforderungen erfüllen:
 		\item und Anschluss des Motortreibers.
 	\end{itemize}
 \end{center}
-All diese Anforderungen sollen möglichst gering im Leistungsverbrauch sein. Das bedeutet, dass beispielsweise Spannungsteiler für die Spannungsüberwachung nur dann in Aktion treten, wenn auch wirklich Spannung gemessen wird. Hierbei würde sonst beständig Strom verbraucht werden.
+All diese Anforderungen sollen möglichst gering im Leistungsverbrauch sein. Das bedeutet, dass beispielsweise Spannungsteiler für die Spannungsüberwachung nur dann in Aktion treten, wenn auch wirklich Spannung gemessen wird. Ansonsten würde hierbei ein ständiger Stromverbrauch bestehen.
 
 \section{Kommunikation zwischen ESP32 und Arduino}
-Generell erfolgt die Kommunikation der beiden Mikrocontroller über \acrshort{uart}. Daraus folgt, dass der Pin \acrfull{rx} vom ESP32 mit \acrfull{tx} des Arduinos und \acrshort{rx} des Arduinos mit \acrshort{tx} des ESP32 verbunden sein muss. 
-Dabei entsteht folgendes Problem: der Arduino läuft auf der Spannung von 5V, während der ESP32 eine 3,3V Betriebsspannung hat. Dadurch erhielte der ESP32 beim Empfangen von Nachrichten einen zu hohen HIGH-Pegel, während der Arduino Nachrichten mit zu niedriger Spannung bekäme.
+Generell erfolgt die Kommunikation der beiden Mikrocontroller über \acrshort{uart}. Daraus folgt, dass \acrfull{rx}-Pin vom ESP32 mit \acrfull{tx}-Pin des Arduinos, sowie \acrshort{rx} des Arduinos mit \acrshort{tx} des ESP32 verbunden sein muss. 
+Daraus resultiert folgendes Problem: der Arduino läuft mit einer Betriebsspannung von 5V, während der ESP32 mit 3,3V fungiert. Dadurch erhielte der ESP32 beim Empfangen von Nachrichten einen zu hohen HIGH-Pegel, während der Arduino Nachrichten mit zu niedriger Spannung bekäme.
 
 \subsection{Level-Shifter}
-Um die Pulse des ESP32 auf die richtige Spannung zu bringen, wird ein sogenannter Level-Shifter verwendet. Dieser gibt die Spannung von 5V an den Arduino, während der ESP32 nur 3,3V ausgibt.
+Um die Pulse des ESP32 auf die richtige Spannung zu erhöhen, wird ein sogenannter Level-Shifter verwendet. Dieser übermittelt Signale mit einer Höhe von 5V an den Arduino, während der ESP32 nur 3,3V ausgibt.
 Der zugehörige Schaltplan ist in \autoref{pic:levelshift} gezeigt.
 \vspace{1cm}
 
@@ -352,12 +352,12 @@ Der zugehörige Schaltplan ist in \autoref{pic:levelshift} gezeigt.
 	\end{center}
 \end{figure}
 
-Angenommen \textit{data in} ist mit 0V vom ESP32 verbunden. Durch 3,3V am Gate des Mosfets schaltet sich dieses ein. Somit wird \textit{data out} durch das Mosfet ebenfalls auf 0V gezogen. 
-Liegt \textit{data in} jedoch auf 3,3V, gibt es keinen Spannungsunterschied zwischen Gate und Source des Mosfets. Das schaltet das Mosfet aus, sodass \textit{data out} auf die 5V gezogen wird. 
+Angenommen der ESP32 gibt an \textit{data in} ein \texttt{Low}-Signal, also 0V. Aufgrund der 3,3V am Gate des Mosfets schaltet sich dieses ein. Somit wird \textit{data out} durch das Mosfet ebenfalls auf 0V gezogen. 
+Liegt \textit{data in} jedoch auf 3,3V, gibt es keinen Spannungsunterschied zwischen Gate und Source des Mosfets. Dies deaktiviert das Mosfet, sodass \textit{data out} auf 5V gezogen wird. 
 Somit erzeugt eine positive Flanke von 3,3V des ESP32 eine Flanke von 5V am Arduino.
 
 \subsection{Spannungsteiler}
-Um die 5V Pulse auf 3,3V zu ziehen ist nicht zwingend eine Mosfet oder Transistorschaltung benötigt. Einfacher gestaltet sich die Verwendung eines Spannungsteilers. Dieser ist in \autoref{pic:spannungsteiler} gezeigt.
+Um 5V Pulse auf 3,3V zu ziehen, ist nicht zwingend eine Mosfet oder Transistorschaltung nötig. Hierbei genügt ein Spannungsteiler. Dieser ist in \autoref{pic:spannungsteiler} gezeigt.
 
 \begin{figure}[h]
 	\begin{center}
@@ -366,7 +366,7 @@ Um die 5V Pulse auf 3,3V zu ziehen ist nicht zwingend eine Mosfet oder Transisto
 	\end{center}
 \end{figure}
 
-Mit dem Verhältnis von $1 \div 1,6$ der beiden Widerstandsgrößen wird eine Ausgansspannung von ca. 3,08V bei einem 5V Pegel erzeugt. Diese wird in jedem Fall als logisches HIGH erkannt und der Spannungsteiler erfüllt so seinen Zweck.
+Aus dem Verhältnis von $1 \div 1,6$ der beiden Widerstandsgrößen wird eine Ausgansspannung von ca. 3,08V bei einem 5V Pegel erzeugt. Diese wird in jedem Fall als logisches \texttt{High} interpretiert.
 
 \subsection{Spannungsversorgung}
 Auf der Platine gibt es drei unterschiedliche Betriebsspannungen: 
@@ -377,13 +377,13 @@ Auf der Platine gibt es drei unterschiedliche Betriebsspannungen:
 		\item und 10V für den Schrittmotor.
 	\end{itemize}
 \end{center}
-All diese Spannungen kommen aus einer Spannungsquelle, welche aus den beiden Zellen des Litium-Ionen Akkus besteht. Die Spannungsquelle schwankt je nach Ladezustand zwischen ca. 7,4V und 8,2V. Da schwankende Spannungen unbrauchbar für die Komponenten sind, werden Spannungsregler benötigt. 
-Ein DCDC Wandler regelt die Ausgangsspannung der beiden Batterien auf stabile 5V. der ESP32 besitzt selbst einen Spannungsregler von 5V auf 3,3V, sodass dieser ebenfalls an die Arduino-Versorgungsleitung gelegt werden kann. Wie schon in TODO erwähnt, regelt ein Step-Up-Wandler die Spannung der beiden Zellen auf 10V für den Motortreiber und Schrittmotor. 
+All diese Spannungen kommen aus der Stromquelle, welche aus den zwei Zellen des Litium-Ionen Akkus besteht. Die Spannung liegt je nach Ladezustand zwischen ca. 7,4V und 8,2V. Da die Komponenten jedoch zu jedem Zeitpunkt die gleiche Spannung benötigen, werden Spannungsregler benötigt. 
+Einer davon ist ein DCDC-Wandler, welcher die Zellspannung auf konsistente 5V für die Arduini regelt. Da der ESP32 besitzt selbst einen Spannungsregler von 5V auf 3,3V besitzt, kann dieser ebenfalls an die Arduino-Versorgungsleitung gelegt werden. Wie schon in TODO erwähnt, erzeugt ein Step-Up-Wandler eine Spannung von 10V für Motortreiber und Schrittmotor. 
 
 \section{Spannungsmessungen an den Batteriezellen}
 \label{sec:mess}
 Die Stromversorgung der Hochbahn stellen zwei in Reihe geschaltete Lithium Ionen Akkus zur Verfügung. Diese Reihenschaltung ist in \autoref{pic:messfalsch} gezeigt. Während bei einfachen Batterien die Gesamtspannung gemessen werden kann, müssen hier die beiden Zellen einzeln betrachtet werden.
-Um die einzelnen Zelen zu messen, soll die Spannung jeweils am + Pol abgegriffen werden. Somit muss die Messeinrichtung von der Gesamtspannung die Spannung der ersten Zelle abziehen, um die Spannung der zweiten Zelle zu erhalten. Dieser Vorgang ist erforderlich, da kein Spannungsunterschied zwischen + und - der oberen Zelle gemessen werden kann. Grund dafür ist, dass der negative Pol des Arduinos gleich dem negativen Pol der unteren Zelle ist, nicht der oberen.
+Um die einzelnen Zellen zu messen, soll die Spannung jeweils am + Pol abgegriffen werden. Somit muss die Messeinrichtung von der Gesamtspannung jene der ersten Zelle abziehen, um die Spannung der zweiten Zelle zu erhalten. Dieser Vorgang ist erforderlich, da kein Spannungsunterschied zwischen + und - der oberen Zelle gemessen werden kann. Grund dafür ist, dass \gls{gnd} des Arduinos gleich mit \gls{gnd} der unteren Zelle ist, nicht der oberen.
 \newpage Verbände man, wie in \autoref{pic:messfalsch} gezeigt, zwei analoge Pins direkt mit den + Polen, wäre eine Spannungsmessung in der Theorie möglich.
 
 \begin{figure}[h]
@@ -397,15 +397,15 @@ In der Praxis ergeben sich dabei jedoch zwei Probleme:
 
 \begin{center}
 	\begin{itemize}
-		\item 1. Wenn die Spannungsversorgung der Platine abgeschaltet ist, würde ein Arduino sich über die analogen Pins selbst versorgen, wodurch ein unnötiger STromverbrauch entstände.
-		\item 2. Ein Arduino kann nur Spannungen zwischen 0V und 5V messen, wodurch eine Reihenschaltung der beiden 3,7V Zellen auch im entladenen Zustand am analogen Input die volle Spannung erzeugen. 
+		\item 1. Wenn die Spannungsversorgung der Platine abgeschaltet ist, würde ein Arduino sich über die analogen Pins selbst versorgen, wodurch ein unnötiger Stromverbrauch entstände. Dadurch würden sich die beiden Zellen im Schlimmsten Fall tiefenentladen.
+		\item 2. Ein Arduino kann nur Spannungen zwischen 0V und 5V messen, wodurch eine Reihenschaltung der beiden 3,7V Zellen auch im entladenen Zustand am analogen Input 5V, also 100\%, erzeugen. 
 	\end{itemize}
 \end{center}
 
 Die im folgenden erklärte Schaltung soll diese Probleme umgehen.
 \newpage
 \subsection{Mosfetschaltung zur aktivierbaren Spannungsmessung}
-Diese Schaltung soll es ermöglichen die Spannungsmessung an- und abzuschalten. Ein digitaler Pin des Arduinos soll die Messung mit einem 5V Pegel aktivieren und mit 0V deaktivieren können. Aktiviert, sollen ähnlich wie in \autoref{pic:messfalsch} beide Spannungen abgegriffen werden.
+Diese Schaltung soll ermöglichen, die Spannungsmessung per Signal aktivieren zu können. Das Signal wird dabei vom messenden Arduino mit einem 5V-Pegel erzeugt. Aktiviert, sollen ähnlich wie in \autoref{pic:messfalsch} beide Spannungen abgegriffen werden.
 
 \begin{figure}[h]
 	\begin{center}
@@ -415,10 +415,10 @@ Diese Schaltung soll es ermöglichen die Spannungsmessung an- und abzuschalten. 
 \end{figure}
 
 Die Mosfetschaltung zur Messung der ersten unten liegenden Zelle ist in \autoref{pic:messrichtig} gezeigt.
-Zu sehen sind ein p- und ein n-Kanal Mosfet. Das unten geschaltete n-Kanal-Mosfet verbindet bei einer posiiven Spannung von \textit{digital in} das Gate vom p-Kanal-Mosfet mit \gls{gnd}. Dadurch wird das p-Kanal-Mosfet geschaltet, wodurch bei \textit{voltage out} eine Spannung gemessen wird. Die Spannung ist jene, die am 1M$\Omega$ Widerstand abfällt. Der Widerstand bildet einen Spannungsteiler mit 10K$\Omega$. Da 1M$\Omega$ im Verhältnis jedoch viel größer ist, fällt fast die gesamte Spannung an diesem Widerstand ab, sodass diese auch an \textit{voltage out} gemessen werden kann.
+Zu sehen sind ein p- und ein n-Kanal Mosfet. Das unten geschaltete n-Kanal-Mosfet verbindet bei einer positiven Spannung auf \textit{digital in} das Gate vom p-Kanal-Mosfet mit \gls{gnd}. Dadurch wird das p-Kanal-Mosfet geschaltet, wodurch bei \textit{voltage out} eine Spannungsmessung möglich wird. Die Spannung ist jene, die am 1M$\Omega$ Widerstand abfällt. Der Widerstand bildet einen Spannungsteiler mit 10K$\Omega$. Da 1M$\Omega$ im Verhältnis jedoch viel größer ist, fällt fast die gesamte Spannung an diesem Widerstand ab, sodass diese auch an \textit{voltage out} gemessen werden kann.
 
 \subsection{Spannungteiler für die zweite Zelle}
-In \autoref{sec:mess} wurde beriets erwähnt, dass die gemessene Spannung an der zweiten Zelle zu hoch für den Arduino wäre. Deshalb muss die Schaltung aus \autoref{pic:messrichtig} folgendermaßen erweitert werden:
+In \autoref{sec:mess} wurde beriets erwähnt, dass die gemessene Spannung an der zweiten Zelle zu hoch für den Arduino ist. Deshalb muss die Schaltung aus \autoref{pic:messrichtig} folgendermaßen erweitert werden:
 
 \begin{figure}[h]
 	\begin{center}
@@ -427,55 +427,55 @@ In \autoref{sec:mess} wurde beriets erwähnt, dass die gemessene Spannung an der
 	\end{center}
 \end{figure}
 \newpage
-In \autoref{pic:messrichtigmitteiler} ist zu sehen, dass die Schaltung mit einem Spannungsteiler erweitert wurde. Da beide Widerstände den gleichen Wert haben, kann zwischen ihnen die halbierte Spannung gemessen werden. 
-Um in der Software die richtige Spannung der Zelle zu erhalten, muss der gemessene Wert verdoppelt werden. Zieht man nun die Spannung der ersten Zelle ab, ergibt das den Wert für die zweite Zelle.
+In \autoref{pic:messrichtigmitteiler} ist zu sehen, dass die Schaltung um einen Spannungsteiler erweitert wurde. Da beide Widerstände den gleichen Wert haben, kann zwischen ihnen die halbierte Spannung gemessen werden. 
+Um in der Software die richtige Spannung der Zelle zu erhalten, muss der gemessene Wert verdoppelt werden. Zieht man nun die Spannung der ersten Zelle ab, ergibt das den richtigen Wert für die zweite Zelle.
 
-\chapter{Konzeption der Software-Komponenten}
+\chapter{Konzeption des verteilten Systems auf der Hochbahn}
 \label{sec:software}
 Die Software der Anlage lässt sich in die zwei Bereiche \textit{Webserver im Heimnetzwerk} und \textit{Client auf der Hochbahn} gliedern. Der Webserver soll ein Interface für Benutzer der Anlage bereitstellen, auf dem die Hochbahn gesteuert werden kann. 
 Der Client bekommt daraufhin Befehle vom Webserver und führt diese, sofern möglich, aus. 
 
 \section{Konzept für die Aufgabenverteilung auf der Hochbahn}
 \label{sec:hochbahnAlsClient}
-Wie schon in \autoref{sec:konzeptSchnittstellen} aufgeführt, sollte die Software in drei Hauptkomponenten getrennt weden:
+Wie schon in \autoref{sec:konzeptSchnittstellen} aufgeführt, sollte die Software ursprünglich in drei Hauptkomponenten getrennt weden:
 \begin{itemize}
 	\item ESP32 zur Befehlserkennung und Steuerung der Hochbahn
 	\item Arduino Nano zur Motorsteuerung
 	\item Arduino Nano zur Ultraschallüberwachung
 \end{itemize}
 \autoref{sec:konzeptSchnittstellen} stellt das erste Konzept zur Aufteilung der Aufgabenbereiche dar. Nach Evaluierung der hierbei aufkommenden Fehlerquellen sind einige Änderungen getroffen worden.
-Ursprünglich sollte der ESP32 die Hauptsteuerung übernehmen. Er sollte Befehle wie \texttt{beschleunigen} oder \texttt{abbremsen auf Geschwindigkeit x} zur Motorsteuerung geben und dabei die aktuelle Position und damit die nächsten Schritte selbst errechnen. Die Erfahrung zeigt jedoch, dass ESP32 mit hoher Netzlast oder Verbindungsabbrüchen leicht zum Reset oder Abstürzen neigt. Würde das passieren während die Bahn beispielsweise auf die Endstation zurollt, bekäme die Motorsteuerung nicht rechtzeitig den Befehl zum abbremsen udn es käme zu einem Unfall.
-Deswegen wurde die Hauptsteuerung dem Arduino Nano welcher ursprünglich nur den Motor steuern sollte übergeben. Somit ergibt sich folgendes Konzept für die Aufgabenverteilung auf der Hochbahn:
+Ursprünglich sollte der ESP32 die Hauptsteuerung übernehmen. Er sollte Befehle wie \texttt{beschleunigen} oder \texttt{abbremsen auf Geschwindigkeit x} zur Motorsteuerung geben und dabei die aktuelle Position und damit die nächsten Schritte selbst errechnen. Die Erfahrung zeigt jedoch, dass ein ESP32 mit hoher Netzlast oder Verbindungsabbrüchen leicht zum Neustart oder gar Abstürzen neigt. Würde das passieren während die Bahn beispielsweise auf die Endstation zurollt, bekäme die Motorsteuerung nicht rechtzeitig den Befehl zum abbremsen und es käme zu einem Unfall.
+Deswegen wurde die Hauptsteuerung an den Arduino Nano, welcher ursprünglich nur den Motor steuern sollte, übergeben. Daraus resultiert das folgende KOnzept für die Aufgabenverteilung auf der Hochbahn:
 
 \subsection{ESP32 als Schnittstelle zum Server}
 \label{sec:aufgabeESP}
-Der ESP32 nimmt nachwievor Befehle des Webservers entgegen. Er ist ebenfalls mit dem Reedkontakt welcher über Magneten an der Schiene die Position aktualisiert verbunden, kann also Unabhängeíg von der Hauptsteuerung Positionsmeldungen an den Webserver schicken. Zudem gibt er Befehle an die Hauptsteuerung, welche sich allerdings auf die anzufahrende Position beschränken. Die eigentliche Fahrt wird vom Arduino Nano gesteuert:
+Der ESP32 nimmt nachwievor Befehle des Webservers entgegen. Er ist ebenfalls mit dem Reedkontakt welcher über Magneten an der Schiene die Position aktualisiert, verbunden. Das ermöglicht ihm, unabhängeíg von der Hauptsteuerung Positionsmeldungen an den Webserver schicken. Zudem gibt er Befehle an die Hauptsteuerung, welche sich allerdings auf die anzufahrende Position beschränken. Die Fahrt selbst wird vom Arduino Nano gesteuert:
 
 \subsection{Arduino Nano als Hauptsteuerung}
 \label{sec:aufgabeArduinoNanoMotor}
-Die Hauptsteuerung bekommt vom ESP32 Anfahrpositionen zugeschickt. Über den Interrupt des Reedkontakts wie auch beim ESP (\autoref{sec:aufgabeESP}) ist dem Arduino die aktuelle Position bewusst. Daraufhin soll ein individuelles Fahrprogramm vom Schema \textit{Von x nach y} berechnet und ausgeführt werden. Ebenfalls sind zwei Analoge Pins angeschlossen, über jene Auskunft über den Ladezustand der Batteriezellen getroffen werden kann. Der 2. Interrupt, welcher an den Arduino angeschlossen ist, dient der Kollisionserkennung. Diesen bekommt er vom Arduino welcher die Ultraschallsensoren steuert und soll über die Art des Interrupts feststellen ob, und wenn ja, wie stark gebremst werden soll.
+Die Hauptsteuerung erhält vom ESP32 Anfahrpositionen. Über den Interrupt des Reedkontakts, wie auch beim ESP (\autoref{sec:aufgabeESP}), ist dem Arduino die aktuelle Position bekannt. Daraufhin soll ein individuelles Fahrprogramm des Schemas \textit{Von x nach y} berechnet und ausgeführt werden. Ebenfalls sind zwei analoge Pins angeschlossen, über jene Auskunft über den Ladezustand der Batteriezellen getroffen werden kann. Der zweite an den Arduino angeschlossene Interrupt dient der Kollisionserkennung. Dieser wird vom Arduino, welcher die Ultraschallsensoren steuert, übermittelt. Dabei gibt die Länge des Pulses Auskunft darüber, um welche Art der Kollisionserkennung es sich handelt.
 
 \subsection{Arduino Nano zur Ultraschallüberwachung}
 \label{sec:aufgabeArduinoNanoUltraschall}
-Dieser Arduino hat nur die Aufgabe beide Ultraschallsensoren (jeweils einer auf jeder Seite des Tabletts) zu überwachen und mit einem Pin Auskunft darüber zu geben, welches Warn- oder Schutzfeld verletzt wurde. Da nur ein Pin zur Verfügung steht, bestimmt die Länge der positiven Interrupt Flanke die Art der Kollisionserkennung.
+Dieser Arduino hat nur die Aufgabe beide Ultraschallsensoren (jeweils einer auf jeder Seite des Tabletts) zu überwachen und mit einem Pin Auskunft darüber zu geben, welches Warn- oder Schutzfeld verletzt wurde. Da nur ein Pin zur Verfügung steht, bestimmt die Länge des \texttt{High}-Signals die Art der Kollisionserkennung.
 
 \section{Protokoll der Seriellen Schnittstelle}
-Die Datenübertragung erfolgt, wie in \autoref{sec:konzeptSchnittstellen}, über \acrshort{uart}. Wie in den Grundlagen TODO zu lesen ist, überträgt \acrshort{uart} die Daten Byteweise. DIe Bytes werden in einen Buffer geschrieben und können auf Anwendungsschicht Byte für Byte ausgelesen werden. Daher ist es logisch, das Protokoll so zu konzeptionieren, dass möglichst wenig, wenn nicht sogar nur ein Byte pro Befehl verwendet wird. 
+Die Datenübertragung erfolgt, wie in \autoref{sec:konzeptSchnittstellen} erwähnt, über \acrshort{uart}. In den Grundlagen unter TODO ist zu lesen, dass \acrshort{uart} die Daten byteweise überträgt. Die Bytes werden in einen Puffer geschrieben und können auf Anwendungsschicht Byte für Byte ausgelesen werden. Daher ist es logisch, das Protokoll so zu konzeptionieren, dass möglichst wenige, bzw. pro Befehl nur ein Byte verwendet wird. 
 
 \subsection{Anfragen- und Befehlsarten}
-Anfragen und Befehle können auf zwei wegen erfolgen: Vom ESP zum Arduino und vom Arduino zum ESP. Es gibt insgesamt 5 Kategorien von Datenübertragungen:
+Anfrage- oder Befehlsnachrichten können auf zwei Wegen erfolgen: Von ESP zu Arduino und umgekehrt. Es gibt insgesamt fünf Kategorien von Datenübertragungen:
 
 \begin{itemize}
-	\item Positionsabfrage vom ESP zum Arduino zur Positionssynchronisation,
-	\item Fahrbefehl vom ESP zum Arduino mit der Position die angefahren werden soll,
-	\item Akkumeldung vom Arduino zum ESP,
-	\item Positionsmeldung vom Arduino zum ESP
+	\item Positionsabfrage zur Positionssynchronisation,
+	\item Fahrbefehl von ESP zu Arduino mit anzufahrender Position,
+	\item Akkumeldung von Arduino zu ESP,
+	\item Positionsmeldung zur Positionssynchronisierung
 	\item und Akzeptieren oder Ablehnen von Fahrbefehlen.
 \end{itemize}
 
 Da es pro Übertragungsweg nur maximal drei verschiedene Arten von Nachrichten sind, ergeben sich zwei Bits für den Header des Protokolls. Dadurch kann festgestellt werden, um welche Art von Nachricht es sich handelt.
 Soll eine Nachricht nur ein Byte groß sein, bleiben somit sechs Bits für den Body der Nachricht. 
-\autoref{tab:header} zeigt den Header einer Nachricht:
+\autoref{tab:header} zeigt den Header der verschiedenen Nachrichtenarten:
 %---------------TODO-------------
 \begin{table}[h]
 	\begin{center}
@@ -497,8 +497,8 @@ Soll eine Nachricht nur ein Byte groß sein, bleiben somit sechs Bits für den B
 \end{table}
 
 \subsection{Nachrichtencontext (Body)}
-Der Body einer übertragenen Nachricht wird je nach Header anders interpretiert. Beispielsweise bedeuten übertragene Werte den aktuellen Ladezustand des Akkus oder die Position der Hochbahn. 
-In folgender Tabelle sind die verschiedenen Arten des Context mit den entsprechendem Header aufgelistet:
+Der Body einer übertragenen Nachricht wird je nach Header anders interpretiert. Beispielsweise können übertragene Werte den aktuellen Ladezustand des Akkus oder die Position der Hochbahn bedeuten. 
+In folgender Tabelle sind die verschiedenen Arten des Contexts mit entsprechendem Header aufgelistet:
 
 \begin{table}[h]
 	\begin{center}
@@ -516,34 +516,37 @@ In folgender Tabelle sind die verschiedenen Arten des Context mit den entspreche
 			\texttt{000001} und \texttt{000010} & \texttt{11} & Befehlsakzeptanz \texttt{01} = ja; \texttt{10} = nein\\  
 		\end{tabular}
 	\end{center}
-	\caption{\label{tab:body}Body dess Nachrichtenprotokolls}
+	\caption{\label{tab:body}Body des Nachrichtenprotokolls}
 \end{table}
 
 \subsection{Tail}
-Wie in \autoref{tab:body} zu erkennen ist, werden nie die letzten beiden Bits verwendet. Diese dienen dazu den Transportweg der Nachricht zu erkennen. Dadurch ist es möglich zu erkennen, ob es sich beim Header \texttt{00} um eine Positionsabfrage oder eine Akkumeldung handelt.
-Ist das Tail mit \texttt{01} gekennzeichnet, handelt es sich um eine Nachricht vom ESP zum Arduino. \texttt{10} steht für die andere Richtung.
-Im folgenden sind zwei Beispielnachrichten genannt, welche den Anforderungen des Protokolls entsprechen:
+In \autoref{tab:body} istzu erkennen, dass nie die letzten beiden Bits verwendet werden. Diese dienen dazu, den Transportweg der Nachricht zu erkennen. Dadurch ist eine Aussagen darüber, ob es sich beim Header \texttt{00} um eine Positionsabfrage oder eine Akkumeldung handelt, möglich.
+Ist das Tail mit \texttt{01} gekennzeichnet, handelt es sich um eine Nachricht von ESP32 zu Arduino. \texttt{10} steht für die umgekehrte Richtung.
+In folgendem sind zwei Beispielnachrichten genannt, welche der Definition des Protokolls entsprechen:
 
 \begin{center}
 	\begin{itemize}
-		\item \texttt{01000000}; Positionsabfrage vom ESP zum Arduino
+		\item \texttt{01000000}; Positionsabfrage von ESP zu Arduino
 		\item \texttt{10001110}; Positionsmeldung mit dem Context: Position 3  
 	\end{itemize}
 \end{center}
 \newpage
+
+
+\chapter{Konzeptionierung der einzelnen Softwarekomponenten der Hochbahn}
 \section{Zustandsautomat des ESP32}
 \label{sec:stateESP}
-Die Software des EPSs wird als Zustandsautomat realisiert. Dieser hat, wie schon in \autoref{sec:aufgabeESP} erwähnt, die Aufgabe zwischen Server und Hauptsteuereung auf dem Arduino zu vermitteln.
+Die Software des EPS32 wird als Zustandsautomat realisiert. Dieser hat, wie schon in \autoref{sec:aufgabeESP} erwähnt, die Aufgabe zwischen Server und Hauptsteuereung auf dem Arduino zu vermitteln.
 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=14cm]{stateMaschineESP.PNG}
-		\caption{\label{pic:statemaschineESP}Zustandsautomat auf dem ESP als Grafik}
+		\caption{\label{pic:statemaschineESP}Zustandsautomat des ESP32 grafisch dargestellt}
 	\end{center}
 \end{figure}
 
-In \autoref{pic:statemaschineESP} sind die verschiedenen Zustände und Übergänge zu anderen gezeigt. Das Programm startet im Zustand: Idle. Ein wechsel kann durch eine Nachricht vom Server oder vom Arduino erfolgen. Eine Akkumeldung des Arduinos führt zu einer Akkumeldung zum Server und bleibt dabei im Idle-Zustand.
-Erhält der ESP einen Fahrbefehl vom Server, wechselt er in den Zustand: Start. Dieser beginnt eine Folge an Nachrichten und Handlungen mit folgendem Ziel: die aktuelle Position der Hochbahn ist synchronisiert und die Bahn führt den Befehl aus. \\
+In \autoref{pic:statemaschineESP} sind alle Zustände, sowie Zustandsübergänge gezeigt. Das Programm startet im Zustand \texttt{IDLE}. Ein Zustandswechsel kann durch eine Nachricht vom Server oder Arduino erfolgen. Eine Akkumeldung des Arduinos führt zu einer Akkumeldung zum Server und bleibt dabei im Zustand \texttt{IDLE}.
+Erhält der ESP einen Fahrbefehl vom Server, wechselt er zu Zustand \texttt{START}. Dieser beginnt eine Folge von Nachrichten und Handlungen mit dem Ziel \textit{die aktuelle Position der Hochbahn zu synchronisieren und den Fahrbefehl auszuführen}. \\
 Dazu wird erst eine Positionsanfrage an den Arduino geschickt und in den Zustand Position gewechselt. Erhält der ESP daraufhin die Position kann er die eigens gespeicherte aktualisieren und den Fahrbefehl an den Arduino schicken. Ist dies geschehen, befindet der ESP sich im End-ZUstand und wartet auf eine Akzeptierung seitens des Arduinos. Wird akzeptiert, befindet sich der ESP wieder im IDLE-Zustand und die Kette beginnt wieder von vorne. Sollte der Arduino die Anfrage ablehnen oder sonst auf diesem Weg irgendwas schiefgehen, wird die Kette unterbrochen und in den Error-Zustand gewechselt. Dieser kann mittels des vorherigem Zustand eine Fehlermeldung an den Server schicken, welche dem Nutzer angezeigt wird. Daraufhin kann ein neuer Fahrbefehl oder Akkuzustand empfangen werden. 
 
 \section{Zustandsautomat der Hauptsteuerung}
@@ -570,8 +573,19 @@ Zu sehen ist dabei wieder eine Kreisstruktur, bei der die einzelnen Zustände ü
 \end{center}
 
 Zusätzlich werden im IDLE-Zustand die Batteriespannungen überprüft um rechtzeitig zur Ladestation zu fahren, falls sie zu leer sind. In diesem Fall schaltet sich die Bahn ab, sobald sie beim Laden angedockt ist. TODO IN GRAFIK!! Dieser Vorgang wird ebenfalls ausgelöst, falls über einen längeren Zeitraum keine Fahrbefehle erhalten wurden.
-%------------------------UMSETZUNG-----------------
 
+\chapter{Konzeptionierung der Fahrfunktion}
+Die Hauptfunktion dieser Methode lässt sich mit folgendem Satz zusammenfassen: \textit{Die Bahn fährt von A nach B.} B ist in diesem Fall die anzufahrende Position, welche vom Server übermittelt wurde. Mit Acht Abschnitten auf der Strecke und der Möglichkeit jeden Abschnitt von jedem Abschnitt aus anzufahren ergeben sich 56 individuelle Fahrprogramme. Eine Möglichkeit wäre, jedes dieser Fahrprogramme einzeln auszuprogrammieren. Ein viel eleganterer Weg ist jedoch, den Arduino selbst für jede Fahrt das Fahrprogramm bestimmen zu lassen. 
+
+\section{Regeln zur bestimmung des Fahrprogramms}
+Auf der Strecke gibt es zwei unterschiedlich anzufahrende Positionen:
+\begin{center}
+	\begin{itemize}
+		\item Ein Abschnitt auf der Strecke
+		\item und eine der beiden Endpositionen.
+	\end{itemize}
+\end{center}
+Der unterschied liegt darin, dass die Bahn bei einer der beiden Endpositionen exakt am Magneten anhalten muss, während bei Anfahrten von Aschnitten ledigliche zwischen zwei Magneten zu Stoppen ist. Die Geschwindigkeit muss also bereits vor eintreten in den letzten Abschnitt so gering sein, dass innerhalb des Abschnittes angehalten, bzw. der letzte Magnet angefahren werden kann.
 
 \chapter{Umsetzung}
 \label{cha:umsetzung}
@@ -733,11 +747,11 @@ Nach Verlöten der übrigen Komponenten und Anschluss von Step-Up-Wandler und Ba
 \end{figure}
 
 \chapter{Implementierung der Zustandsautomaten}
-Im folgenden wird die zuvor unter \autoref{sec:stateARD} konzeptionierte Logik des Zustandsautomaten der Hauptsteuerung implementiert.
-C++ ist die hierbei verwendete Programmiersprache. Die Idee ist eine State Maschine, die zu jeder zeit einen aktuellen State (\texttt{currentState}) hat, welcher sich abhängig von der Eingabe verändert.
+Im folgenden wird die zuvor unter \autoref{sec:stateESP} konzeptionierte Logik des Zustandsautomaten des ESP32 implementiert.
+C++ ist die hierbei verwendete Programmiersprache. Die Idee ist eine State Maschine, die zu jeder zeit einen aktuellen State (\texttt{currentState}) hat, welcher sich in Abhängigkeit von der Eingabe verändert. Beispielsweise soll die Maschine von \texttt{IDLE} nach \texttt{START} wechseln, sofern ein valider Fahrbefehl vom Server erhalten wurde.
 
 \section{Die State Klassen}
-Um den Validierungsaufwand innerhalb der State-Maschine zu verringern, d.h. die Maschine muss nicht schauen, was für ein State \texttt{currentState} ist, erben alle Zustände von einer State-Klasse. Somit muss die Maschine später nur wissen, dass sie einen State hat und nicht welchen.
+Um den Validierungsaufwand innerhalb der Zustandsmaschine zu verringern, d.h. die Maschine muss nicht schauen, was für ein State \texttt{currentState} ist, erben alle Zustände von einer State-Klasse. Somit muss die Maschine später nur wissen, dass sie einen State hat und nicht welchen.
 \autoref{code:state.h} zeigt die Header-Datei dieser State-Klasse.
 
 \begin{lstlisting}[language=c, style=dhpaperdefault]
@@ -882,6 +896,18 @@ class StateMachine{
 \captionof{lstlisting}{\label{code:stateMachines} State-Maschinen von ESP und Arduino}
 
 In \autoref{code:stateMachines} sind die KLassendefinitionen der Zustandsmaschinen von ESP und Arduino gezeigt. Die Klasse auf dem ESP hat im Vergleich zur Zustandsmaschine auf dem Arduino eine weitere Überladung der Methode \texttt{StateHandle} mit einem \texttt{String} als übergabeparameter. Diese dient dazu, Nachrichten die vom Server mit \acrshort{mqtt} übertragen wurden evaluieren zu lassen. die Methode \texttt{handle} wird aus der \texttt{main} aufgerufen und verwaltet Nachrichten. D.h. sie ruft je nach Nachrichteneingang die Methode \texttt{StateHandle} ohne oder mit entsprechendem Parametern auf. 
+
+\chapter{Implementierung der Fahrfunktion}
+
+
+
+
+
+
+
+
+
+
 %
 %\section{Fertigungsverfahren}\\
 %Für die vorgestellten Bauteile soll nun das Fertigungsverfahren ausgewählt weden. Dabei besteht die Möglichkeit konventionelle- und adaptiven Fertigungsverfahren zur Auswahl.
@@ -905,6 +931,8 @@ In \autoref{code:stateMachines} sind die KLassendefinitionen der Zustandsmaschin
 
 
 %-------------------------FAZIT UND AUSBLICK-----------------
+
+
 \chapter{Fazit und Ausblick}
 In diesem ersten Teil der Studienarbeit wurden zunächst Grundlagen geschaffen und Anforderungen an die digitalisierte Version der Hochbahn gestellt. Anschließend wurden die Konzepte zum Erreichen der Forderungen erstellt. Im Teil der Umsetzung wurden bereits erste Versuche durchgeführt und Prototypen getestet.\\
 
