@@ -580,17 +580,40 @@ Zusätzlich werden im IDLE-Zustand die Batteriespannungen überprüft um rechtze
 \chapter{Konzeptionierung der Fahrfunktion}
 Die Hauptfunktion dieser Methode lässt sich mit folgendem Satz zusammenfassen: \textit{Die Bahn fährt von A nach B.} B ist in diesem Fall die anzufahrende Position, welche vom Server übermittelt wurde. Mit Acht Abschnitten auf der Strecke und der Möglichkeit jeden Abschnitt von jedem Abschnitt aus anzufahren ergeben sich 56 individuelle Fahrprogramme. Eine Möglichkeit wäre, jedes dieser Fahrprogramme einzeln auszuprogrammieren. Ein viel eleganterer Weg ist jedoch, den Arduino selbst für jede Fahrt das Fahrprogramm bestimmen zu lassen. 
 
-\section{Regeln zur bestimmung des Fahrprogramms}
-Auf der Strecke gibt es zwei unterschiedlich anzufahrende Positionen:
+\section{Regeln zur Bestimmung des Fahrprogramms}
+Auf der Strecke gibt es zwei unterschiedlich Arten von anzufahrenden Positionen:
 \begin{center}
 	\begin{itemize}
 		\item Ein Abschnitt auf der Strecke
 		\item und eine der beiden Endpositionen.
 	\end{itemize}
 \end{center}
-Der unterschied liegt darin, dass die Bahn bei einer der beiden Endpositionen exakt am Magneten anhalten muss, während bei Anfahrten von Aschnitten ledigliche zwischen zwei Magneten zu Stoppen ist. Die Geschwindigkeit muss also bereits vor eintreten in den letzten Abschnitt so gering sein, dass innerhalb des Abschnittes angehalten, bzw. der letzte Magnet angefahren werden kann.
+Der Unterschied liegt darin, dass die Bahn bei einer der beiden Endpositionen exakt am Magneten anhalten muss, während bei Anfahrten von Aschnitten ledigliche zwischen zwei Magneten zu Stoppen ist. Die anzupeilende Geschwindigkeit sei in Prozent der Maximalgeschwindigkeit angegeben.
+\newpage 
+\subsection{Regel 1: Maximalgeschwindigkeit einzelner Abschnitte}
+\autoref{pic:streckengrafik} zeigt die Strecke der Hochbahn.
 
-\chapter{Umsetzung}
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width = \textwidth]{Streckengrafik.pdf}
+		\caption{\label{pic:streckengrafik} Hochbahn-Strecke als Grafik}
+	\end{center}
+\end{figure}
+
+Wie zu erkennen ist, gibt es sowohl sehr kurvige als auch längere gerade Streckenanteile. Die Strecke wird nun in acht Abschnitte unterteilt, welche jeweils anfahrbar sind. Abschnitt Null und Sieben sind die Endpunkte der Hochbahnstrecke. Wie schon in TODO erwähnt, sind die einzelnen Abschnitte jeweils mit Magneten von einander getrennt. In \autoref{pic:positionen} sind diese Acht Abschnitte zu sehen.
+\newpage
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width = \textwidth]{Positionen.pdf}
+		\caption{\label{pic:positionen} Hochbahn-Strecke als Grafik}
+	\end{center}
+\end{figure}
+
+Das Tablett welches an der Hochbahn befestigt ist, kann auf horizontaler Ebene schwingen. Ein solcher Schwingvorgang kann unter anderem durch schnelle Kurvenfahrten entstehen und sollte in möglichst allen Fällen vermieden werden. 
+\subsection{Regel 2: Geschwindigkeit des vorletzten Abschnitts}
+Die Geschwindigkeit muss bereits vor eintreten in den letzten Abschnitt so gering sein, dass innerhalb des Abschnittes angehalten, bzw. der letzte Magnet angefahren werden kann. Angenommen von 50\% ist es immer möglich innerhalb eines Abschnitts auf 0\% abzubremsen. Daraus folgt, dass die Maximalgeschwindigkeit im vorletzten Abschnitt einer Fahrstrecke 50\% nicht überschreiten darf. 
+
+\chapter{Umsetzung} 
 \label{cha:umsetzung}
 In diesem ersten Teil der Studienarbeit stand die Konzeptionierung in \autoref{cha:konzeptionierung} im Vordergrund. Auf dieses Kapitel aufbauend soll der aktuelle Stand der Umsetzung beschrieben werden. Dieser beschränkt sich bislang auf die Motorsteuerung in \autoref{sec:motorsteuerung} sowie die Getriebekonstruktion in \autoref{sec:getriebekonstruktion}.
 \newpage
