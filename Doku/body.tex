@@ -384,7 +384,7 @@ Einer davon ist ein DCDC-Wandler, welcher die Zellspannung auf konsistente 5V f�
 \label{sec:mess}
 Die Stromversorgung der Hochbahn stellen zwei in Reihe geschaltete Lithium Ionen Akkus zur Verfügung. Diese Reihenschaltung ist in \autoref{pic:messfalsch} gezeigt. Während bei einfachen Batterien die Gesamtspannung gemessen werden kann, müssen hier die beiden Zellen einzeln betrachtet werden.
 Um die einzelnen Zellen zu messen, soll die Spannung jeweils am + Pol abgegriffen werden. Somit muss die Messeinrichtung von der Gesamtspannung jene der ersten Zelle abziehen, um die Spannung der zweiten Zelle zu erhalten. Dieser Vorgang ist erforderlich, da kein Spannungsunterschied zwischen + und - der oberen Zelle gemessen werden kann. Grund dafür ist, dass \gls{gnd} des Arduinos gleich mit \gls{gnd} der unteren Zelle ist, nicht der oberen.
-\newpage Verbände man, wie in \autoref{pic:messfalsch} gezeigt, zwei analoge Pins direkt mit den + Polen, wäre eine Spannungsmessung in der Theorie möglich.
+Verbände man, wie in \autoref{pic:messfalsch} gezeigt, zwei analoge Pins direkt mit den + Polen, wäre eine Spannungsmessung in der Theorie möglich.
 
 \begin{figure}[h]
 	\begin{center}
@@ -403,7 +403,6 @@ In der Praxis ergeben sich dabei jedoch zwei Probleme:
 \end{center}
 
 Die im folgenden erklärte Schaltung soll diese Probleme umgehen.
-\newpage
 \subsection{Mosfetschaltung zur aktivierbaren Spannungsmessung}
 Diese Schaltung soll ermöglichen, die Spannungsmessung per Signal aktivieren zu können. Das Signal wird dabei vom messenden Arduino mit einem 5V-Pegel erzeugt. Aktiviert, sollen ähnlich wie in \autoref{pic:messfalsch} beide Spannungen abgegriffen werden.
 
@@ -547,7 +546,7 @@ Auf der Hochbahn befinden sich zwei Softwarekomponenten, die untereinander Nachr
 		\item ESP32 $\Leftarrow$ Arduino: \textit{Ok, mach ich!}
 	\end{itemize}
 \end{center}
-Der oben aufgelistete Ablauf ist fehlerlos dargestellt. Sofern Positionen nicht synchron sind oder falsche Befehle geschickt werden, würde er abgebrochen. Zur Kommunikation und genereller Steuerung der Software auf den Microcontrollern werden Zustandsautomaten verwendet. Der Gedanke war, dass ein Zustand nur eine gewissen Eingabe erwartet. So ist es möglich, dynamisch auf falsche Geschehnisse zu reagieren.
+Der oben aufgelistete Ablauf ist fehlerlos dargestellt. Sofern Positionen nicht synchron sind oder falsche Befehle geschickt werden, würde er abbrechen. Zur Kommunikation und genereller Steuerung der Software auf den Microcontrollern werden Zustandsautomaten verwendet. Der Gedanke dabei ist, dass ein Zustand nur eine gewissen Eingabe erwartet. So ist es möglich, dynamisch auf falsche Geschehnisse zu reagieren.
 
 \subsection{Zustandsautomat des ESP32}
 \label{sec:stateESP}
@@ -578,10 +577,6 @@ Der Automat ist in \autoref{pic:statemaschineARD} gezeigt.
 \end{figure}
 
 Zu sehen ist dabei wieder eine Kreisstruktur, bei der die einzelnen Zustände über ERROR unterbrechen und wieder zu IDLE rücksetzen können. In Zustand ERROR wird dabei zusätzlich überprüft, ob es sich um einen fatalen Fehler wie falsche Positionsvariable handelt. In diesem Fall müsste die Hochbahn an der Ladestation resettet werden. Der generelle Ablauf welcher in einer erfolgreich ausgeführten Fahrt mündet ergibt sich wie folgt:
-
-%@moritz: Der Ablauf gilt ja generell für die Kommunikation und den beschreibst du ja auch vorher schon. Macht es dann nicht Sinn, den auch beim ESP schon zu erläutern? 
-
-
 Zusätzlich werden im IDLE-Zustand die Batteriespannungen überprüft um rechtzeitig zur Ladestation zu fahren, falls sie zu leer sind. In diesem Fall schaltet sich die Bahn ab, sobald sie an der Ladestation angedockt ist. 
 
 \section{Konzeptionierung der Fahrfunktion}
@@ -626,6 +621,8 @@ Der erste Asbchnitt ist jener, aus dem die Bahn die Fahrstrecke beginnt. Er wird
 
 \subsubsection{Regel 4: Geschwindigkeit des letzten Abschnitts}
 Im letzten Abschnitt muss die Geschwindigkeit $= 0$ sein, sodass die Bahn anhält. Handelt es sich beim letzten Abschnitt um eine Endposition, wird die Geschwindigkeit auf ein Minimum gesetzt und erst beim Ankommen am letzten Magneten angehalten.  
+
+\subsection{Priorisierung der Regeln}
 
 \chapter{Umsetzung} 
 \label{cha:umsetzung}
