@@ -384,7 +384,7 @@ Einer davon ist ein DCDC-Wandler, welcher die Zellspannung auf konsistente 5V f�
 \label{sec:mess}
 Die Stromversorgung der Hochbahn stellen zwei in Reihe geschaltete Lithium Ionen Akkus zur Verfügung. Diese Reihenschaltung ist in \autoref{pic:messfalsch} gezeigt. Während bei einfachen Batterien die Gesamtspannung gemessen werden kann, müssen hier die beiden Zellen einzeln betrachtet werden.
 Um die einzelnen Zellen zu messen, soll die Spannung jeweils am + Pol abgegriffen werden. Somit muss die Messeinrichtung von der Gesamtspannung jene der ersten Zelle abziehen, um die Spannung der zweiten Zelle zu erhalten. Dieser Vorgang ist erforderlich, da kein Spannungsunterschied zwischen + und - der oberen Zelle gemessen werden kann. Grund dafür ist, dass \gls{gnd} des Arduinos gleich mit \gls{gnd} der unteren Zelle ist, nicht der oberen.
-\newpage Verbände man, wie in \autoref{pic:messfalsch} gezeigt, zwei analoge Pins direkt mit den + Polen, wäre eine Spannungsmessung in der Theorie möglich.
+Verbände man, wie in \autoref{pic:messfalsch} gezeigt, zwei analoge Pins direkt mit den + Polen, wäre eine Spannungsmessung in der Theorie möglich.
 
 \begin{figure}[h]
 	\begin{center}
@@ -403,7 +403,6 @@ In der Praxis ergeben sich dabei jedoch zwei Probleme:
 \end{center}
 
 Die im folgenden erklärte Schaltung soll diese Probleme umgehen.
-\newpage
 \subsection{Mosfetschaltung zur aktivierbaren Spannungsmessung}
 Diese Schaltung soll ermöglichen, die Spannungsmessung per Signal aktivieren zu können. Das Signal wird dabei vom messenden Arduino mit einem 5V-Pegel erzeugt. Aktiviert, sollen ähnlich wie in \autoref{pic:messfalsch} beide Spannungen abgegriffen werden.
 
@@ -536,61 +535,96 @@ In folgendem sind zwei Beispielnachrichten genannt, welche der Definition des Pr
 
 
 \chapter{Konzeptionierung der einzelnen Softwarekomponenten der Hochbahn}
-\section{Zustandsautomat des ESP32}
+\section{Zustandsautomaten}
+Auf der Hochbahn befinden sich zwei Softwarekomponenten, die untereinander Nachrichten austauschen. Dies dient zur synchronisierung und zur Ausführung von Fahrbefehlen. Der Ablauf, welcher im erfolgreichen Fahren mündet ergibt sich wie folgt:
+\begin{center}
+	\begin{itemize}
+		\item ESP32 $\Leftarrow$ Server: \textit{Fahr mal zu Position y!}
+		\item ESP32 $\Rightarrow$ Arduino: \textit{Welche Position hast du?}
+		\item ESP32 $\Leftarrow$ Arduino: \textit{Position x!}
+		\item ESP32 $\Rightarrow$ Arduino: \textit{Fahr mal zu Position y!}
+		\item ESP32 $\Leftarrow$ Arduino: \textit{Ok, mach ich!}
+	\end{itemize}
+\end{center}
+Der oben aufgelistete Ablauf ist fehlerlos dargestellt. Sofern Positionen nicht synchron sind oder falsche Befehle geschickt werden, würde er abbrechen. Zur Kommunikation und genereller Steuerung der Software auf den Microcontrollern werden Zustandsautomaten verwendet. Der Gedanke dabei ist, dass ein Zustand nur eine gewissen Eingabe erwartet. So ist es möglich, dynamisch auf falsche Geschehnisse zu reagieren.
+
+\subsection{Zustandsautomat des ESP32}
 \label{sec:stateESP}
-Die Software des EPS32 wird als Zustandsautomat realisiert. Dieser hat, wie schon in \autoref{sec:aufgabeESP} erwähnt, die Aufgabe zwischen Server und Hauptsteuereung auf dem Arduino zu vermitteln.
+Dieser Zustandsautomat hat, wie schon in \autoref{sec:aufgabeESP} erwähnt, die Aufgabe zwischen Server und Hauptsteuereung auf dem Arduino zu vermitteln.
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=14cm]{stateMaschineESP.PNG}
+		\includegraphics[width=16cm]{stateMaschineESP.pdf}
 		\caption{\label{pic:statemaschineESP}Zustandsautomat des ESP32 grafisch dargestellt}
 	\end{center}
 \end{figure}
-%@moritz: Habe in der Word Vorschläge aufgeschrieben
+
+\newpage
 In \autoref{pic:statemaschineESP} sind alle Zustände, sowie Zustandsübergänge gezeigt. Das Programm startet im Zustand \texttt{IDLE}. Ein Zustandswechsel kann durch eine Nachricht vom Server oder Arduino erfolgen. Eine Akkumeldung des Arduinos führt zu einer Akkumeldung zum Server und bleibt dabei im Zustand \texttt{IDLE}.
 Erhält der ESP einen Fahrbefehl vom Server, wechselt er zu Zustand \texttt{START}. Dieser beginnt eine Folge von Nachrichten und Handlungen mit dem Ziel \textit{die aktuelle Position der Hochbahn zu synchronisieren und den Fahrbefehl auszuführen}. \\
 Dazu wird erst eine Positionsanfrage an den Arduino geschickt und in den Zustand Position gewechselt. Erhält der ESP daraufhin die Position kann er die eigens gespeicherte aktualisieren und den Fahrbefehl an den Arduino schicken. Ist dies geschehen, befindet der ESP sich im End-ZUstand und wartet auf eine Akzeptierung seitens des Arduinos. Wird akzeptiert, befindet sich der ESP wieder im IDLE-Zustand und die Kette beginnt wieder von vorne. Sollte der Arduino die Anfrage ablehnen oder sonst auf diesem Weg irgendwas schiefgehen, wird die Kette unterbrochen und in den Error-Zustand gewechselt. Dieser kann mittels des vorherigem Zustand eine Fehlermeldung an den Server schicken, welche dem Nutzer angezeigt wird. Daraufhin kann ein neuer Fahrbefehl oder Akkuzustand empfangen werden. 
 
-\section{Zustandsautomat der Hauptsteuerung}
+\subsection{Zustandsautomat der Hauptsteuerung}
 \label{sec:stateARD}
 Ähnlich wie in \autoref{sec:stateESP} wird auch die Software der Hauptsteuerung (Arduino) als Zustandsautomat realisiert. 
 Der Automat ist in \autoref{pic:statemaschineARD} gezeigt.
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=10cm]{stateMaschineARD.pdf}
+		\includegraphics[width=17cm]{stateMaschineARD.pdf}
 		\caption{\label{pic:statemaschineARD}Zustandsautomat der Hauptsteuerung als Grafik}
 	\end{center}
 \end{figure}
-\newpage
-Zu sehen ist dabei wieder eine Kreisstruktur, bei der die einzelnen Zustände über ERROR unterbrechen und wieder in IDLE rücksetzen können. Der generelle Ablauf welcher in einer erfolgreich ausgeführten Fahr mündet ergibt sich wie folgt:
 
-%@moritz: Der Ablauf gilt ja generell für die Kommunikation und den beschreibst du ja auch vorher schon. Macht es dann nicht Sinn, den auch beim ESP schon zu erläutern? 
-\begin{center}
-	\begin{itemize}
-		\item 1. Eine Nachricht mit Positionsanfrage vom ESP wurde empfangen,
-		\item 2. Die aktuelle Position wurde zurückgeschickt und ein Befehl wird erwartet.
-		\item 3. EIn Fahrbefehl wurde empfangen und akzeptiert.
-		\item 4. Die gewünschte Position wurde angefahren.
-	\end{itemize}
-\end{center}
+Zu sehen ist dabei wieder eine Kreisstruktur, bei der die einzelnen Zustände über ERROR unterbrechen und wieder zu IDLE rücksetzen können. In Zustand ERROR wird dabei zusätzlich überprüft, ob es sich um einen fatalen Fehler wie falsche Positionsvariable handelt. In diesem Fall müsste die Hochbahn an der Ladestation resettet werden. Der generelle Ablauf welcher in einer erfolgreich ausgeführten Fahrt mündet ergibt sich wie folgt:
+Zusätzlich werden im IDLE-Zustand die Batteriespannungen überprüft um rechtzeitig zur Ladestation zu fahren, falls sie zu leer sind. In diesem Fall schaltet sich die Bahn ab, sobald sie an der Ladestation angedockt ist. 
 
-Zusätzlich werden im IDLE-Zustand die Batteriespannungen überprüft um rechtzeitig zur Ladestation zu fahren, falls sie zu leer sind. In diesem Fall schaltet sich die Bahn ab, sobald sie beim Laden angedockt ist. TODO IN GRAFIK!! Dieser Vorgang wird ebenfalls ausgelöst, falls über einen längeren Zeitraum keine Fahrbefehle erhalten wurden.
-
-\chapter{Konzeptionierung der Fahrfunktion}
+\section{Konzeptionierung der Fahrfunktion}
 Die Hauptfunktion dieser Methode lässt sich mit folgendem Satz zusammenfassen: \textit{Die Bahn fährt von A nach B.} B ist in diesem Fall die anzufahrende Position, welche vom Server übermittelt wurde. Mit Acht Abschnitten auf der Strecke und der Möglichkeit jeden Abschnitt von jedem Abschnitt aus anzufahren ergeben sich 56 individuelle Fahrprogramme. Eine Möglichkeit wäre, jedes dieser Fahrprogramme einzeln auszuprogrammieren. Ein viel eleganterer Weg ist jedoch, den Arduino selbst für jede Fahrt das Fahrprogramm bestimmen zu lassen. 
 
-\section{Regeln zur bestimmung des Fahrprogramms}
-Auf der Strecke gibt es zwei unterschiedlich anzufahrende Positionen:
+\subsection{Regeln zur Bestimmung des Fahrprogramms}
+Auf der Strecke gibt es zwei unterschiedlich Arten von anzufahrenden Positionen:
 \begin{center}
 	\begin{itemize}
 		\item Ein Abschnitt auf der Strecke
 		\item und eine der beiden Endpositionen.
 	\end{itemize}
 \end{center}
-Der unterschied liegt darin, dass die Bahn bei einer der beiden Endpositionen exakt am Magneten anhalten muss, während bei Anfahrten von Aschnitten ledigliche zwischen zwei Magneten zu Stoppen ist. Die Geschwindigkeit muss also bereits vor eintreten in den letzten Abschnitt so gering sein, dass innerhalb des Abschnittes angehalten, bzw. der letzte Magnet angefahren werden kann.
+Der Unterschied liegt darin, dass die Bahn bei einer der beiden Endpositionen exakt am Magneten anhalten muss, während bei Anfahrten von Aschnitten ledigliche zwischen zwei Magneten zu Stoppen ist. Die anzupeilende Geschwindigkeit sei in Prozent der Maximalgeschwindigkeit angegeben.
+\newpage 
+\subsubsection{Regel 1: Maximalgeschwindigkeit einzelner Abschnitte}
+\autoref{pic:streckengrafik} zeigt die Strecke der Hochbahn.
 
-\chapter{Umsetzung}
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width = \textwidth]{Streckengrafik.pdf}
+		\caption{\label{pic:streckengrafik} Hochbahn-Strecke als Grafik}
+	\end{center}
+\end{figure}
+
+Wie zu erkennen ist, gibt es sowohl sehr kurvige als auch längere gerade Streckenanteile. Die Strecke wird nun in acht Abschnitte unterteilt, welche jeweils anfahrbar sind. Abschnitt Null und Sieben sind die Endpunkte der Hochbahnstrecke. Wie schon in TODO erwähnt, sind die einzelnen Abschnitte jeweils mit Magneten von einander getrennt. In \autoref{pic:positionen} sind diese Acht Abschnitte zu sehen.
+\newpage
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width = \textwidth]{Positionen.pdf}
+		\caption{\label{pic:positionen} Hochbahn-Strecke als Grafik}
+	\end{center}
+\end{figure}
+
+Das Tablett welches an der Hochbahn befestigt ist, kann auf horizontaler Ebene schwingen. Ein solcher Schwingvorgang kann unter anderem durch schnelle Kurvenfahrten entstehen und sollte in möglichst allen Fällen vermieden werden. DAraus folgt, dass beispielsweise in den ersten drei Abschnitten die Höchstgeschwindigkeit bei 30\% liegt, damit die Kurven keinen hohen Schwingvorgang verursachen. Für jeden Abschnitt wird also eine Maximalgeschwindigkeit festgelegt.
+
+\subsubsection{Regel 2: Geschwindigkeit des vorletzten Abschnitts}
+Die Geschwindigkeit muss bereits vor eintreten in den letzten Abschnitt so gering sein, dass innerhalb des Abschnittes angehalten, bzw. der letzte Magnet angefahren werden kann. Angenommen von 50\% ist es immer möglich innerhalb eines Abschnitts auf 0\% abzubremsen. Daraus folgt, dass die Maximalgeschwindigkeit im vorletzten Abschnitt einer Fahrstrecke 50\% nicht überschreiten darf. 
+
+\subsubsection{Regel 3: Geschwindigkeit des ersten Abschnitts}
+Der erste Asbchnitt ist jener, aus dem die Bahn die Fahrstrecke beginnt. Er wird also nur teilweise durchfahren, bevor die Bahn in den zweiten Abschnitt mit anderer Maximalgeschwindigkeit fährt. Daraus folgt, dass die Höchstgeschwindigkeit im ersten Abschnitt nicht höher sein soll als die des zweiten Abschnitts, da sonst die Bahn nach beschleunigen direkt wieder abbremsen müsste. So lässt sich weitere Schwingung in Fahrtrichtung vermeiden.
+
+\subsubsection{Regel 4: Geschwindigkeit des letzten Abschnitts}
+Im letzten Abschnitt muss die Geschwindigkeit $= 0$ sein, sodass die Bahn anhält. Handelt es sich beim letzten Abschnitt um eine Endposition, wird die Geschwindigkeit auf ein Minimum gesetzt und erst beim Ankommen am letzten Magneten angehalten.  
+
+\subsection{Priorisierung der Regeln}
+
+\chapter{Umsetzung} 
 \label{cha:umsetzung}
 In diesem ersten Teil der Studienarbeit stand die Konzeptionierung in \autoref{cha:konzeptionierung} im Vordergrund. Auf dieses Kapitel aufbauend soll der aktuelle Stand der Umsetzung beschrieben werden. Dieser beschränkt sich bislang auf die Motorsteuerung in \autoref{sec:motorsteuerung} sowie die Getriebekonstruktion in \autoref{sec:getriebekonstruktion}.
 \newpage
