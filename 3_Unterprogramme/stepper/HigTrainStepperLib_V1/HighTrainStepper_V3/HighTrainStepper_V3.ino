@@ -2,38 +2,12 @@
    Bantle & Knapp Copyright
    V3 - March 2022
 */
+#include "Stepper.h"
 
-// PinOut
-#define dir 3
-#define clk 2
-#define enbl 10
-#define m0 4
-#define m1 5
-#define led 9
-
-// Min and Max values for timer compare Register OCR1A
-#define Max  5500
-#define Min 990
-
-//Min and Max Values for acceleration (additional prescaler with modulo)
-#define aMax 20
-#define aMin 4
-
-int y = Min; //target speed
-int k; //counter for ISR Prescaler,
-int a; //accelecaration (modulo)
-bool yDone = false;
-int s;
 
 //-------------setup---------------
 void setup() {
   Serial.begin(9600);
-  pinMode(clk, OUTPUT);
-  pinMode(dir, OUTPUT);
-  pinMode(enbl, OUTPUT);
-  pinMode(m0, OUTPUT);
-  pinMode(m1, OUTPUT);
-  pinMode(led, OUTPUT);
   initInterrupts();
 
 }
@@ -42,38 +16,7 @@ void setup() {
 //------------functions----------
 
 //-->driving<----
-void linear(int s, int b = 40) {
-  //s = newSpeed -->y, b = acceleration -->a
 
-  //map s to new y
-  int y_new = map(abs(s), 0, 100, Max, Min); //<-- VZ beachten!
-
-
-  if (abs(s) > 0) {
-    mode(0); //enable motor
-  }
-
-
-  //check if startup neccessary
-  if (y_new != y) {
-    setDir(s);
-    if (y == Min) {
-      // Motor StartUp
-      stepMode(4);
-      delay(1000);
-      stepMode(2);
-      delay(1000);
-    }
-    y = y_new; //set new global y
-    Serial.println("---->Acc./ Dec. to " + String(s) + " %<---");
-
-  }
-
-  // map acceleration to global a
-  a = map(b, 0, 100, aMax, aMin);
-
-
-}
 
 //--->modes<----
 void mode(int n) {
