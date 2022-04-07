@@ -2,6 +2,7 @@
    Bantle & Knapp Copyright
    V3 - March 2022
 */
+#include <HCSR04.h>
 
 // PinOut
 #define dir 3
@@ -10,6 +11,10 @@
 #define m0 4
 #define m1 5
 #define led 9
+#define triggerPin 6
+#define echoCount 2
+#define warn 20
+#define safe 10
 
 // Min and Max values for timer compare Register OCR1A
 #define Max  5500
@@ -24,6 +29,8 @@ int k; //counter for ISR Prescaler,
 int a; //accelecaration (modulo)
 bool yDone = false;
 int s;
+byte* echoPins = new byte[echoCount] { 7, 11 };
+
 
 //-------------setup---------------
 void setup() {
@@ -35,6 +42,8 @@ void setup() {
   pinMode(m1, OUTPUT);
   pinMode(led, OUTPUT);
   initInterrupts();
+  HCSR04.begin(triggerPin, echoPins, echoCount);
+
 
 }
 
@@ -57,7 +66,7 @@ void linear(int s, int b = 40) {
   if (y_new != y) {
     setDir(s);
     if (y == Max) {
-      Serial.println("-->startup<----"); 
+      Serial.println("-->startup<----");
       // Motor StartUp
       stepMode(4);
       delay(1000);
@@ -75,6 +84,29 @@ void linear(int s, int b = 40) {
 
 }
 
+byte checkDist(double distance) {
+  byte field = 0;
+  int _distance;
+
+  if (distance < 0) {
+    _distance = 999;
+  }
+
+  else {
+    _distance = distance;
+  }
+
+  if (_distance < warn) {
+    field = 1;
+  }
+
+  if (_distance < safe) {
+    field = 2;
+  }
+
+  return field;
+
+}
 //--->modes<----
 void mode(int n) {
   //idleMode
@@ -246,13 +278,31 @@ void loop() {
 
     mode(2);
   */
-  linear(100); 
-  delay(10000); 
-  mode(2); 
-  delay(4000); 
-  linear(-40); 
-  delay(400); 
-  mode(2); 
-  delay(4000); 
+  double* distances = HCSR04.measureDistanceCm();
+  Serial.print("0: ");
+  Serial.print(String(distances[1]) + "  ");
+  Serial.println(checkDist(distances[1]));
 
+  Serial.print("1: ");
+  Serial.print(String(distances[0]) + "  ");
+  Serial.println(checkDist(distances[0]));
+
+  Serial.println("-----");
+
+  if (checkDist(distances[1]) == 1 | checkDist(distances[0]) == 1) {
+    linear(20, 70);
+  }
+
+
+  else if (checkDist(distances[1]) == 2 | checkDist(distances[0]) == 2) {
+    mode(1);
+  }
+
+
+
+  else {
+    linear(100);
+  }
+
+  delay(250);
 }
