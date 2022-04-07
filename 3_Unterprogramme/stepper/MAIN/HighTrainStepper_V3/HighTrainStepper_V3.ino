@@ -44,7 +44,6 @@ void setup() {
   initInterrupts();
   HCSR04.begin(triggerPin, echoPins, echoCount);
 
-
 }
 
 
@@ -253,23 +252,12 @@ ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
     k = 0;
 
 
+
+
+
+
   }
-
-
-  if (abs(OCR1A - y) <= 10) {
-    OCR1A = y;
-    yDone = true;
-    digitalWrite(led, 1);
-  }
-
-  else {
-    yDone = false;
-    digitalWrite(led, 0);
-  }
-
-
 }
-
 
 //-------------main--------------
 void loop() {
@@ -289,20 +277,7 @@ void loop() {
 
   Serial.println("-----");
 
-  if (checkDist(distances[1]) == 1 | checkDist(distances[0]) == 1) {
-    linear(20, 70);
-  }
-
-
-  else if (checkDist(distances[1]) == 2 | checkDist(distances[0]) == 2) {
-    mode(1);
-  }
-
-
-
-  else {
-    linear(100);
-  }
+  linear(distances[0], 100);
 
   delay(250);
 }

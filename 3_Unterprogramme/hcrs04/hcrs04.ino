@@ -19,14 +19,7 @@ void setup () {
 
 void loop () {
   double* distances = HCSR04.measureDistanceCm();
-  /*
-  for (int i = 0; i < echoCount; i++) {
-    Serial.print(i + 1);
-    Serial.print(": ");
-    Serial.print(distances[i]);
-    Serial.println(" cm");
-  }
-*/
+
   Serial.print("Sensor1: ");
   Serial.println(String(checkDist(distances[0])));
   Serial.print("Sensor2: "); 
