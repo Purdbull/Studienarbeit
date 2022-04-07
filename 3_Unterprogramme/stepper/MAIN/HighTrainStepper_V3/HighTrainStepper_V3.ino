@@ -19,7 +19,7 @@
 #define aMax 20
 #define aMin 4
 
-int y = Min; //target speed
+int y = Max; //target speed
 int k; //counter for ISR Prescaler,
 int a; //accelecaration (modulo)
 bool yDone = false;
@@ -54,10 +54,10 @@ void linear(int s, int b = 40) {
   }
 
 
-  //check if startup neccessary
   if (y_new != y) {
     setDir(s);
-    if (y == Min) {
+    if (y == Max) {
+      Serial.println("-->startup<----"); 
       // Motor StartUp
       stepMode(4);
       delay(1000);
@@ -246,11 +246,13 @@ void loop() {
 
     mode(2);
   */
-  linear(-40);
-  delay(5000);
-  mode(2);
-  delay(4000);
-  linear(40);
-  delay(10000);
+  linear(100); 
+  delay(10000); 
+  mode(2); 
+  delay(4000); 
+  linear(-40); 
+  delay(400); 
+  mode(2); 
+  delay(4000); 
 
 }
