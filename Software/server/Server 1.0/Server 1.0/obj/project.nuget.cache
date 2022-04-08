@@ -1,12 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "BmUAuIJLOGxLxS5tRwaIp5ozJkMDHqugFFFgvN4L9eYncE68tZ7z0mdOMqZdBE5xI5OksRilXtWYFytFfeLh5A==",
+  "dgSpecHash": "TVoqHSB/N0hWazIj/sB1b0aNej8CJg9tmsunEtvDxXUxSZXveKgQ67a3CvQ5Mcx1KCpiXIA8XOMvXgnVh9vTmg==",
   "success": true,
-  "projectFilePath": "D:\\DH\\T3000_B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj",
+  "projectFilePath": "D:\\Skywalker\\DH\\T3000B\\Studienarbeit\\Software\\server\\Server 1.0\\Server 1.0\\Server 1.0.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\morit\\.nuget\\packages\\mqttnet\\3.1.2\\mqttnet.3.1.2.nupkg.sha512",
-    "C:\\Users\\morit\\.nuget\\packages\\mqttnet.aspnetcore\\3.1.2\\mqttnet.aspnetcore.3.1.2.nupkg.sha512",
-    "C:\\Users\\morit\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\5.0.14\\microsoft.netcore.app.host.win-x64.5.0.14.nupkg.sha512"
+    "C:\\Users\\Moritz Knapp\\.nuget\\packages\\mqttnet\\3.1.2\\mqttnet.3.1.2.nupkg.sha512",
+    "C:\\Users\\Moritz Knapp\\.nuget\\packages\\mqttnet.aspnetcore\\3.1.2\\mqttnet.aspnetcore.3.1.2.nupkg.sha512"
   ],
   "logs": []
 }

@@ -16,6 +16,7 @@ namespace Server_1._0
 {
     public class Startup
     {
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,6 +32,8 @@ namespace Server_1._0
             .AddMqttConnectionHandler()
             .AddConnections()
             .AddControllersWithViews();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

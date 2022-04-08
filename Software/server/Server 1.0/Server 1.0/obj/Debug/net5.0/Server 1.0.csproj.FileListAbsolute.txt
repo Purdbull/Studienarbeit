@@ -8,7 +8,6 @@ D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\D
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.pdb
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.Views.dll
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.Views.pdb
-D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.csproj.AssemblyReference.cache
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.GeneratedMSBuildEditorConfig.editorconfig
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.AssemblyInfoInputs.cache
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.AssemblyInfo.cs
@@ -32,7 +31,6 @@ D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\D
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.RazorTargetAssemblyInfo.cs
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.Views.pdb
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.dll
-D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\refint\Server 1.0.dll
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.pdb
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.genruntimeconfig.cache
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\ref\Server 1.0.dll
@@ -78,3 +76,8 @@ D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.csproj.CopyComplete
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\MQTTnet.dll
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\MQTTnet.AspNetCore.dll
+D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\ref\Server 1.0.dll
+D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\MQTTnet.dll
+D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\MQTTnet.AspNetCore.dll
+D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.csprojAssemblyReference.cache
+D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\staticwebassets\Server 1.0.StaticWebAssets.xml
