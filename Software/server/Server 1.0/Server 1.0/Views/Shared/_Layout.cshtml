@@ -81,6 +81,20 @@
             output.innerHTML = values[this.value];
         };
         input.oninput(); //set default value
+
+        function driveTo() {
+            var pos = $('#input').val();
+
+            $.ajax({
+                type: "Post",
+                url: "/Home/Position",
+                cache: false,
+                data: {
+                    position: pos
+                }
+            }).done();
+        }
+
     </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

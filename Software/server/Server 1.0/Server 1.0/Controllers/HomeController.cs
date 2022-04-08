@@ -13,9 +13,12 @@ namespace Server_1._0.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private Services.IMqttService _mqttService;
+
+        public HomeController(ILogger<HomeController> logger, Services.IMqttService mqttService)
         {
             _logger = logger;
+            _mqttService = mqttService;
         }
 
         public IActionResult Index()
@@ -32,6 +35,16 @@ namespace Server_1._0.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        [Route("Home/Position")]
+        public IActionResult driveTo(int position)
+        {
+            string topic = "Train/driveToPosition";
+            string message = position.ToString();
+            _mqttService.sendMessage(topic, message);
+            return Ok();
         }
     }
 }

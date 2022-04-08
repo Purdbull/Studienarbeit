@@ -11,12 +11,17 @@ using System.Threading.Tasks;
 
 using MQTTnet.AspNetCore;
 using MQTTnet.AspNetCore.Extensions;
+using Server_1._0.Services;
+using MQTTnet.Server;
 
 namespace Server_1._0
 {
     public class Startup
     {
-        
+
+
+        private IMqttServer _server;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -33,6 +38,12 @@ namespace Server_1._0
             .AddConnections()
             .AddControllersWithViews();
 
+            //services.AddSingleton<MqttService>();
+
+            services.AddSingleton<IMqttService>(x => new Services.MqttService(_server));
+
+            services.AddMqttConnectionHandler();
+            services.AddMqttWebSocketServerAdapter();
 
         }
 
@@ -74,8 +85,11 @@ namespace Server_1._0
 
             app.UseMqttServer(server =>
             {
-                // Todo: Do something with the server
+                _server = server;
             });
+
+            app.UseMqttEndpoint();
+
         }
     }
 }
