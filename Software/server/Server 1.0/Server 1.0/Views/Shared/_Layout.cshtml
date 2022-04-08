@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Server_1._0</title>
+    <title>@ViewData["Title"] - HighTrain-Server</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -42,7 +42,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Server_1._0</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HighTrain-Server</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -50,10 +50,10 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Steuerung</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Info">Live-Info</a>
                         </li>
                     </ul>
                 </div>
@@ -67,11 +67,14 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - Server_1._0 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="container text-center">
+            &copy; Powered by Knapp-Industries
         </div>
     </footer>
     <script>
+        window.onload = function () {
+            init();        
+        } 
         var values = [0,1,2,3,4,5,6,7];    //values to step to
 
         var input = document.getElementById('input'),
@@ -81,6 +84,15 @@
             output.innerHTML = values[this.value];
         };
         input.oninput(); //set default value
+
+        function init() {
+            var intervalId = setInterval(function () {
+                getWarningMsg();
+                getErrorMsg();
+                getBatteryVal();
+                getPosition();
+            }, 500);
+        }
 
         function driveTo() {
             var pos = $('#input').val();
@@ -93,6 +105,62 @@
                     position: pos
                 }
             }).done();
+        }
+
+        function getWarningMsg() {
+            $.ajax({
+                type: "Get",
+                url: "/Home/Warn",
+                success: function (data) {
+                    $('#data-warn').text(data);
+                },
+                error: function () {
+                    alert("Server down");
+                }
+
+            });
+        }
+
+        function getErrorMsg() {
+            $.ajax({
+                type: "Get",
+                url: "/Home/Error",
+                success: function (data) {
+                    $('#data-error').text(data);
+                },
+                error: function () {
+                    alert("Server down");
+                }
+
+            });
+        }
+
+        function getBatteryVal() {
+            $.ajax({
+                type: "Get",
+                url: "/Home/Battery",
+                success: function (data) {
+                    $('#data-battery').text(data);
+                },
+                error: function () {
+                    alert("Server down");
+                }
+
+            });
+        }
+
+        function getPosition() {
+            $.ajax({
+                type: "Get",
+                url: "/Home/Position",
+                success: function (data) {
+                    $('#data-position').text(data);
+                },
+                error: function () {
+                    alert("Server down");
+                }
+
+            });
         }
 
     </script>

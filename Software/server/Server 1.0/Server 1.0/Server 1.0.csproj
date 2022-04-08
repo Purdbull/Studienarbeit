@@ -8,6 +8,10 @@
   <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
   <ItemGroup>
+    <None Include="wwwroot\images\Streckengrafik.PNG" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MQTTnet" Version="3.1.2" />
     <PackageReference Include="MQTTnet.AspNetCore" Version="3.1.2" />
   </ItemGroup>

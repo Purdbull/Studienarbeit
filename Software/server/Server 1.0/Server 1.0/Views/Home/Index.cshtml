@@ -5,10 +5,14 @@
 
 <div class="text-center">
     <div class="mb-4 mt-4"></div>
-    <h1 class="display-3 mb-5">Steuerung</h1>
-    <input id="input" type="range" min="0" value="0" max="7" step="1" class="slider mb-3">
-    <div id="output" class="display-4 mb-3"></div>
+    <h1 class="text-muted mb-3">Steuerung</h1>
+
+    <h4 class="text-muted mb-3">Fahre zu Position <div style="display:inline;" id="output" class="text-muted mb-3"></div></h4>
+    <input id="input" type="range" min="0" value="0" max="7" step="1" class="slider mb-4">
     <div class="row">
-        <div class="col" onclick="driveTo()"><button class="btn btn-outline-info">Fahrbefehl senden</button></div>
+        <div class="col mb-4" onclick="driveTo()"><button class="btn btn-outline-info">Fahrbefehl senden</button></div>
     </div>
+    <h4 class="text-muted mb-3">Aktuelle Position: <div style="display:inline;" id="data-position"></div></h4>
+
+    <img src="~/images/Streckengrafik.PNG" alt="Übersicht" class="img-fluid mt-3" />
 </div>

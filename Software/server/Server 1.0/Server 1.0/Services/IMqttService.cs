@@ -9,5 +9,13 @@ namespace Server_1._0.Services
     {
         Task sendMessage(string topic, string payload);
         void receiveMessage();
+
+        string getErrorMsg();
+
+        string getWarningMsg();
+
+        string getBatteryVal();
+
+        string getPosition();
     }
 }
