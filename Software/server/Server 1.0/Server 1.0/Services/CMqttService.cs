@@ -58,6 +58,11 @@ namespace Server_1._0.Services
                         {
                             this.Position = payload;
                         }
+                        else if (topic == "Train/Info")
+                        {
+                            this.ErrorMsg = "Nix schlimm kaputt :)";
+                            this.WarnMsg = "Nix kaputt ^^";
+                        }
                     }
                 }
                 catch (Exception ex)
