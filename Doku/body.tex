@@ -623,14 +623,41 @@ Der erste Asbchnitt ist jener, aus dem die Bahn die Fahrstrecke beginnt. Er wird
 Im letzten Abschnitt muss die Geschwindigkeit $= 0$ sein, sodass die Bahn anhält. Handelt es sich beim letzten Abschnitt um eine Endposition, wird die Geschwindigkeit auf ein Minimum gesetzt und erst beim Ankommen am letzten Magneten angehalten.  
 
 \subsection{Priorisierung der Regeln}
-Je nach Länge der Fahrstrecke variiert die Anzahl der überfahrenen Abschnitte zwischen Zwei und Acht. Bei einer kleinen Anzahl von Abschnitten können die einzelnen Regeln andere überschreiben was im schmlimmsten Fall zu Regelverstoß, bzw falschen Geschwindigkeiten führt. 
+Je nach Länge der Fahrstrecke variiert die Anzahl der überfahrenen Abschnitte zwischen Zwei und Acht. Bei einer kleinen Anzahl von Abschnitten können die einzelnen Regeln andere überschreiben was im schmlimmsten Fall zu Regelverstoß, bzw falschen Geschwindigkeiten führt. Die niedrigste Priorität hat die zuerst angewendete Regel, da alle folgenden Regeln sie überschreiben können.
 
-\begin{example}
-	Betrachtet wird eine Fahrt von Abschnitt Drei zu Abschnitt Vier. Angenommen Regel 1 wird als erstes angewendet. In diesem Fall ergäben sich die Abshcnitte wie folgt:
+Betrachtet wird eine Fahrt von Abschnitt Fünf zu Abschnitt Vier. Regel Eins wird zuerst angewendet, da sie die generellen und nicht die fahrspezifischen Geschwindigkeiten bestimmt. In diesem Fall ergäben sich die Abshchnitte wie folgt:
+
+\begin{center}
 	\begin{itemize}
-		\item 30 | 60
+		\item 100 | 80
 	\end{itemize}
-\end{example}
+\end{center}
+
+Regel 4 sollte die höchste Priorität besitzen, da durch Verletzung die Hochbahn zu spät anhält. Da ein Abbremsen innerhalb des letzten Abschnitts wichtiger ist als das Verhidnern einer zu hohen beschleunigung im ersten Abschnitt, wird Regel Drei niedriger priorisiert als Regel 4. Somit ergeben sich die Abschnitte nach dem zweiten Regeldurchlauf folgendermaßen:
+
+\begin{center}
+	\begin{itemize}
+		\item 80 | 80
+	\end{itemize}
+\end{center}
+
+Nach dem dritten Durchlauf wird somit die Geschwindigkeit des vorletzten Abschitts auf 50 verringert, wonach im letzten Durchlauf die Zielabschnittsgeschwindigkeit auf 0 gesetzt wird. 
+
+Ein weiteres Beispiel mit einer Fahrt von Abschnitt Zwei zu Abschnitt Sechs zeigt die Geschwindigkeitsverteilung bei einer längeren Fahrt:
+
+\begin{center}
+	\begin{itemize}
+		\item Regel 1: 30 | 40 | 80 | 100 | 90 
+		\item Regel 3: 30 | 40 | 80 | 100 | 90 
+		\item Regel 2: 30 | 40 | 80 |  50 | 90 
+		\item Regel 4: 30 | 40 | 80 |  50 |  0 
+	\end{itemize}
+\end{center}
+
+Die Priorisierung $Regel1 <  Regel3 <  Regel2  < Regel4$ kann  sowohl verhindern dass die Bahn im letzten Abschnitt zu schnell ankommt, als auch unnötige Beschleunigungen vermeiden.
+
+
+
 \chapter{Umsetzung} 
 \label{cha:umsetzung}
 In diesem ersten Teil der Studienarbeit stand die Konzeptionierung in \autoref{cha:konzeptionierung} im Vordergrund. Auf dieses Kapitel aufbauend soll der aktuelle Stand der Umsetzung beschrieben werden. Dieser beschränkt sich bislang auf die Motorsteuerung in \autoref{sec:motorsteuerung} sowie die Getriebekonstruktion in \autoref{sec:getriebekonstruktion}.
