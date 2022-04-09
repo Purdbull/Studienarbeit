@@ -623,7 +623,14 @@ Der erste Asbchnitt ist jener, aus dem die Bahn die Fahrstrecke beginnt. Er wird
 Im letzten Abschnitt muss die Geschwindigkeit $= 0$ sein, sodass die Bahn anhält. Handelt es sich beim letzten Abschnitt um eine Endposition, wird die Geschwindigkeit auf ein Minimum gesetzt und erst beim Ankommen am letzten Magneten angehalten.  
 
 \subsection{Priorisierung der Regeln}
+Je nach Länge der Fahrstrecke variiert die Anzahl der überfahrenen Abschnitte zwischen Zwei und Acht. Bei einer kleinen Anzahl von Abschnitten können die einzelnen Regeln andere überschreiben was im schmlimmsten Fall zu Regelverstoß, bzw falschen Geschwindigkeiten führt. 
 
+\begin{example}
+	Betrachtet wird eine Fahrt von Abschnitt Drei zu Abschnitt Vier. Angenommen Regel 1 wird als erstes angewendet. In diesem Fall ergäben sich die Abshcnitte wie folgt:
+	\begin{itemize}
+		\item 30 | 60
+	\end{itemize}
+\end{example}
 \chapter{Umsetzung} 
 \label{cha:umsetzung}
 In diesem ersten Teil der Studienarbeit stand die Konzeptionierung in \autoref{cha:konzeptionierung} im Vordergrund. Auf dieses Kapitel aufbauend soll der aktuelle Stand der Umsetzung beschrieben werden. Dieser beschränkt sich bislang auf die Motorsteuerung in \autoref{sec:motorsteuerung} sowie die Getriebekonstruktion in \autoref{sec:getriebekonstruktion}.
