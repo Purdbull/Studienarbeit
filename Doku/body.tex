@@ -656,6 +656,42 @@ Ein weiteres Beispiel mit einer Fahrt von Abschnitt Zwei zu Abschnitt Sechs zeig
 
 Die Priorisierung $Regel1 <  Regel3 <  Regel2  < Regel4$ kann  sowohl verhindern dass die Bahn im letzten Abschnitt zu schnell ankommt, als auch unnötige Beschleunigungen vermeiden.
 
+\chapter{Server}
+Die ursprüngliche Konzeptionierung der Hochbahn sah Server und \acrshort{mqtt}-Broker als zwei getrennte Systeme vor. Ebenfalls war ein Bestellsystem vorgesehen. Dieses wurde aufgrund der stark gestiegenen Komplexität des verteilten Systems auf der Hochbahn in den Ausblick dieser Arbeit verschoben. Da ein Server nun nur Steuerbefehle weiterleitet, wäre es einfach, diesen vom ESP der Hochbahn selbst hosten zu lassen. Da das System jedoch auch nach Ende dieser Arbeit weiterentwickelt werden soll, wird auch hier die Grundlage geschaffen um ein Bestellsystem später hinzuzufügen. Daher ist ein Server zu entwickeln, welcher eine komplexe Implementierung eines Bestellsystems ermöglicht. 
+\section{ASP.NET-Core}
+Nach evaluierung verschiedener Frameworks für die Serverprogrammierung, fiel die Entscheidung auf APS.NET-Core. Grund dafür war einerseits eine persönliche Vorliebe für die Programmiersprache C\# im Gegensatz zu beispielsweise Python mit Django als Framework. Andererseits bietet ASP.NET-Core auch die Möglichkeit einen \acrshort{mqtt}-Broker als zusätzliche Komponente des Systems zu hosten. Somit wird im Betrieb auf dem Raspberry PI nur noch der Server getartet, ohne noch einen Broker installieren und starten zu müssen. \\
+Das Framework baut auf \acrfull{mvc} auf. Die Models werden aktuell noch vernachlässigt, da aufgrund der geringen Funktionlität keinerlei Objekte beispielsweise in eine Datenbank geschrieben werden müssen. Kommt das Bestellsystem dazu, würden hierbei Models für Bestellungen oder Nutzer für die Datenbank verwendet. Der Server dient jedoch vorerst nur als Vermittler zwischen Nutzer und Hochbahn ohne individuelle Anforderungen zu erfüllen, welche Models benötigen. Auf Views und Controller kann trotz geringer Fnktionalität nicht verzichtet werden. 
+
+\subsection{Views}
+\subsubsection{Index}
+Index ist jene Seite, die beim ersten Aufruf der Website gezeigt wird. Sie soll dem Nutzer anzeigen wo sich die Bahn aktuell befindet. Zudem soll die Möglichkeit geboten werden einen Fahrbefehl an die Bahn zu schicken. Der Konzeptionierung der Fahrfunktion ist eine Grafik zu entnehmen, bei der die einzelnen Abschnitte der Bahn erkennbar sind (\autoref{pic:streckengrafik}). Ist diese Grafik auch auf der Seite zu sehen, kann ein Nutzer bei einer Eingabe die gewünschte Position auswählen und als Fahrbefehl verschicken. Als Eingabefunktion wurde aufgrund symbolischer Ähnlichkeit ein Slider verwendet. Auf Darlegung des Design-Codes, also css und Bootstrap wird in dieser Arbeit verzichtet, da der Fokus auf Technik und FUnktionalität liegt. 
+\vspace{1cm}
+
+\begin{lstlisting}[language=html, style=dhpaperdefault]
+<div class="text-center">
+    <h1>Steuerung</h1>
+    <h4>Fahre zu Position <div id="output"></div></h4>
+    <input id="input" type="range" min="0" value="0" max="7" step="1">
+    <div class="row">
+        <div class="col mb-4" onclick="driveTo()"><button>Fahrbefehl senden</button></div>
+    </div>
+    <h4>Aktuelle Position: <div id="data-position"></div></h4>
+
+	<img src="images/Streckengrafik.PNG"/>
+</div>
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:index} Index.html des Servers}
+\vspace{1cm}
+
+In \autoref{code:index} ist der HTML-Code der Hauptseite zu sehen. Er wird im Body als zu renderndes Objekt übergeben, sofern die Hauptseite aufgerufen wird. Zu erkennen ist ein Input des Types Range (Slider), dessen Wert über seine ID erhalten werden kann. Die Funktion \texttt{driveTo()}, welche beim Klicken auf den Button gestartet wird, entnimmt diesen Wert und sendet ihn via \acrshort{mqtt} an die Bahn (Mehr dazu unter \autoref{sec:serverMqtt}). Die Hochbahn schickt bei Änderung der Position diese an den Server. Auf dem Server soll also immer die aktuelle Position der Bahn gespeichert sein. Änderungen des Inhalts auf der Seite des Servers hat generell keine Auswirkung auf jene die Beispielsweise auf dem Handy angezeigt wird, da das Handy sich beim ersten Aufruf die Seite holt und diese auch nicht aktualisiert. Daher ist es nötig eine Funktionalität einzubauen, die Clientseitig periodisch die Daten wie aktuelle Position aktualisiert. Die Position soll im div der ID \texttt{data-position} angezeigt werden. Um aktuelle DAten vom Server zu erhalten wird Clientseitig ein GET-Request durchgeführt. Dieses Request erbittet definierte DAten vom Server und kann von jedem GErät welches die Seite aufruft durchgeführt werden. Beim ersten Aufruf der Website wird ebenfalls ein GET-Request auf die Seite Index durchgeführt. \\
+HTML bietet die Möglichkeit einer \texttt{onload-}MEthode. Diese wird ausgeführt, sobald die Seite aufgerufen wurde. Im Falle des Hochbahnservers initialisiert die \texttt{onload}-Methode die periodische Ausführung verschiedener GET-Requests. 
+\subsubsection{Info}
+
+\subsection{Controller}
+\subsubsection{Home}
+\subsubsection{\acrshort{mqtt}}
+\label{sec:serverMqtt}
+
 
 
 \chapter{Umsetzung} 
