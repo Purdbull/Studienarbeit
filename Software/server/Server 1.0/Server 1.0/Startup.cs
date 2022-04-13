@@ -38,8 +38,6 @@ namespace Server_1._0
             .AddConnections()
             .AddControllersWithViews();
 
-            //services.AddSingleton<MqttService>();
-
             services.AddSingleton<IMqttService>(x => new Services.MqttService(_server));
 
             services.AddMqttConnectionHandler();

@@ -673,7 +673,7 @@ Index ist jene Seite, die beim ersten Aufruf der Website gezeigt wird. Sie soll 
     <h4>Fahre zu Position <div id="output"></div></h4>
     <input id="input" type="range" min="0" value="0" max="7" step="1">
     <div class="row">
-        <div class="col mb-4" onclick="driveTo()"><button>Fahrbefehl senden</button></div>
+        <div onclick="driveTo()"><button>Fahrbefehl senden</button></div>
     </div>
     <h4>Aktuelle Position: <div id="data-position"></div></h4>
 
@@ -684,15 +684,88 @@ Index ist jene Seite, die beim ersten Aufruf der Website gezeigt wird. Sie soll 
 \vspace{1cm}
 
 In \autoref{code:index} ist der HTML-Code der Hauptseite zu sehen. Er wird im Body als zu renderndes Objekt übergeben, sofern die Hauptseite aufgerufen wird. Zu erkennen ist ein Input des Types Range (Slider), dessen Wert über seine ID erhalten werden kann. Die Funktion \texttt{driveTo()}, welche beim Klicken auf den Button gestartet wird, entnimmt diesen Wert und sendet ihn via \acrshort{mqtt} an die Bahn (Mehr dazu unter \autoref{sec:serverMqtt}). Die Hochbahn schickt bei Änderung der Position diese an den Server. Auf dem Server soll also immer die aktuelle Position der Bahn gespeichert sein. Änderungen des Inhalts auf der Seite des Servers hat generell keine Auswirkung auf jene die Beispielsweise auf dem Handy angezeigt wird, da das Handy sich beim ersten Aufruf die Seite holt und diese auch nicht aktualisiert. Daher ist es nötig eine Funktionalität einzubauen, die Clientseitig periodisch die Daten wie aktuelle Position aktualisiert. Die Position soll im div der ID \texttt{data-position} angezeigt werden. Um aktuelle DAten vom Server zu erhalten wird Clientseitig ein GET-Request durchgeführt. Dieses Request erbittet definierte DAten vom Server und kann von jedem GErät welches die Seite aufruft durchgeführt werden. Beim ersten Aufruf der Website wird ebenfalls ein GET-Request auf die Seite Index durchgeführt. \\
-HTML bietet die Möglichkeit einer \texttt{onload-}MEthode. Diese wird ausgeführt, sobald die Seite aufgerufen wurde. Im Falle des Hochbahnservers initialisiert die \texttt{onload}-Methode die periodische Ausführung verschiedener GET-Requests. 
+HTML bietet die Möglichkeit einer \texttt{onload-}MEthode. Diese wird ausgeführt, sobald die Seite aufgerufen wurde. Im Falle des Hochbahnservers initialisiert sie die periodische Ausführung verschiedener GET-Requests. 
+
+\begin{lstlisting}[language=html, style=dhpaperdefault]
+	function init() {
+		var intervalId = setInterval(function () {
+			getWarningMsg();
+			getErrorMsg();
+			getBatteryVal();
+			getPosition();
+		}, 500);
+	}
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:init} Initialisierung der periodischen GET-Requests}
+\vspace{1cm}
+In \autoref{code:init} ist die Initialisierungsfunktion zu erkennen. Sie setzt ein intervall von 500 Millisekunden. Das bedeutet, das alle 500 Millisekunden die Funktion ausgeführt wird. Sie führt jeweils ein GET-Request auf verschiedene Informationen, wie auch die Position, die immer aktuell gehalten werden müssen. 
+
 \subsubsection{Info}
+Auf der Infoseite sind aktuelle Informationen über die Hochbahn zu sehen. Es gibt hierbei drei Kategorien:
+
+\begin{center}
+	\begin{itemize}
+		\item Warnungen,
+		\item Fehlermeldungen
+		\item und der Akkustand.
+	\end{itemize}
+\end{center}
+
+Die GET-Requests auf diese Informationen werden mit jener für die Position der Hochbahn initialisiert. Eine solche Anfrage erfolgt folgendermaßen:
+
+\begin{lstlisting}[language=html, style=dhpaperdefault]
+	function getErrorMsg() {
+		$.ajax({
+			type: "Get",
+			url: "/Home/Error",
+			success: function (data) {
+				$('#data-error').text(data);
+			},
+			error: function () {
+				alert("Server down");
+			}
+		});
+    }
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:get}GET-Request auf die Fehlermeldungen}
+\vspace{1cm}
+In \autoref{code:get} ist ein GET-Request auf die URL \texttt{Home/Error} zu sehen. Mit der Antwort des Servers wird im Parameter \texttt{data} die aktuelle Fehlermeldung übergtagen. Diese wird im Anschluss an das Textfeld mit der ID \texttt{data-error} übergeben. 
+
+\subsubsection{Benutzeroberfläche}
+Ein Nutzer der mit einem Smartphone die Seite im Heimnetzwerk aufruft, also im Browser die IP-Adresse des Servers eingibt, kann auf die beiden folgenden Seiten zugreifen:
+
+%TODO
+
+Links ist die Seite Index, rechts Info zu sehen. Die Streckengrafik zeigt dem Nutzer, wo sich die einzelnen Abshcnitte befinden. So kann er auf dem Slider genau bestimmen, wohin die Bahn fahren soll. Unter Info werden aktuelle Fehlermeldungen, Warnungen sowie der Batteriezustand gezeigt. Sie zeigen jeweils die neueste Meldung der Hochbahn. SOfern die Bahn eine Fahrt erfolgreich ausgeführt hat, werden die Werte für Warnung und Error zurückgesetzt, damit ein aufgetretener Fehler nicht auf der Seite angezeigt wird, sofern er bereits behoben wurde. 
 
 \subsection{Controller}
-\subsubsection{Home}
-\subsubsection{\acrshort{mqtt}}
+Da nur zwei Seiten existieren, wird nur ein Controller benötigt. Handelte es sich um eine Website mit wesentlich mehr einzelseiten und Funktionalitäten wie Bestellsystem wäre es sinnvoll, auch die Controller zu Gliedern in beispielsweise Home- und Bestellcontroller. \\
+\subsubsection{Home-Controller}
+Der einzige Controller des Servers hat die Aufgabe Anfragen an die beiden Seiten des Servers zu verwalten. Das können GET oder auch POST-Requests sein, welche sowohl auf die ganze Seite, als auch einzelne Inhalte erfolgen können.
+
+\section{MQTT}
 \label{sec:serverMqtt}
+Neben dem laufenden \acrshort{mqtt}-Broker wird zusätzlich ein \acrshort{mqtt}-Server benötigt, um Nachrichten zu empfangen und zu senden. Dieser wird im \texttt{Startup} als ein Service registriert. Dieser Service wird anschließend als Singleton umgesetzt, damit von überall im Code auf den gleichen Service zugegriffen wird:
 
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+public void ConfigureServices(IServiceCollection services)
+{
+	services
+	.AddHostedMqttServer(mqttServer => mqttServer.WithoutDefaultEndpoint())
+	.AddMqttConnectionHandler()
+	.AddConnections()
+	.AddControllersWithViews();
 
+	services.AddSingleton<IMqttService>(x => new Services.MqttService(_server));
+
+	services.AddMqttConnectionHandler();
+	services.AddMqttWebSocketServerAdapter();
+
+}
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:services} ConfigureServices des Servers}
+
+Neben dem Singleton werden in \autoref{code:services} weitere Handler-FUnktionen von \acrshort{mqtt} als Service registriert. Diese werden vom Broker benötigt. Der Parameter \texttt{\_server} ist eine Instanz eines Interfaces, welches selbst geschrieben werden muss. Dieses muss alle möglichen \acrshort{mqtt} - Methoden implementieren, wie beispielsweise was passiert, wenn eine Verbindung verloren wird.
 
 \chapter{Umsetzung} 
 \label{cha:umsetzung}
