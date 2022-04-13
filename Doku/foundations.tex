@@ -105,7 +105,7 @@ Wird $n$ größer, steigt dadurch Drehmoment $M$ des Motors. Durch die kontinuie
 Eine weitere Betriebsart ist der Mikroschrittbetrieb. Dabei wird die Stromstärke in den Statorwicklungen durch den Treiber sinusförmig gesteuert. (vgl. \cite{kleinantriebe},S.438, 454; \cite{schrittmotorBa}, S.3)
 
 \newpage
-\section{\acrshort{mqtt}} 
+\section{MQTT} 
 \label{sec:mqtt}
 \acrshort{mqtt} ist ein Protokoll, welches zur digitalen Datenübertragung in ethernet-basierten Systemen dient. Es benötigt nur wenig Bandbreite und Ressourcen und verwendet eine 
 Publish/Subscribe - Architektur. Das bedeutet, dass Nachrichten sogenannter Topics von Publishern bereitgestellt und von Subscribern empfangen werden. Der Datenverkehr wird über einen 
@@ -120,3 +120,16 @@ kennen, dass die Daten nicht zwischen Publisher und Subscriber direkt, sondern �
         \label{pic:mqttbroker}
     \end{center}
 \end{figure}
+\newpage
+\section{Zustandsautomaten}
+Ein Zustadsautomat ist ein Graph, bei dem die Knoten die Zustände des Automaten darstellen. Die Kanten zeigen die Übergangskriterien von einem in einen anderen Zustand (vgl. \cite{infoSkript}). In folgender Grafik ist ein einfacher Zustandsautomat aufgezeichnet: 
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=9cm]{simpleState.pdf}
+		\caption{\label{pic:simpleState}Einfacher Zustandsautomat}
+	\end{center}
+\end{figure}
+
+In \autoref{pic:simpleState} ist ein Automat gezeigt, welcher zwei Zustände hat:$A$ und $B$. befindet er sich in Zustand $A$, kann er nur unter der Bedingung $x$ in Zustand $B$ wechseln und daraufhin auch nur über $y$ wieder zurück zu $A$. Die doppelte Umrandung von $A$ zeigt, dass es sich hierbei Um den Startzustand, also den zu beginnenden, Zustand handelt. \\
+Zustandsautomaten finden oft Anwendung in Softwareentwicklung. Sie werden hauptsächlich verwendet um Nachrichten oder Eingaben zu lesen. In dieser Arbeit wird das GEsamtkonzept einzelner Softwarekomponenten als Zustandsautomaten implementiert.

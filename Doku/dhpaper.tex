@@ -86,7 +86,7 @@
     \pagenumbering{arabic}
     % main body of the report, separated by chapters
     \include{intro}
-%    \include{foundations}
+    \include{foundations}
     \include{body}
     \include{conclusion}
 \end{onehalfspace}
@@ -97,8 +97,10 @@
 \appendix
 
 % bibliography
-\printbibliography[title={Literaturverzeichnis}]
+\cleardoublepage
+\phantomsection
 \addcontentsline{toc}{chapter}{Literaturverzeichnis}
+\printbibliography[title={Literaturverzeichnis}]
 
 % list of abbreviations, glossary of terms
 \printglossary[title={Abkürzungsverzeichnis},type=\acronymtype]
