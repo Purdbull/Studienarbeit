@@ -684,8 +684,8 @@ Index ist jene Seite, die beim ersten Aufruf der Website gezeigt wird. Sie soll 
 \vspace{1cm}
 
 In \autoref{code:index} ist der HTML-Code der Hauptseite zu sehen. Er wird im Body als zu renderndes Objekt übergeben, sofern die Hauptseite aufgerufen wird. Zu erkennen ist ein Input des Types Range (Slider), dessen Wert über seine ID erhalten werden kann. Die Funktion \texttt{driveTo()}, welche beim Klicken auf den Button gestartet wird, entnimmt diesen Wert und sendet ihn via \acrshort{mqtt} an die Bahn (Mehr dazu unter \autoref{sec:serverMqtt}). Die Hochbahn schickt bei Änderung der Position diese an den Server. Auf dem Server soll also immer die aktuelle Position der Bahn gespeichert sein. Änderungen des Inhalts auf der Seite des Servers hat generell keine Auswirkung auf jene die Beispielsweise auf dem Handy angezeigt wird, da das Handy sich beim ersten Aufruf die Seite holt und diese auch nicht aktualisiert. Daher ist es nötig eine Funktionalität einzubauen, die Clientseitig periodisch die Daten wie aktuelle Position aktualisiert. Die Position soll im div der ID \texttt{data-position} angezeigt werden. Um aktuelle DAten vom Server zu erhalten wird Clientseitig ein GET-Request durchgeführt. Dieses Request erbittet definierte DAten vom Server und kann von jedem GErät welches die Seite aufruft durchgeführt werden. Beim ersten Aufruf der Website wird ebenfalls ein GET-Request auf die Seite Index durchgeführt. \\
-HTML bietet die Möglichkeit einer \texttt{onload-}MEthode. Diese wird ausgeführt, sobald die Seite aufgerufen wurde. Im Falle des Hochbahnservers initialisiert sie die periodische Ausführung verschiedener GET-Requests. 
-
+HTML bietet die Möglichkeit einer \texttt{onload} - Methode. Diese wird ausgeführt, sobald die Seite aufgerufen wurde. Im Falle des Hochbahnservers initialisiert sie die periodische Ausführung verschiedener GET-Requests. 
+\vspace{0.5cm}
 \begin{lstlisting}[language=html, style=dhpaperdefault]
 	function init() {
 		var intervalId = setInterval(function () {
@@ -739,10 +739,41 @@ Ein Nutzer der mit einem Smartphone die Seite im Heimnetzwerk aufruft, also im B
 Links ist die Seite Index, rechts Info zu sehen. Die Streckengrafik zeigt dem Nutzer, wo sich die einzelnen Abshcnitte befinden. So kann er auf dem Slider genau bestimmen, wohin die Bahn fahren soll. Unter Info werden aktuelle Fehlermeldungen, Warnungen sowie der Batteriezustand gezeigt. Sie zeigen jeweils die neueste Meldung der Hochbahn. SOfern die Bahn eine Fahrt erfolgreich ausgeführt hat, werden die Werte für Warnung und Error zurückgesetzt, damit ein aufgetretener Fehler nicht auf der Seite angezeigt wird, sofern er bereits behoben wurde. 
 
 \subsection{Controller}
+\label{sec:controller}
 Da nur zwei Seiten existieren, wird nur ein Controller benötigt. Handelte es sich um eine Website mit wesentlich mehr einzelseiten und Funktionalitäten wie Bestellsystem wäre es sinnvoll, auch die Controller zu Gliedern in beispielsweise Home- und Bestellcontroller. \\
 \subsubsection{Home-Controller}
 Der einzige Controller des Servers hat die Aufgabe Anfragen an die beiden Seiten des Servers zu verwalten. Das können GET oder auch POST-Requests sein, welche sowohl auf die ganze Seite, als auch einzelne Inhalte erfolgen können.
 
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+//get index-page
+public IActionResult Index()
+{
+	return View();
+}
+
+//send position to train
+[HttpPost]
+[Route("Home/Position")]
+public IActionResult driveTo(int position)
+{
+	string topic = "Train/driveToPosition";
+	string message = position.ToString();
+	_mqttService.sendMessage(topic, message);
+	return Ok();
+}
+
+//get position from train
+[HttpGet]
+[Route("Home/Position")]
+public IActionResult getPosition()
+{
+	return Content(_mqttService.getPosition());
+}
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:requests} Anfragen an den Server}
+\vspace{0.5cm}
+
+In \autoref{code:requests} sind die drei verschiedenen Anfragen gezeigt, welche an den Server gestellt werden können. Die erste ist ein GET an die Hauptseite. Das \texttt{return}-Statement sucht in diesem Fall nach einer HTML-Date Namens Index, welche an das fragende Gerät zurückgegeben wird. Die zweite Funktion zeigt ein POST-Request, bzw. die serverseitige Antwort auf ein POST-Request an die URL \texttt{Home/Position}. Diese entnimmt dem POST die Position und übermittelt diese mit dem \texttt{\_mqttService} an das richtige Topic (\texttt{Train/driveToPosition}), sodass der ESP32 auf der Hochbahn dies entwerten kann. Die dritte Anfage ist wieder ein GET, jedoch mit dem Ziel nur die Information \texttt{position} und keine ganze Seite zu erhalten. Zurückgegeben wird hier die Variable \texttt{Position}, welche im \texttt{\_mqttService} gespeichert ist. Wie diese Information von der Hochbahn erhalten wird, ist im Folgenden erklärt.
 \section{MQTT}
 \label{sec:serverMqtt}
 Neben dem laufenden \acrshort{mqtt}-Broker wird zusätzlich ein \acrshort{mqtt}-Server benötigt, um Nachrichten zu empfangen und zu senden. Dieser wird im \texttt{Startup} als ein Service registriert. Dieser Service wird anschließend als Singleton umgesetzt, damit von überall im Code auf den gleichen Service zugegriffen wird:
@@ -765,7 +796,55 @@ public void ConfigureServices(IServiceCollection services)
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:services} ConfigureServices des Servers}
 
-Neben dem Singleton werden in \autoref{code:services} weitere Handler-FUnktionen von \acrshort{mqtt} als Service registriert. Diese werden vom Broker benötigt. Der Parameter \texttt{\_server} ist eine Instanz eines Interfaces, welches selbst geschrieben werden muss. Dieses muss alle möglichen \acrshort{mqtt} - Methoden implementieren, wie beispielsweise was passiert, wenn eine Verbindung verloren wird.
+Neben dem Singleton werden in \autoref{code:services} weitere Handler-Funktionen von \acrshort{mqtt} als Service registriert. Diese werden vom Broker benötigt. Der Parameter \texttt{\_server} ist eine Instanz eines Interfaces, welches selbst geschrieben werden muss. Dieses muss alle benötigten \acrshort{mqtt} - Methoden implementieren, wie beispielsweise \acrshort{mqtt} - Messages verschicken. Im Falle dieser Arbeit werden folgende Funktionen benötigt:
+
+\begin{center}
+	\begin{itemize}
+		\item Nachricht senden,
+		\item Fehler, Warnung, Position und Akkumeldungen erhalten.
+	\end{itemize}
+\end{center}
+
+Um eine Nachricht zu verschicken werden zwei Übergabeparameter benötigt: Die zu verschickende NAchricht und das Topic, an jenes sie geschickt werden soll. 
+
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+public Task sendMessage(string topic, string payload)
+{
+	var msg = new MqttApplicationMessageBuilder()
+				.WithPayload(payload)
+				.WithTopic(topic);
+
+	this._mqttServer.PublishAsync(msg.Build());
+	return Task.CompletedTask;
+}
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:mqttSend} Sende-Methode des \acrshort{mqtt} - Services}
+
+In \autoref{code:mqttSend} ist die sende-Methode gezeigt. \texttt{MqttApplicationMessageBuilder} konvertiert die Nachricht mit Topic in ein \acrshort{mqtt}-Format, welches dann mit der Methode \texttt{PublishAsync} an den Broker übermittelt wird. Dieser verwaltet im Anschluss die Übertragung an die Hochbahn, da sie sich an dem gewünschte Topic angemeldet hat.\\
+Das Empfangen von Nachrichten erfolgt über eine Callback-Methode, die bei jeder empfangenen Nachricht aufgerufen wird. Initialisiert wird diese Im Konstruktor des \texttt{mqtt} - Services.
+
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+_mqttServer.UseApplicationMessageReceivedHandler(async e =>
+{
+	string topic = e.ApplicationMessage.Topic;
+	if (string.IsNullOrWhiteSpace(topic) == false)
+	{
+		string payload = GetString(e.ApplicationMessage.Payload);
+		if(topic == "Train/Error")
+		{
+			this.ErrorMsg = payload;
+		}
+		
+		//other topics
+	}
+}
+});
+
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:mqttReceive}Emfangsmethode des \acrshort{mqtt} - Services}
+\vspace{0.5cm}
+
+Die in \autoref{code:mqttReceive} gezeigte Methode überprüft, um welches Topic es sich handelt, bzw. an welches Topic die NAchricht geschickt wurde. Je nach Topic wird im Anschluss das Payload, bzw. der NAchrichtencontext, in der ihm zugewiesenen Variable gespeichert. Eine Fehlermeldung landet somit immer in der Variable \texttt{ErrorMsg}. Für den gleichen Zweck existieren noch die Variablen \texttt{WarningMsg, PositionMsg und BatteryMsg}. In \autoref{sec:controller} ist bereits gezeigt, wann diese Variablen ausgelesen werden. 
 
 \chapter{Umsetzung} 
 \label{cha:umsetzung}
