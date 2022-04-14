@@ -662,8 +662,8 @@ Die ursprüngliche Konzeptionierung der Hochbahn sah Server und \acrshort{mqtt}-
 Nach evaluierung verschiedener Frameworks für die Serverprogrammierung, fiel die Entscheidung auf APS.NET-Core. Grund dafür war einerseits eine persönliche Vorliebe für die Programmiersprache C\# im Gegensatz zu beispielsweise Python mit Django als Framework. Andererseits bietet ASP.NET-Core auch die Möglichkeit einen \acrshort{mqtt}-Broker als zusätzliche Komponente des Systems zu hosten. Somit wird im Betrieb auf dem Raspberry PI nur noch der Server getartet, ohne noch einen Broker installieren und starten zu müssen. \\
 Das Framework baut auf \acrfull{mvc} auf. Die Models werden aktuell noch vernachlässigt, da aufgrund der geringen Funktionlität keinerlei Objekte beispielsweise in eine Datenbank geschrieben werden müssen. Kommt das Bestellsystem dazu, würden hierbei Models für Bestellungen oder Nutzer für die Datenbank verwendet. Der Server dient jedoch vorerst nur als Vermittler zwischen Nutzer und Hochbahn ohne individuelle Anforderungen zu erfüllen, welche Models benötigen. Auf Views und Controller kann trotz geringer Fnktionalität nicht verzichtet werden. 
 
-\subsection{Views}
-\subsubsection{Index}
+\section{Views}
+\subsection{Index}
 Index ist jene Seite, die beim ersten Aufruf der Website gezeigt wird. Sie soll dem Nutzer anzeigen wo sich die Bahn aktuell befindet. Zudem soll die Möglichkeit geboten werden einen Fahrbefehl an die Bahn zu schicken. Der Konzeptionierung der Fahrfunktion ist eine Grafik zu entnehmen, bei der die einzelnen Abschnitte der Bahn erkennbar sind (\autoref{pic:streckengrafik}). Ist diese Grafik auch auf der Seite zu sehen, kann ein Nutzer bei einer Eingabe die gewünschte Position auswählen und als Fahrbefehl verschicken. Als Eingabefunktion wurde aufgrund symbolischer Ähnlichkeit ein Slider verwendet. Auf Darlegung des Design-Codes, also css und Bootstrap wird in dieser Arbeit verzichtet, da der Fokus auf Technik und FUnktionalität liegt. 
 \vspace{1cm}
 
@@ -700,7 +700,7 @@ HTML bietet die Möglichkeit einer \texttt{onload} - Methode. Diese wird ausgef�
 \vspace{1cm}
 In \autoref{code:init} ist die Initialisierungsfunktion zu erkennen. Sie setzt ein intervall von 500 Millisekunden. Das bedeutet, das alle 500 Millisekunden die Funktion ausgeführt wird. Sie führt jeweils ein GET-Request auf verschiedene Informationen, wie auch die Position, die immer aktuell gehalten werden müssen. 
 
-\subsubsection{Info}
+\subsection{Info}
 Auf der Infoseite sind aktuelle Informationen über die Hochbahn zu sehen. Es gibt hierbei drei Kategorien:
 
 \begin{center}
@@ -730,18 +730,23 @@ Die GET-Requests auf diese Informationen werden mit jener für die Position der 
 \captionof{lstlisting}{\label{code:get}GET-Request auf die Fehlermeldungen}
 \vspace{1cm}
 In \autoref{code:get} ist ein GET-Request auf die URL \texttt{Home/Error} zu sehen. Mit der Antwort des Servers wird im Parameter \texttt{data} die aktuelle Fehlermeldung übergtagen. Diese wird im Anschluss an das Textfeld mit der ID \texttt{data-error} übergeben. 
-
+\newpage
 \subsubsection{Benutzeroberfläche}
-Ein Nutzer der mit einem Smartphone die Seite im Heimnetzwerk aufruft, also im Browser die IP-Adresse des Servers eingibt, kann auf die beiden folgenden Seiten zugreifen:
+Ein Nutzer der mit einem Smartphone die Seite im Heimnetzwerk aufruft, also im Browser die IP-Adresse des Servers eingibt, kann auf die beiden Seiten zugreifen, welche in \autoref{pic:ui} gezeigt sind.
 
-%TODO
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=\textwidth]{UI.pdf}
+		\caption{\label{pic:ui}Benutzeroberfläche zur Hochbahnsteuerung}
+	\end{center}
+\end{figure}
 
 Links ist die Seite Index, rechts Info zu sehen. Die Streckengrafik zeigt dem Nutzer, wo sich die einzelnen Abshcnitte befinden. So kann er auf dem Slider genau bestimmen, wohin die Bahn fahren soll. Unter Info werden aktuelle Fehlermeldungen, Warnungen sowie der Batteriezustand gezeigt. Sie zeigen jeweils die neueste Meldung der Hochbahn. SOfern die Bahn eine Fahrt erfolgreich ausgeführt hat, werden die Werte für Warnung und Error zurückgesetzt, damit ein aufgetretener Fehler nicht auf der Seite angezeigt wird, sofern er bereits behoben wurde. 
 
-\subsection{Controller}
+\section{Controller}
 \label{sec:controller}
 Da nur zwei Seiten existieren, wird nur ein Controller benötigt. Handelte es sich um eine Website mit wesentlich mehr einzelseiten und Funktionalitäten wie Bestellsystem wäre es sinnvoll, auch die Controller zu Gliedern in beispielsweise Home- und Bestellcontroller. \\
-\subsubsection{Home-Controller}
+\subsection{Home-Controller}
 Der einzige Controller des Servers hat die Aufgabe Anfragen an die beiden Seiten des Servers zu verwalten. Das können GET oder auch POST-Requests sein, welche sowohl auf die ganze Seite, als auch einzelne Inhalte erfolgen können.
 
 \begin{lstlisting}[language=c, style=dhpaperdefault]
@@ -1157,10 +1162,61 @@ class StateMachine{
 In \autoref{code:stateMachines} sind die KLassendefinitionen der Zustandsmaschinen von ESP und Arduino gezeigt. Die Klasse auf dem ESP hat im Vergleich zur Zustandsmaschine auf dem Arduino eine weitere Überladung der Methode \texttt{StateHandle} mit einem \texttt{String} als übergabeparameter. Diese dient dazu, Nachrichten die vom Server mit \acrshort{mqtt} übertragen wurden evaluieren zu lassen. die Methode \texttt{handle} wird aus der \texttt{main} aufgerufen und verwaltet Nachrichten. D.h. sie ruft je nach Nachrichteneingang die Methode \texttt{StateHandle} ohne oder mit entsprechendem Parametern auf. 
 
 \chapter{Implementierung der Fahrfunktion}
+Zur Implementierung der Fahrfunktion wird eine Klasse namens Drivehandler erstellt. Wie bereits in TODO erwähnt, wird eine Fahrt mithilfe von Maximalgeschwindigkeiten auf mehreren Abschnitten realisiert. Dazu besitzt die Klasse zwei Arrays: 
 
+\begin{center}
+	\begin{itemize}
+		\item \texttt{int sectionSpeeds[8] = \{0,30,30,40,80,100,90,0\};}
+		\item \texttt{int driveSpeeds[8] = \{0,0,0,0,0,0,0,0\};}
+	\end{itemize}
+\end{center}
 
+\texttt{sectionSpeeds} ist ein Array vom Typ int und dient dazu, jedem Abschnitt einen vordefinierten Wert für die Maximalgeschwindigkeit zu geben. \texttt{driveSpeeds} ist ein Array was für jede individuelle Fahrt angepasst wird. Über eine Variable \texttt{driveArrayMaxIndex} kann die Anzahl der Abschnitte reduziert werden für kürzere Fahrten. \\
+Die Klasse besitzt zudem die beiden Methoden \texttt{drive()} und \texttt{setDriveSpeeds()}. Letztere füttert das Array \texttt{driveSpeeds} mit den richtigen Werten welche sich aus den vier Fahrtregeln aus TODO ergeben. \texttt{drive()} soll im Anschluss daran die Fahrt durchführen. \\
+Im Konstruktor werden mehrere Werte gesetzt, welche zur Vorbereitung für das Setzen der richtigen Fahrtwerte dienen. Er wird mit zwei Werten aufgerufen: \texttt{from} und \texttt{to}. Hierbei handelt es sich um die aktuelle Position der Bahn, sowie die Zielposition. Anhand dieser Informationen können folgende Werte leicht ermittelt werden:
 
+\begin{itemize}
+	\item Fahrtrichtung der Hochbahn
+	\item und \texttt{driveArrayMaxIndex}.
+\end{itemize}
 
+Nun besitzt die Klasse alle benötigten Informationen um die zuvor in TODO konzeptionierte Fahrt zu bestimmen.
+
+\section{Die richtigen Fahrtwerte setzten}
+
+Die Reihenfolge der Regelanwendungen ist ausschlaggebend für die jeweilige Priorität. Angenommen an Index 0 ist die Zahl 10 gespeichert. Werden nun zwei Regeln die jeweils die Zahl an Index 0 verändern angewendet, hat die zuletzt ausgeführte Regel eine höhere Priorität, da sie den zuvor bearbeiteten Wert einfach überschreibt. \\
+Da die vordefinierten Werte die niedrigste priorität haben, wird das Array zuerst mit den richtigen Maximalgeschwindigkeiten für die Fahrt beschrieben. 
+\vspace{0.5cm}
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+//prio 4
+for (int i = 0; i <= driveArrayMaxIndex; i++) {
+	if(isDrivingForward) {driveSpeeds[i] = sectionSpeeds[(from + i)]; }
+	else {driveSpeeds[i] = sectionSpeeds[(to - i)]; }
+}
+
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:prio4} Setzen der Default - Maximalgeschwindigkeitswerte}
+\vspace{0.5cm}
+\autoref{code:prio4} zeigt, wie in Abhängigkeit von der Fahrtrichtung die einzelnen Werte mit vordefinierten Geschwindigkeiten gestezt werden. Dabei iteriert eine for-Schleife von Null bis zum Maximalindex, d.h. maximalindex entspricht der Fahrlänge. Da dass Array \texttt{driveSpeeds} immer die Werte in Fahrtrichtung angibt, müssen die Werte aus \texttt{sectionSpeeds} mit auf- oder absteigendem Index gelesen werden. \\
+Bei den restlichen Regeln kann auf eine Abfrage der Fahrtrichtung verzichtet werden, da nun in jedem Fall Index 0 der erste Geschwindigkeitsabschnitt der Fahrt ist.
+\vspace{0.5cm}
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+//prio3
+if (driveSpeeds[0] > driveSpeeds[1]) {
+	driveSpeeds[0] = driveSpeeds[1];
+}
+
+//prio2
+if(driveSpeeds[(driveArrayMaxIndex-1)] > 50){
+	driveSpeeds[(driveArrayMaxIndex-1)] = 50;
+}
+
+//prio1
+driveSpeeds[driveArrayMaxIndex] = 0; 
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:prio312} Anwenden der restlichen Regeln}
+\vspace{0.5cm}
+Die zweite anzuwendende Regel sollte verhidnern dass die Bahn beim Anfahren unnötig hoch beschleunigt. Dazu wird, falls der Wert an Index 0 größer als jener an Index zwei ist, der Wert an Index 0 gleich dem Wert an Index zwei egsetzt. Im Anschluss daran wird die Geschwindigkeit im Vorletzten Abschnitt auf Maximal 50 gesetzt. Als letztes wird die Geschwindigkeit im letzten Abschnitt aus 0 gesetzt, damit die Hochbahn im gewünschten Abschnitt anhält. Das Anhalten an sich unterscheidet sich bei normalen Abschnitten im gegensatz zden beiden Endpunkten der Strecke. Dies wird allerdings von der Methode \texttt{drive()} übernommen, da die Logik dieser Funktion durch das simple Anhalten der Bahn erfüllt ist. Wie genau die Bahn anhält fällt nicht in den Aufgabenbereich des Setzens der Maximalwerte.
 
 
 
