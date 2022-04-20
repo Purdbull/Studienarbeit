@@ -9,7 +9,6 @@ Stepper::Stepper()
   pinMode(M0, OUTPUT);
   pinMode(M1, OUTPUT);
   pinMode(LED, OUTPUT);
-  y = MIN;
   yDone = false;
   Stepper::initInterrupts();
 
@@ -36,11 +35,9 @@ void Stepper::initInterrupts() {
 void Stepper::isr() {
   //Timer1 Interrupt Service Routine
   digitalWrite(CLK, !(digitalRead(CLK)));
-  k++; 
+  k++;
   if (OCR1A > y && k >= a) {
     //accelerate
-    Serial.println("acc");
-    Serial.println(y);
     cli();
     OCR1A = OCR1A - 10;
     sei();
@@ -50,8 +47,6 @@ void Stepper::isr() {
 
   if (OCR1A < y && k >= a) {
     //decelerate
-    Serial.println("dec");
-    Serial.println(y);
     cli();
     OCR1A = OCR1A + 10;
     sei();

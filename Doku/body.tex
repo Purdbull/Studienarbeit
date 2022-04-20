@@ -172,6 +172,10 @@ Für den Antrieb der Gartenhochbahn wurde zwischen einem DC-Motor und einem Schr
 Da die Information der Wegstrecke für die Positionsbestimmung genutzt werden kann, soll für die Gartenhochbahn ein Schrittmotor verwendet werden. Dafür kommt der Hybrid-Schrittmotor Nema 17-04 von Joy-IT zum Einsatz. Als Schrittmotortreiber wird der DRV8834 von Texas Instruments verwendet. 
 
 
+Für die Ansteuerung des Schrittmotortreibers soll ein Arduino Nano das \acrshort{pwm}-Signal generieren. Auf dem Controller soll eine Library ausgeführt werden, die als Input die Zielgeschwindigkeit sowie Richtung entgegennimmt. Durch die Library wird das \acrshort{pwm}-Signal für den Treiber ausgegeben. Dabei soll eine bestimmte Beschleunigungs- bzw. Bremsrate variabel einstellbar sein. Des weiteren soll die Library für den Motortreiber weitere, erforderlichen Signale wie bspw. Richtung und Schrittmodus ausgeben. Die detaillierte Beschreibung zur Umsetzung der Motorsteueurung erfolgt mit \autoref{sec:motorsteuerung} 
+
+
+
 \subsection{Getriebe}
 \label{sec:getriebekonzept}
 Das Getriebe sorgt für die Kraftübertragung des Motordrehmoments auf die Schiene. Zusätzlich ist die Geschwindigkeit der Hochbahn vom Übersetzungsverhältnis des Getriebes abhängig. Nachfolgend wird die Auswahl der Getriebeart und anschließend die Auslegung beschrieben. \\
@@ -858,25 +862,65 @@ In diesem ersten Teil der Studienarbeit stand die Konzeptionierung in \autoref{c
  
 \section{Motorsteuerung}
 \label{sec:motorsteuerung}
-Die Motorsteuerung ist auf einem Arduino Nano ausgelagert. Der Hochbahncontroller ESP32 kann der Steuerung Befehle erteilen und erhält die aktuelle Geschwindigkeit. In \autoref{pic:motorsteuerung} ist schematisch der Steuerungsablauf  dargestellt. 
 
-\begin{figure}[h]
+Wie bereits in \autoref{sec:konzeptAktorik} beschrieben, umfasst die Motorsteuerung den Schrittmotortreiber DRV8834 von Pololu und den Arduino Nano als Controller. 
+Die Ansteuerung des Treibers erfolgt über die Signalleitungen \textit{clk, M0/M1, en} und \textit{dir}. In \autoref{tbl:pololuDriver} sind die Signale definiert. 
+
+\begin{table}[h]
 	\begin{center}
-		\includegraphics[width=16cm]{motorsteuerung.pdf}
-		\caption{Schematische Übersicht der Motoransteuerung}
-		\label{pic:motorsteuerung}
+		\begin{tabular}[h]{l|l}
+			\textbf{Signal} & \textbf{Definition} \\
+			\hline
+			clk & Takt zum Weiterschalten eines Schrittes, \acrshort{pwm}-Signal des Controllers\\
+			\hline
+			M0,M1 & Signalepegel für die Einstellung der Schrittmodi\\
+			\hline
+			en & Aktiveren des Motortreibers\\
+			\hline
+			dir & Einstellen der Fahrtrichtung\\
+			\hline
+			K1 & Steueurungen & Arduino Nano, ESP32 \\
+		\end{tabular}
 	\end{center}
-\end{figure}
+	\caption{Bezeichnungen verwendeter Komponenten}
+	\label{tbl:pololuDriver}
+\end{table}
+
+Für die Steuerung wurde die Library \textit{HightTrainStepper} geschrieben. Damit werden an der \textit{clk}-Leitung \acrshort{pwm}-Signalen zwischen $100Hz - 1000Hz$ generiert werden. Eine Herausforderung stellte die Kommunikation bzw. Ausführung anderer Befehle während der Generierung der \acrshort{pwm} dar. Dafür wurde der Takt durch Interrupts realisiert. Auf die Implementierungd der Library wird nachfolgend genauer eingegangen.
+
+\textbf{Konfiguration des Interrupt-Registers}
+Für die Taktgenerierung wurde der Timer 0 verwendet. Im Timer/Counter Control Register \textit{TCCR0} wird der Modus \textit{COC}(Clear Timer on Compare Match) aktiviert. Dadurch wird fortlaufend das Zählregister \textit{TCNT0} mit dem Wert im Register \textit{OCR0} verglichen. Bei Erreichen des Registerwertes wird die Interrupt Service Routine (\textit{ISR}) ausgeführt und der Timer zurückgesetzt. Innerhalb der ISR wird das \textit{clk}-Signal getoggled. Der ATmega328-Chip des Arduino Nanos besitzt eine Systemtaktrate von $16 Mhz$. Durch Verwendung von sog. Mitilfe der Bits \textit{CS01/CS00} kann im TCCR0 Register ein Prescaler eingestellt werden. Die Taktrate der generierten \acrshort{pwm} errechnet sich damit über: 
 
 
 
-Für die Motorsteuerung können vom ESP32 Funktionen im Skript ausgeführt werden. Für den Brems- und Beschleunigungsvorgang dienen die beiden Funktionen \textit{ speedUp} und \textit{slowDown}. Als Parameter werden die Start- und Enddrehzahl in $Hz$ sowie der Gradient mitgegeben. Bei einer Fahrt mit gleichbleibender Geschwindigkeit wird \textit{continuos} mit Drehzahlparameter in $Hz$ ausgeführt. Wird das Schutzfeld verletzt, löst der ESP32 die \textit{emergencyBrake} Funktion aus. Die Befehle werden über serielle Kommunikation mit \acrshort{uart} versendet. Der Nothalt wird durch einen Interrupt am Arduino Nano ausgelöst. \\
-\newpage
 
-Im Skript sind die beiden Variablen Drehzahl $speed$ und Schrittmodus' $mode$ global angelegt. Diese werden von den Steuerungsfunktionen verändert. Die Variablen dienen den Funktionen $setMode, hzToPwm$ und $hzToV$ als Grundlage. Diese werden in einer Schleife ausgeführt. $setMode$ stellt den Schrittmodus am Motortreiber über die \acrshort{gpio}-Pins am  Treiber ein. $hzToPwm$ berechnet anhand der aktuellen Drehzahl die Geschwindigkeit in $\frac{m}{s}$. Der Wert wird über die serielle Schnittstelle an den ESP32 zurückgegeben. Die Funktion $hzToPWM$ bestimmt aufgrund der geforderten Drehzahl den \acrshort{pwm}-Wert. Der Wert wird über $I^2C$ an einen  \acrshort{pwm}-Treiber übergeben und dient als Takt für den Schrittmotortreiber. \\
+Dies wurde mit einer \acrshort{isr}(Interrupt Service Routine) gelöst. Für das Interrupt Register wurde der Modus \acrshort{ctc} (Clear Timer on Compare Match) aktiviert. Nachfolgend wird die Einstellung des Interrupts Registers beschrieben. In den darauffolgenden Abschnitten folgt die Implementierung der \acrshort{isr} (Interrupt Service Routine) sowie die Implementierung weiterer Fahrmodi.  
 
-Während erster Versuche wurde der Takt für den Schrittmotortreiber durch den Mikrocontroller generiert. Dabei zeigte sich, dass die maximale Taktrate stark von der Auslastung des Mikrocontrollers abhängt. Durch die Verwendung des \acrshort{pwm}-Treibers wird die Takterzeugung ausgelagert. Dafür sind die Zeiten $T_{off}$ und $T_{on}$ des \acrshort{pwm}-Signals dieselben. Es wird lediglich die Frequenz des Signals verändert. 
- \newpage
+
+aufrecht während der Signalgenerierung noch immer Befehle über . 
+Dafür soll die Library als Input die Zielgeschwindigkeit in \% 
+
+- Interrupt Register mit COC-Funktion 
+- Implementierung der COC-Funktion 
+- Berechnung der Registerwerte/ Prescaler nach der Formel für die Taktrate 
+
+
+Implementierung der Geschwindigkeitsverläufe
+- Implementierung der ISR
+
+Implementierung weiterer Fahrmodi 
+- Implementierung von Schrittmodi 
+- Implementierung von Fahrmodi und Startup
+
+Implementierung als Motor-Library 
+
+Die Motorsteuerung ist auf einem Arduino Nano ausgelagert. 
+
+
+
+Der Hochbahncontroller ESP32 kann der Steuerung Befehle erteilen und erhält die aktuelle Geschwindigkeit. In \autoref{pic:motorsteuerung} ist schematisch der Steuerungsablauf  dargestellt. 
+
+
 
 \section{Getriebekonstruktion}
 \label{sec:getriebekonstruktion}
