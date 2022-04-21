@@ -1,4 +1,5 @@
 #include "Arduino.h"
+#include "HighTrainStepper.h"
 
 #ifndef Drivehandler_h
 #define Drivehandler_h
@@ -11,6 +12,8 @@ class Drivehandler{
     void drive();
 
   private:
+    Stepper* stepper;
+  
     int sectionSpeeds[8] = {0,30,30,40,80,100,90,0};
     int driveSpeeds[8] = {0,0,0,0,0,0,0,0};
 
@@ -20,6 +23,8 @@ class Drivehandler{
     bool isDrivingForward;
 
     void setDriveSpeeds();
+
+    
 };
 
 #endif

@@ -10,11 +10,18 @@ Drivehandler::Drivehandler(int f, int t) {
   else{
     this->driveArrayMaxIndex = this->from - this->to;
   }
+
+  this->stepper = new Stepper();
+
+  stepper->initInterrupts();
+  stepper->en();
 }
 
 Drivehandler::~Drivehandler() {
-
+  delete(stepper);
 }
+
+
 
 
 void Drivehandler::drive(){
@@ -25,6 +32,8 @@ void Drivehandler::drive(){
       //jans funkton mit parameter von driveSpeeds[i] solang kein reed kam
       //wichtig::zeitwatchdog für fehler
       //position aktualisieren in eeprom
+      stepper->linear(driveSpeeds[i]);
+      delay(6000);
     }
   }
   else{
@@ -33,6 +42,8 @@ void Drivehandler::drive(){
       //jans funkton mit parameter von driveSpeeds[i]*-1 solang kein reed kam
       //wichtig::zeitwatchdog für fehler
       //position aktualisieren in eeprom
+      stepper->linear(driveSpeeds[i]);
+      delay(6000);
     }
   }
 
@@ -46,6 +57,10 @@ void Drivehandler::drive(){
 
   //irgendwie interrupt melden zum neustart oder erfolg melden
 }
+
+/* ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
+  stepper -> isr();
+}*/
 
 
 void Drivehandler::setDriveSpeeds() {
