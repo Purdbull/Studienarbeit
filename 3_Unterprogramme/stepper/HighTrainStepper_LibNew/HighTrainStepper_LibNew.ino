@@ -14,6 +14,7 @@ void setup() {
   Serial.begin(9600);
 
   stepper -> initInterrupts();
+  stepper -> en();
 
 
 }
@@ -28,12 +29,14 @@ ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
 
 //-------------main--------------
 void loop() {
-  stepper -> linear(70,30);
+  stepper -> linear(70, 30);
   delay(5000);
-  stepper -> linear(50,20);
+  stepper -> stepMode(2);
+  stepper -> linear(-50, 20);
   delay(5000);
-  stepper -> linear(40,80);
+  stepper -> stepMode(4);
+
+  stepper -> linear(-40, 80);
   delay(5000);
 
-  stepper -> en();
 }

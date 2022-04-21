@@ -2,12 +2,12 @@
 #include "HighTrainStepper.h"
 
 Stepper::Stepper() {
-  pinMode(clk, OUTPUT);
-  pinMode(dir, OUTPUT);
-  pinMode(enbl, OUTPUT);
-  pinMode(m0, OUTPUT);
-  pinMode(m1, OUTPUT);
-  pinMode(led, OUTPUT);
+  pinMode(CLK, OUTPUT);
+  pinMode(DIR, OUTPUT);
+  pinMode(ENBL, OUTPUT);
+  pinMode(M0, OUTPUT);
+  pinMode(M1, OUTPUT);
+  pinMode(LED, OUTPUT);
 
   // Min and Max values for timer compare Register OCR1A
 #define MAXVAL 5500 //max register value (lowest clock speed)
@@ -31,11 +31,10 @@ void Stepper::initInterrupts() {
   OCR1A = MAXVAL;//  Aufruffrequenz Timer 1  241 Hz * 2
   TIMSK1 |= (1 << OCIE1A); // Erlaube Timer compare interrupt TIMSK - Timer/Counter Interrupt Mask Register
   sei();//allow interrupts
-
 }
 
 void Stepper::isr() {
-  digitalWrite(clk, !(digitalRead(clk)));
+  digitalWrite(CLK, !(digitalRead(CLK)));
   count++;
 
   if (OCR1A > targetRegVal && count >= acc) {
@@ -56,7 +55,6 @@ void Stepper::isr() {
     sei();
     count = 0;
   }
-
 }
 
 void Stepper::linear(int targetSpeed, int targetAcc) {
@@ -65,6 +63,8 @@ void Stepper::linear(int targetSpeed, int targetAcc) {
 
   //set Register Value
   if (_targetRegVal != targetRegVal) {
+    Stepper::setDir(targetSpeed);
+    //Stepper::setDir(targetSpeed);
     targetRegVal = _targetRegVal;
     Serial.println("---->Acc./ Dec. to " + String(targetSpeed) + " %<---");
   }
@@ -72,12 +72,60 @@ void Stepper::linear(int targetSpeed, int targetAcc) {
   //set acceleration
   if (acc != _acc) {
     acc = _acc;
-    Serial.println("ACC=" + String(targetAcc) + " %<--- "+ String(acc) );
-
+    Serial.println("ACC=" + String(targetAcc) + " %<--- " + String(acc) );
   }
 }
 
-void Stepper::en() {
-  digitalWrite(enbl, 1);
 
+
+
+// -------------------->Beahviourfunctions
+void Stepper::en() {
+  digitalWrite(ENBL, 1);
+  Serial.println("disabLED");
+}
+
+void Stepper::dis() {
+  digitalWrite(ENBL, 0);
+  Serial.println("disabLED");
+
+  Serial.println(targetRegVal);
+}
+
+void Stepper::setDir(int targetSpeed) {
+  if (targetSpeed < 0) {
+    digitalWrite(DIR, 1);
+  }
+
+  if (targetSpeed > 0) {
+    digitalWrite(DIR, 0);
+  }
+
+  if (targetSpeed * targetRegVal < 0) {
+    //illegal, error!
+    return;
+  }
+}
+
+void Stepper::stepMode(int mode) {
+  //keep in mind: enable negative logic!
+  //full step
+  if (mode == 1) {
+    digitalWrite(M0, 0);
+    digitalWrite(M1, 0);
+  }
+
+  //half step
+  else if (mode == 2) {
+    digitalWrite(M0, 1);
+    digitalWrite(M1, 0);
+    Serial.println("halfStep");
+  }
+
+  //micro step
+  else if (mode == 4) {
+    digitalWrite(M0, 0);
+    digitalWrite(M1, 1);
+    Serial.println("quarterStep");
+  }
 }

@@ -4,12 +4,12 @@
 
 
 // PinOut
-#define dir 3
-#define clk 2
-#define enbl 10
-#define m0 4
-#define m1 5
-#define led 9
+#define DIR 3
+#define CLK 2
+#define ENBL 10
+#define M0 4
+#define M1 5
+#define LED 9
 
 
 
@@ -24,9 +24,8 @@ class Stepper {
     int s;
 
 
-    void stepMode(int);
     void dis();
-    void setDir(int);
+    void setDir(int targetSpeed);
 
 
   public:
@@ -39,6 +38,7 @@ class Stepper {
     void linear(int targetVal, int targetAcc);
     void mode(int n);
     void isr();
+    void stepMode(int mode);
 
 
 
