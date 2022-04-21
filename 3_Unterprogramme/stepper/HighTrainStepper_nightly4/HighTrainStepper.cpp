@@ -10,11 +10,11 @@ Stepper::Stepper() {
   pinMode(LED, OUTPUT);
 
   // Min and Max values for timer compare Register OCR1A
-#define MAXVAL 5500 //max register value (lowest clock speed)
+#define MAXVAL 7000 //max register value (lowest clock speed)
 #define MINVAL 990 //min register value (highest clock speed)
 
   //Min and Max Values for acceleration (additional prescaler with modulo)
-#define MAXACC 20
+#define MAXACC 25
 #define MINACC 4
 
   targetRegVal = MAXVAL;
@@ -56,38 +56,37 @@ void Stepper::isr() {
     count = 0;
   }
 
+
   //check target achievement (+offstet)
   if (abs(OCR1A - targetRegVal) <= 10) {
-    OCR1A = targetRegVal;
     accDone = true;
-    digitalWrite(LED, 1);
+    OCR1A = targetRegVal;
   }
 
   else {
     accDone = false;
-    digitalWrite(LED, 0);
   }
 
 }
 
 void Stepper::linear(int targetSpeed, int targetAcc) {
-
   //map acc and speed
   int _targetRegVal = map(abs(targetSpeed), 0, 100, MAXVAL, MINVAL);
   int _acc = map(targetAcc, 0, 100, MAXACC, MINACC);
 
   //setDirection
   Stepper::setDir(targetSpeed);
-/*
+
   //check startup requirement
   if (OCR1A == MAXVAL) {
     Serial.println("-->startup<----");
     Stepper::stepMode(4);
-    delay(1000);
+    delay(2000);
     Stepper::stepMode(2);
-    delay(1000);
+    delay(2000);
+    Stepper::stepMode(1);
   }
-*/
+
 
   //set Register Value
   if (_targetRegVal != targetRegVal) {
@@ -126,7 +125,7 @@ void Stepper::setDir(int targetSpeed) {
     digitalWrite(DIR, 0);
   }
 
-  if (targetSpeed * OCR1A < 0) {
+  if (targetSpeed * targetRegVal < 0) {
     //illegal, error!
     return;
   }
@@ -134,10 +133,6 @@ void Stepper::setDir(int targetSpeed) {
 
 void Stepper::stepMode(int mode) {
   //keep in mind: enable negative logic!
-
-  //enable motor
-  Stepper::en();
-
   //full step
   if (mode == 1) {
     digitalWrite(M0, 0);
@@ -156,54 +151,5 @@ void Stepper::stepMode(int mode) {
     digitalWrite(M0, 0);
     digitalWrite(M1, 1);
     Serial.println("quarterStep");
-  }
-}
-
-void Stepper::stopMode(int n) {
-  //idleMode
-  if (n == 0) {
-    Stepper::stepMode(1);
-  }
-
-  //emergencyStopMode
-  if (n == 1) {
-    Serial.println("---->EmergencyStop<----");
-    Stepper::linear(0, 100);
-    delay(1);
-    while (!accDone) {
-      delay(1);
-    }
-    Stepper::dis();
-  }
-
-  //stopMode
-  if (n == 2) {
-    Serial.println("---->Stop<----");
-    Stepper::linear(0, 50);
-    delay(1);
-    while (!accDone) {
-      delay(1);
-    }
-    Stepper::stepMode(2);
-    delay(2000);
-    Stepper::stepMode(4);
-    delay(1500);
-    Stepper::dis();
-  }
-
-  // stopInStationMode
-  if (n == 3) {
-    Serial.println("---->StopInStation<----");
-    Stepper::linear(0, 50);
-    delay(1);
-    while (!accDone) {
-      delay(1);
-    }
-    Stepper::stepMode(4);
-  }
-
-  // disableMotor
-  if (n == 4) {
-    Stepper::dis();
   }
 }
