@@ -15,12 +15,8 @@ void setup() {
 
   stepper -> initInterrupts();
 
+
 }
-
-
-//------------functions----------
-
-//-->driving<----
 
 
 //-----------------ISR-----------------
@@ -32,6 +28,12 @@ ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
 
 //-------------main--------------
 void loop() {
-  delay(6000); 
-  stepper -> linear(); 
+  stepper -> linear(70,30);
+  delay(5000);
+  stepper -> linear(50,20);
+  delay(5000);
+  stepper -> linear(40,80);
+  delay(5000);
+
+  stepper -> en();
 }
