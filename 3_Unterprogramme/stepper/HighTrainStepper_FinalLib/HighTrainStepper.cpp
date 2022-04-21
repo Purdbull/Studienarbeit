@@ -126,7 +126,7 @@ void Stepper::setDir(int targetSpeed) {
     digitalWrite(DIR, 0);
   }
 
-  if (targetSpeed * targetRegVal < 0) {
+  if (targetSpeed * OCR1A < 0) {
     //illegal, error!
     return;
   }
