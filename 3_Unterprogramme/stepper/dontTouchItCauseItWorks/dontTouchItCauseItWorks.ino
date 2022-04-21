@@ -2,7 +2,6 @@
    Bantle & Knapp Copyright
    V3 - March 2022
 */
-#include <HCSR04.h>
 
 // PinOut
 #define dir 7
@@ -11,10 +10,6 @@
 #define m0 10
 #define m1 9
 #define led 9
-#define triggerPin 6
-#define echoCount 2
-#define warn 20
-#define safe 10
 
 // Min and Max values for timer compare Register OCR1A
 #define Max  5500
@@ -29,8 +24,6 @@ int k; //counter for ISR Prescaler,
 int a; //accelecaration (modulo)
 bool yDone = false;
 int s;
-byte* echoPins = new byte[echoCount] { 7, 11 };
-
 
 //-------------setup---------------
 void setup() {
@@ -42,7 +35,6 @@ void setup() {
   pinMode(m1, OUTPUT);
   pinMode(led, OUTPUT);
   initInterrupts();
-  HCSR04.begin(triggerPin, echoPins, echoCount);
 
 }
 
@@ -83,29 +75,6 @@ void linear(int s, int b = 40) {
 
 }
 
-byte checkDist(double distance) {
-  byte field = 0;
-  int _distance;
-
-  if (distance < 0) {
-    _distance = 999;
-  }
-
-  else {
-    _distance = distance;
-  }
-
-  if (_distance < warn) {
-    field = 1;
-  }
-
-  if (_distance < safe) {
-    field = 2;
-  }
-
-  return field;
-
-}
 //--->modes<----
 void mode(int n) {
   //idleMode
@@ -252,19 +221,38 @@ ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
     k = 0;
 
 
-
-
-
-
   }
+
+
+  if (abs(OCR1A - y) <= 10) {
+    OCR1A = y;
+    yDone = true;
+    digitalWrite(led, 1);
+  }
+
+  else {
+    yDone = false;
+    digitalWrite(led, 0);
+  }
+
+
 }
+
 
 //-------------main--------------
 void loop() {
+  /*linear(100);
+    delay(12000);
+
+    mode(2);
+  */
   linear(100);
-  delay(7000);
-  linear(60); 
-  delay(4000); 
-  linear(0);
+  delay(10000);
+  mode(2);
   delay(4000);
+  linear(-40);
+  delay(400);
+  mode(2);
+  delay(4000);
+
 }

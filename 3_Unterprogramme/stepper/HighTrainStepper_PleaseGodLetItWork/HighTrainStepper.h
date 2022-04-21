@@ -20,7 +20,7 @@ class Stepper {
 
     int count; //counter for ISR Prescaler,
     int acc; //accelecaration (modulo)
-    bool valDone; ;
+    bool accDone; ;
     int s;
 
 
@@ -35,7 +35,7 @@ class Stepper {
     void initInterrupts();
     void en();
 
-    void linear(int targetVal, int targetAcc);
+    void linear(int targetVal, int targetAcc=50);
     void mode(int n);
     void isr();
     void stepMode(int mode);

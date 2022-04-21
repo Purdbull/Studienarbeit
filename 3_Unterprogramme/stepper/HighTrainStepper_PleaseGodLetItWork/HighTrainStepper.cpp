@@ -55,6 +55,8 @@ void Stepper::isr() {
     sei();
     count = 0;
   }
+
+  
 }
 
 void Stepper::linear(int targetSpeed, int targetAcc) {

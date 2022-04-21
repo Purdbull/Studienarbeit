@@ -2,15 +2,22 @@
 #ifndef HighTrainStepper_h
 #define HighTrainStepper_h
 
-
-// PinOut
+/*
+// PinOut breadBoard
 #define DIR 3
 #define CLK 2
-#define ENBL 10
+#define SLEEP 10
 #define M0 4
 #define M1 5
 #define LED 9
+*/
 
+#define DIR 7
+#define CLK 8
+#define ENBL 5
+#define M0 10
+#define M1 9
+#define LED 9
 
 
 class Stepper {

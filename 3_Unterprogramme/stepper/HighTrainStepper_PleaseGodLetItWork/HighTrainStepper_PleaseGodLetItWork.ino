@@ -30,31 +30,10 @@ ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
 //-------------main--------------
 void loop() {
   delay(7000);
-  stepper -> linear(90);
+  stepper -> linear(100);
   delay(7000);
   stepper -> linear(20);
   delay(7000);
-  stepper -> linear(90);
-}
+  stepper -> linear(20);
 
-/*tepper -> linear(70);
-  delay(7000);
-  stepper -> linear(-70);
-  delay(7000);
-  stepper -> stopMode(1);
-  delay(6000);
-  stepper -> linear(-50);
-  delay(5000);
-  stepper -> stopMode(2);
-  delay(7000);
-  stepper -> linear(50);
-  delay(8000);
-  stepper -> stopMode(3);
-  delay(6000);
-  stepper -> stopMode(4);
-  delay(2000);
-  stepper -> linear(-100);
-  delay(8000);
-  stepper -> stopMode(2);
-  delay(7000);
-*/
+}

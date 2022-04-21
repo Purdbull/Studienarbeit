@@ -78,7 +78,7 @@ void Stepper::linear(int targetSpeed, int targetAcc) {
 
   //setDirection
   Stepper::setDir(targetSpeed);
-
+/*
   //check startup requirement
   if (OCR1A == MAXVAL) {
     Serial.println("-->startup<----");
@@ -87,7 +87,7 @@ void Stepper::linear(int targetSpeed, int targetAcc) {
     Stepper::stepMode(2);
     delay(1000);
   }
-
+*/
 
   //set Register Value
   if (_targetRegVal != targetRegVal) {
@@ -108,13 +108,13 @@ void Stepper::linear(int targetSpeed, int targetAcc) {
 
 // -------------------->Beahviourfunctions
 void Stepper::en() {
-  digitalWrite(ENBL, 1);
-  Serial.println("enable");
+  digitalWrite(ENBL, 0);
+  Serial.println("enabled");
 }
 
 void Stepper::dis() {
-  digitalWrite(ENBL, 0);
-  Serial.println("disable");
+  digitalWrite(ENBL, 1);
+  Serial.println("disabled");
 }
 
 void Stepper::setDir(int targetSpeed) {
