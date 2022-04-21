@@ -8,14 +8,8 @@
 Stepper* stepper = new Stepper();
 
 
-
-//-------------setup---------------
 void setup() {
   Serial.begin(9600);
-
-  stepper -> initInterrupts();
-  stepper -> en();
-
 
 }
 
@@ -29,8 +23,36 @@ ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
 
 //-------------main--------------
 void loop() {
-  stepper -> linear(70, 30);
+  stepper -> linear(70);
+  delay(7000);
+  stepper -> linear(-70);
+  delay(7000);
+  stepper -> stopMode(1);
+  delay(6000);
+  stepper -> linear(-50);
   delay(5000);
+  stepper -> stopMode(2);
+  delay(7000);
+  stepper -> linear(50);
+  delay(8000);
+  stepper -> stopMode(3);
+  delay(6000);
+  stepper -> stopMode(4);
+  delay(2000);
+  stepper -> linear(-100);
+  delay(8000);
+  stepper -> stopMode(2);
+  delay(7000);
+
+
+
+
+
+
+
+
+}
+/*
   stepper -> stepMode(2);
   stepper -> linear(-50, 20);
   delay(5000);
@@ -39,4 +61,19 @@ void loop() {
   stepper -> linear(-40, 80);
   delay(5000);
 
-}
+  stepper -> stepMode(1);
+  stepper -> linear(100, 100);
+  delay(5000);
+*/
+
+/*
+  delay(5000);
+  stepper -> stopMode(1);
+  delay(4000);
+  stepper -> stopMode(2);
+  delay(4000);
+  stepper -> stopMode(3);
+  delay(4000);
+  stepper -> stopMode(4);
+  delay(4000);
+*/

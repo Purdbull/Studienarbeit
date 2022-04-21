@@ -108,7 +108,7 @@ void Stepper::linear(int s, int b = 40) {
 
 //------------->MODES<----------------
 
-void Stepper:: mode(int n) {
+void Stepper:: stopMode(int n) {
   //idleMode
   if (n == 0) {
     en();

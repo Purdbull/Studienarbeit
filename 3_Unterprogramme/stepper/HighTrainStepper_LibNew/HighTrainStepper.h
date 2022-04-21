@@ -20,7 +20,7 @@ class Stepper {
 
     int count; //counter for ISR Prescaler,
     int acc; //accelecaration (modulo)
-    bool valDone; ;
+    bool accDone; //OCR1A has target speed reaeched 
     int s;
 
 
@@ -35,8 +35,8 @@ class Stepper {
     void initInterrupts();
     void en();
 
-    void linear(int targetVal, int targetAcc);
-    void mode(int n);
+    void linear(int targetVal, int targetAcc=50);
+    void stopMode(int n);
     void isr();
     void stepMode(int mode);
 

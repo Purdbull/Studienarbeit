@@ -17,6 +17,10 @@ Stepper::Stepper() {
 #define MAXACC 20
 #define MINACC 4
 
+  //initialize register and driver
+  targetRegVal = MAXVAL;
+  Stepper::dis();
+
 }
 
 
@@ -37,33 +41,61 @@ void Stepper::isr() {
   digitalWrite(CLK, !(digitalRead(CLK)));
   count++;
 
+  //accelerate
   if (OCR1A > targetRegVal && count >= acc) {
-    //accelerate
-
     cli();
     OCR1A = OCR1A - 10;
     sei();
     count = 0;
   }
 
-
+  //decelerate
   if (OCR1A < targetRegVal && count >= acc) {
-    //decelerate
-
     cli();
     OCR1A = OCR1A + 10;
     sei();
     count = 0;
   }
+
+ //check target achievement (+offstet)
+  if (abs(OCR1A - targetRegVal) <= 10) {
+    OCR1A = targetRegVal;
+    accDone = true;
+    digitalWrite(LED, 1);
+  }
+
+  else {
+    accDone = false;
+    digitalWrite(LED, 0);
+  }
+
 }
 
 void Stepper::linear(int targetSpeed, int targetAcc) {
+
+  //map acc and speed
   int _targetRegVal = map(abs(targetSpeed), 0, 100, MAXVAL, MINVAL);
   int _acc = map(targetAcc, 0, 100, MAXACC, MINACC);
 
+  //setDirection
+  Stepper::setDir(targetSpeed);
+
+  //check startup requirement
+  if (OCR1A == MAXVAL) {
+    Serial.println("-->startup<----");
+    Stepper::stepMode(4);
+    delay(1000);
+    Stepper::stepMode(2);
+    delay(1000);
+  }
+
+  //enable motor
+  if (abs(targetSpeed) > 0) {
+    Stepper::stopMode(0);
+  }
+
   //set Register Value
   if (_targetRegVal != targetRegVal) {
-    Stepper::setDir(targetSpeed);
     //Stepper::setDir(targetSpeed);
     targetRegVal = _targetRegVal;
     Serial.println("---->Acc./ Dec. to " + String(targetSpeed) + " %<---");
@@ -79,10 +111,10 @@ void Stepper::linear(int targetSpeed, int targetAcc) {
 
 
 
-// -------------------->Beahviourfunctions
+// -------------------->Behaviour Functions
 void Stepper::en() {
   digitalWrite(ENBL, 1);
-  Serial.println("disabLED");
+  Serial.println("enable");
 }
 
 void Stepper::dis() {
@@ -109,6 +141,10 @@ void Stepper::setDir(int targetSpeed) {
 
 void Stepper::stepMode(int mode) {
   //keep in mind: enable negative logic!
+
+  //enable motor
+  Stepper::en();
+
   //full step
   if (mode == 1) {
     digitalWrite(M0, 0);
@@ -127,5 +163,55 @@ void Stepper::stepMode(int mode) {
     digitalWrite(M0, 0);
     digitalWrite(M1, 1);
     Serial.println("quarterStep");
+  }
+}
+
+
+void Stepper::stopMode(int n) {
+  //idleMode
+  if (n == 0) {
+    Stepper::stepMode(1);
+  }
+
+  //emergencyStopMode
+  if (n == 1) {
+    Serial.println("---->EmergencyStop<----");
+    Stepper::linear(0, 100);
+    delay(1);
+    while (!accDone) {
+      delay(1);
+    }
+    Stepper::dis();
+  }
+
+  //stopMode
+  if (n == 2) {
+    Serial.println("---->Stop<----");
+    Stepper::linear(0, 50);
+    delay(1);
+    while (!accDone) {
+      delay(1);
+    }
+    Stepper::stepMode(2);
+    delay(2000);
+    Stepper::stepMode(4);
+    delay(1500);
+    Stepper::dis();
+  }
+
+  // stopInStationMode
+  if (n == 3) {
+    Serial.println("---->StopInStation<----");
+    Stepper::linear(0, 50);
+    delay(1);
+    while (!accDone) {
+      delay(1);
+    }
+    Stepper::stepMode(4);
+  }
+
+  // disableMotor
+  if (n == 4) {
+    Stepper::dis();
   }
 }

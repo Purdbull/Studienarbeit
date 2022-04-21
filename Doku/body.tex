@@ -866,25 +866,26 @@ In diesem ersten Teil der Studienarbeit stand die Konzeptionierung in \autoref{c
 Wie bereits in \autoref{sec:konzeptAktorik} beschrieben, umfasst die Motorsteuerung den Schrittmotortreiber DRV8834 von Pololu und den Arduino Nano als Controller. 
 Die Ansteuerung des Treibers erfolgt über die Signalleitungen \textit{clk, M0/M1, en} und \textit{dir}. In \autoref{tbl:pololuDriver} sind die Signale definiert. 
 
-\begin{table}[h]
-	\begin{center}
-		\begin{tabular}[h]{l|l}
-			\textbf{Signal} & \textbf{Definition} \\
-			\hline
-			clk & Takt zum Weiterschalten eines Schrittes, \acrshort{pwm}-Signal des Controllers\\
-			\hline
-			M0,M1 & Signalepegel für die Einstellung der Schrittmodi\\
-			\hline
-			en & Aktiveren des Motortreibers\\
-			\hline
-			dir & Einstellen der Fahrtrichtung\\
-			\hline
-			K1 & Steueurungen & Arduino Nano, ESP32 \\
-		\end{tabular}
-	\end{center}
-	\caption{Bezeichnungen verwendeter Komponenten}
-	\label{tbl:pololuDriver}
-\end{table}
+%
+%\begin{table}[h]
+%	\begin{center}
+%		\begin{tabular}[h]{l|l}
+%			\textbf{Signal} & \textbf{Definition} \\
+%			\hline
+%			clk & Takt zum Weiterschalten eines Schrittes, \acrshort{pwm}-Signal des Controllers\\
+%			\hline
+%			M0,M1 & Signalepegel für die Einstellung der Schrittmodi\\
+%			\hline
+%			en & Aktiveren des Motortreibers\\
+%			\hline
+%			dir & Einstellen der Fahrtrichtung\\
+%			\hline
+%			K1 & Steueurungen & Arduino Nano, ESP32 \\
+%		\end{tabular}
+%	\end{center}
+%	\caption{Bezeichnungen verwendeter Komponenten}
+%	\label{tbl:pololuDriver}
+%\end{table}
 
 Für die Steuerung wurde die Library \textit{HightTrainStepper} geschrieben. Damit werden an der \textit{clk}-Leitung \acrshort{pwm}-Signalen zwischen $100Hz - 1000Hz$ generiert werden. Eine Herausforderung stellte die Kommunikation bzw. Ausführung anderer Befehle während der Generierung der \acrshort{pwm} dar. Dafür wurde der Takt durch Interrupts realisiert. Auf die Implementierungd der Library wird nachfolgend genauer eingegangen.
 
