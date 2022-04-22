@@ -22,6 +22,10 @@ Stepper::Stepper() {
 
 }
 
+Stepper::~Stepper(){
+  
+}
+
 
 void Stepper::initInterrupts() {
   cli();                                //clear local interrupt flag
@@ -60,6 +64,11 @@ void Stepper::isr() {
   }
 
 
+}
+
+ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
+  Stepper step;
+  step.isr();   //im NOT shure about that.. xD
 }
 
 void Stepper::linear(int targetSpeed, int targetAcc) {

@@ -58,9 +58,7 @@ void Drivehandler::drive(){
   //irgendwie interrupt melden zum neustart oder erfolg melden
 }
 
-/* ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
-  stepper -> isr();
-}*/
+
 
 
 void Drivehandler::setDriveSpeeds() {
