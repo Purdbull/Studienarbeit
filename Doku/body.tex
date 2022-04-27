@@ -863,36 +863,79 @@ In diesem ersten Teil der Studienarbeit stand die Konzeptionierung in \autoref{c
 \section{Motorsteuerung}
 \label{sec:motorsteuerung}
 
-Wie bereits in \autoref{sec:konzeptAktorik} beschrieben, umfasst die Motorsteuerung den Schrittmotortreiber DRV8834 von Pololu und den Arduino Nano als Controller. 
-Die Ansteuerung des Treibers erfolgt über die Signalleitungen \textit{clk, M0/M1, en} und \textit{dir}. In \autoref{tbl:pololuDriver} sind die Signale definiert. 
+Wie bereits in \autoref{sec:konzeptAktorik} beschrieben, wird der Schrittmotor mithilfe desTreibers DRV8834 von Pololu angesteuert. Die vom Treiber benötigten Signale \textit{clk, M0/M1, en} und \textit{dir} werden dafür von einem Arduino Nano generiert. Zu diesem Zweck wurde die die Library \textit{HighTrainStepper} erstellt, welche in diesem Abschnitt beschrieben werden soll. \\
 
-%
-%\begin{table}[h]
-%	\begin{center}
-%		\begin{tabular}[h]{l|l}
-%			\textbf{Signal} & \textbf{Definition} \\
-%			\hline
-%			clk & Takt zum Weiterschalten eines Schrittes, \acrshort{pwm}-Signal des Controllers\\
-%			\hline
-%			M0,M1 & Signalepegel für die Einstellung der Schrittmodi\\
-%			\hline
-%			en & Aktiveren des Motortreibers\\
-%			\hline
-%			dir & Einstellen der Fahrtrichtung\\
-%			\hline
-%			K1 & Steueurungen & Arduino Nano, ESP32 \\
-%		\end{tabular}
-%	\end{center}
-%	\caption{Bezeichnungen verwendeter Komponenten}
-%	\label{tbl:pololuDriver}
-%\end{table}
-
-Für die Steuerung wurde die Library \textit{HightTrainStepper} geschrieben. Damit werden an der \textit{clk}-Leitung \acrshort{pwm}-Signalen zwischen $100Hz - 1000Hz$ generiert werden. Eine Herausforderung stellte die Kommunikation bzw. Ausführung anderer Befehle während der Generierung der \acrshort{pwm} dar. Dafür wurde der Takt durch Interrupts realisiert. Auf die Implementierungd der Library wird nachfolgend genauer eingegangen.
-
-\textbf{Konfiguration des Interrupt-Registers}
-Für die Taktgenerierung wurde der Timer 0 verwendet. Im Timer/Counter Control Register \textit{TCCR0} wird der Modus \textit{COC}(Clear Timer on Compare Match) aktiviert. Dadurch wird fortlaufend das Zählregister \textit{TCNT0} mit dem Wert im Register \textit{OCR0} verglichen. Bei Erreichen des Registerwertes wird die Interrupt Service Routine (\textit{ISR}) ausgeführt und der Timer zurückgesetzt. Innerhalb der ISR wird das \textit{clk}-Signal getoggled. Der ATmega328-Chip des Arduino Nanos besitzt eine Systemtaktrate von $16 Mhz$. Durch Verwendung von sog. Mitilfe der Bits \textit{CS01/CS00} kann im TCCR0 Register ein Prescaler eingestellt werden. Die Taktrate der generierten \acrshort{pwm} errechnet sich damit über: 
+In \autoref{tbl:pololuDriver} sind die Signale definiert. 
 
 
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}[h]{l|l}
+			\textbf{Signal} & \textbf{Definition} \\
+			\hline
+			clk & Takt zum Weiterschalten eines Schrittes, \acrshort{pwm}-Signal des Controllers\\
+			\hline
+			M0,M1 & Signalepegel für die Einstellung der Schrittmodi\\
+			\hline
+			en & Aktiveren des Motortreibers\\
+			\hline
+			dir & Einstellen der Fahrtrichtung\\
+			\hline
+			K1 & Steueurungen  Arduino Nano, ESP32 
+		\end{tabular}
+	\end{center}
+	\caption{Bezeichnungen verwendeter Komponenten}
+	\label{tbl:pololuDriver}
+\end{table}
+
+Auf der \textit{clk}-Leitung sollen \acrshort{pwm}-Signale zwischen $100Hz - 1000Hz$ generiert werden. Da der Arduino Nano für weitere Zwecke eingesetzt wird, Währenddessen muss der Arduino dennoch in der Lage sein, weitere Prozesse parallel auszuführen. Um dies zu gewährleisten, wurde die Generierung der  \acrshort{pwm} in einer \acrshort{isr} ausgelagert, welche kontinuierlich durch einen internen Timer des Arduinos aufgerufen wird. \\
+
+%In den folgenden Abschnitten soll zunächst die Konfiguration der Interrupts beschrieben werden.  
+
+
+\paragraph*{Konfiguration des Interrupt-Registers}\mbox{}\vspace{.1cm}\\
+%todo : einheitliche Paragraphs zaubern!
+
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+void Stepper::initInterrupts() {
+	cli();                                //clear local interrupt flag
+	TCCR1A = 0;                           // set entire TCCR1A register to 0 TCCR - Timer/Counter Control Register
+	TCCR1B = 0;                           // Setze Timer/Counter Control Register TCCR1B auf 0
+	TCCR1B |= (1 << WGM12);               // Schalte Clear Timer on Compare (CTC) Modus ein
+	TCCR1B |=  (1 << CS11);                 // CS11 fuer den 8 Bit Prescaler
+	TCNT1  = 0;                           // Initialisiere Zaehler/Zeitgeber Register Wert auf 0
+	OCR1A = MAXVAL;//  Aufruffrequenz Timer 1  241 Hz * 2
+	TIMSK1 |= (1 << OCIE1A); // Erlaube Timer compare interrupt TIMSK - Timer/Counter Interrupt Mask Register
+	sei();//allow interrupts
+	Serial.println("interrupts attached");
+}
+\end{lstlisting}
+
+Die Timer des ATmega328-Chip des Arduino Nanos können über das "Timer/Counter Control Register" \textit{TCCR} konfiguriert werden. Zu Beginn wird das gesamte Register zurückgesetzt. Im Byte \textit{TCCR1B} kann mit den Bits \textit{WGM12} und \textit{WGM13} ein "Waveform Generation Mode" eingestellt werden. In diesem Fall wurde das Bit \textit{WGM12} gesetzt, wodurch der Modus "Clear Timer on Compare Match" \acrshort{ctc} aktiviert wird. 
+
+Dabei wird der aktuelle Zählwert von Timer1 fortlaufend mit dem Register \textit{OCR1A} verglichen. Hat Timer1 den Registerwert erreicht, wird die \acrshort{isr}  \textit{TIMER1\_COMPA\_vect} ausgeführt. Innerhalb der Service Routine soll die \acrshort{pwm} durch Umschalten eines Ausgangspins generiert werden. 
+Der Systemtakt $f_{clock}$ des ATmega328 beträgt 16 Mhz. Durch die Einstellung eines Teilers ("Prescalers") kann der Takt, mit welchem Timer1 inkrementiert wird, eingestellt werden. Für die sich ergebende \acrshort{pwm}-Frequenz durch Vergleich mit dem Register \textit{OCR1A} gilt: 
+
+\begin{align}
+	f_{PWM} = \frac{1}{2} \cdot \frac{f_{clock}}{Prescaler \cdot (OCR1A+1)}
+\end{align}
+
+Das  \acrshort{pwm}-Signal ist in \autoref{pic:pwm} veranschaulicht. 
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=\textwidth]{pwm.pdf}
+		\caption{Benutzeroberfläche zur Hochbahnsteuerung}
+		\label{pic:pwm}
+	\end{center}
+\end{figure}
+
+In der Interruptkonfiguration wurde mit dem Bit \textit{CS11} innerhalb des Registers \textit{TCCR1B} wurde der Prescaler mit dem Nenner 8 aktiviert. Als Minimal- und Maximalwerte des Vergleichregisters \textit{OCR1A} wurden die Werte 5500 und 950 ausgewählt. Damit ergibt sich für das \acrshort{pwm}-Signal:
+
+\begin{align}
+	f_{PWM}(5500) \approx 182 Hz \\
+	f_{PWM}(950) \approx 1050 Hz
+\end{align}
 
 
 Dies wurde mit einer \acrshort{isr}(Interrupt Service Routine) gelöst. Für das Interrupt Register wurde der Modus \acrshort{ctc} (Clear Timer on Compare Match) aktiviert. Nachfolgend wird die Einstellung des Interrupts Registers beschrieben. In den darauffolgenden Abschnitten folgt die Implementierung der \acrshort{isr} (Interrupt Service Routine) sowie die Implementierung weiterer Fahrmodi.  
