@@ -899,8 +899,8 @@ Auf der \textit{clk}-Leitung sollen \acrshort{pwm}-Signale zwischen $100Hz - 100
 \begin{lstlisting}[language=c, style=dhpaperdefault]
 void Stepper::initInterrupts() {
 	cli();                                //clear local interrupt flag
-	TCCR1A = 0;                           // set entire TCCR1A register to 0 TCCR - Timer/Counter Control Register
-	TCCR1B = 0;                           // Setze Timer/Counter Control Register TCCR1B auf 0
+	TCCR1A = 0;                           // reset entire control register A
+	TCCR1B = 0;                           // reset entire control register B
 	TCCR1B |= (1 << WGM12);               // Schalte Clear Timer on Compare (CTC) Modus ein
 	TCCR1B |=  (1 << CS11);                 // CS11 fuer den 8 Bit Prescaler
 	TCNT1  = 0;                           // Initialisiere Zaehler/Zeitgeber Register Wert auf 0
