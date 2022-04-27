@@ -1,6 +1,6 @@
 #include "Drivehandler.h"
 
-Drivehandler::Drivehandler(int f, int t) {
+Drivehandler::Drivehandler(int f, int t, Stepper* step) {
   this->from = f;
   this->to = t;
   this->isDrivingForward = this->to > this->from;
@@ -11,14 +11,12 @@ Drivehandler::Drivehandler(int f, int t) {
     this->driveArrayMaxIndex = this->from - this->to;
   }
 
-  this->stepper = new Stepper();
+  this->stepper = step;
 
   stepper->initInterrupts();
-  stepper->en();
 }
 
 Drivehandler::~Drivehandler() {
-  delete(stepper);
 }
 
 

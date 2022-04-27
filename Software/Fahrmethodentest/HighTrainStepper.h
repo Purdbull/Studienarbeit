@@ -16,29 +16,27 @@
 class Stepper {
   private:
 
+    //Vars
     int targetRegVal; //target speed
-
     int count; //counter for ISR Prescaler,
     int acc; //accelecaration (modulo)
     bool accDone; ;
     int s;
 
-
+    //Functions
+    void en();
     void dis();
     void setDir(int targetSpeed);
+    void stepMode(int mode);
 
 
   public:
-
     Stepper();
     ~Stepper();
     void initInterrupts();
-    void en();
-
-    void linear(int targetVal, int targetAcc=50);
-    void mode(int n);
+    void linear(int targetVal, int targetAcc = 50);
+    void stopMode(int n);
     void isr();
-    void stepMode(int mode);
 
 
 

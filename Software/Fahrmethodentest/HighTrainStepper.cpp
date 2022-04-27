@@ -10,20 +10,16 @@ Stepper::Stepper() {
   pinMode(LED, OUTPUT);
 
   // Min and Max values for timer compare Register OCR1A
-#define MAXVAL 5500 //max register value (lowest clock speed)
+#define MAXVAL 7000 //max register value (lowest clock speed)
 #define MINVAL 990 //min register value (highest clock speed)
 
   //Min and Max Values for acceleration (additional prescaler with modulo)
-#define MAXACC 20
+#define MAXACC 25
 #define MINACC 4
 
   targetRegVal = MAXVAL;
   Stepper::dis();
 
-}
-
-Stepper::~Stepper(){
-  
 }
 
 
@@ -38,25 +34,23 @@ void Stepper::initInterrupts() {
   OCR1A = MAXVAL;//  Aufruffrequenz Timer 1  241 Hz * 2
   TIMSK1 |= (1 << OCIE1A); // Erlaube Timer compare interrupt TIMSK - Timer/Counter Interrupt Mask Register
   sei();//allow interrupts
+  Serial.println("interrupts attached");
 }
 
 void Stepper::isr() {
   digitalWrite(CLK, !(digitalRead(CLK)));
   count++;
 
+  //accelerate
   if (OCR1A > targetRegVal && count >= acc) {
-    //accelerate
-
     cli();
     OCR1A = OCR1A - 10;
     sei();
     count = 0;
   }
 
-
+  //decelerate
   if (OCR1A < targetRegVal && count >= acc) {
-    //decelerate
-
     cli();
     OCR1A = OCR1A + 10;
     sei();
@@ -64,20 +58,40 @@ void Stepper::isr() {
   }
 
 
-}
+  //check target achievement (+offstet)
+  if (abs(OCR1A - targetRegVal) <= 10) {
+    accDone = true;
+    OCR1A = targetRegVal;
+  }
 
-ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
-  Stepper step;
-  step.isr();   //im NOT shure about that.. xD
+  else {
+    accDone = false;
+  }
+
 }
 
 void Stepper::linear(int targetSpeed, int targetAcc) {
+  //map acc and speed
   int _targetRegVal = map(abs(targetSpeed), 0, 100, MAXVAL, MINVAL);
   int _acc = map(targetAcc, 0, 100, MAXACC, MINACC);
 
+  //setDirection
+  Stepper::setDir(targetSpeed);
+
+  //check startup requirement
+  if (OCR1A == MAXVAL) {
+    Stepper::en();
+    Serial.println("-->startup<----");
+    Stepper::stepMode(4);
+    delay(2000);
+    Stepper::stepMode(2);
+    delay(2000);
+    Stepper::stepMode(1);
+  }
+
+
   //set Register Value
   if (_targetRegVal != targetRegVal) {
-    Stepper::setDir(targetSpeed);
     //Stepper::setDir(targetSpeed);
     targetRegVal = _targetRegVal;
     Serial.println("---->Acc./ Dec. to " + String(targetSpeed) + " %<---");
@@ -96,12 +110,12 @@ void Stepper::linear(int targetSpeed, int targetAcc) {
 // -------------------->Beahviourfunctions
 void Stepper::en() {
   digitalWrite(ENBL, 0);
-  Serial.println("disabLED");
+  Serial.println("enabled");
 }
 
 void Stepper::dis() {
   digitalWrite(ENBL, 1);
-  Serial.println("disabLED");
+  Serial.println("disabled");
 }
 
 void Stepper::setDir(int targetSpeed) {
@@ -139,5 +153,54 @@ void Stepper::stepMode(int mode) {
     digitalWrite(M0, 0);
     digitalWrite(M1, 1);
     Serial.println("quarterStep");
+  }
+}
+
+void Stepper::stopMode(int n) {
+  //idleMode
+  if (n == 0) {
+    Stepper::stepMode(1);
+  }
+
+  //emergencyStopMode
+  if (n == 1) {
+    Serial.println("---->EmergencyStop<----");
+    Stepper::linear(0, 100);
+    delay(1);
+    while (!accDone) {
+      delay(1);
+    }
+    Stepper::dis();
+  }
+
+  //stopMode
+  if (n == 2) {
+    Serial.println("---->Stop<----");
+    Stepper::linear(0, 50);
+    delay(1);
+    while (!accDone) {
+      delay(1);
+    }
+    Stepper::stepMode(2);
+    delay(2000);
+    Stepper::stepMode(4);
+    delay(1500);
+    Stepper::dis();
+  }
+
+  // stopInStationMode
+  if (n == 3) {
+    Serial.println("---->StopInStation<----");
+    Stepper::linear(0, 50);
+    delay(1);
+    while (!accDone) {
+      delay(1);
+    }
+    Stepper::stepMode(2);
+  }
+
+  // disableMotor
+  if (n == 4) {
+    Stepper::dis();
   }
 }

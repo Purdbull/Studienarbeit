@@ -6,7 +6,7 @@
 
 class Drivehandler{
   public:
-    Drivehandler(int, int);
+    Drivehandler(int, int, Stepper*);
     ~Drivehandler();
 
     void drive();
