@@ -5,7 +5,6 @@
    Changes: 
    stopModes implemented
 */
-#include <HCSR04.h>
 #include "HighTrainStepper.h"
 
 Stepper* stepper = new Stepper();

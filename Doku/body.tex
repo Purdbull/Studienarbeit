@@ -1279,7 +1279,7 @@ Da die vordefinierten Werte die niedrigste priorität haben, wird das Array zuer
 //prio 4
 for (int i = 0; i <= driveArrayMaxIndex; i++) {
 	if(isDrivingForward) {driveSpeeds[i] = sectionSpeeds[(from + i)]; }
-	else {driveSpeeds[i] = sectionSpeeds[(to - i)]; }
+	else {driveSpeeds[i] = sectionSpeeds[(from - i)]; }
 }
 
 \end{lstlisting}

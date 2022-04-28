@@ -34,7 +34,7 @@ class Stepper {
     Stepper();
     ~Stepper();
     void initInterrupts();
-    void linear(int targetVal, int targetAcc = 50);
+    void linear(int targetVal, int targetAcc = 80);
     void stopMode(int n);
     void isr();
 
