@@ -6,17 +6,18 @@
 #include "EndState.h"
 #include "State.h";
 
-StateMashine::StateMashine() { //EspMQTTClient* MQTTptr
+StateMashine::StateMashine(PubSubClient* ptr) {
+  Serial.println("test");
   this->currentState = new IdleState();
-  //this->clientPtr = MQTTptr;
+  this->clientPtr = ptr;
 }
 
 void StateMashine::handle(String serverMsg) {
   switch (currentState->handle(serverMsg)) {
     case IDLE_STATE: {
-        String msg = currentState->errorMsg;
+        char* msg = currentState->errorMsg;
         delete(currentState);
-        currentState = new ErrorState(msg); //, this->clientPtr
+        currentState = new ErrorState(msg, clientPtr); //, this->clientPtr
         currentState->handle();
         delete(currentState);
         currentState = new IdleState();
@@ -37,9 +38,9 @@ void StateMashine::handle(String serverMsg) {
         if (newState == POSITION_STATE) {
           currentState = new PositionState(pos);
         } else {
-          String msg = currentState->errorMsg;
+          char* msg = currentState->errorMsg;
           delete(currentState);
-          currentState = new ErrorState(msg); //(msg, this->clientPtr)
+          currentState = new ErrorState(msg, clientPtr); //(msg, this->clientPtr)
           currentState->handle();
           delete(currentState);
           currentState = new IdleState();
@@ -48,9 +49,9 @@ void StateMashine::handle(String serverMsg) {
       break;
 
     case POSITION_STATE: {
-        String msg = currentState->errorMsg;
+        char* msg = currentState->errorMsg;
         delete(currentState);
-        currentState = new ErrorState(msg); //(msg, this->clientPtr)
+        currentState = new ErrorState(msg, clientPtr); //(msg, this->clientPtr)
         currentState->handle();
         delete(currentState);
         currentState = new IdleState();
@@ -58,9 +59,9 @@ void StateMashine::handle(String serverMsg) {
       break;
 
     case END_STATE: {
-        String msg = currentState->errorMsg;
+        char* msg = currentState->errorMsg;
         delete(currentState);
-        currentState = new ErrorState(msg); //(msg, this->clientPtr)
+        currentState = new ErrorState(msg, clientPtr); //(msg, this->clientPtr)
         currentState->handle();
         delete(currentState);
         currentState = new IdleState();
@@ -68,9 +69,9 @@ void StateMashine::handle(String serverMsg) {
       break;
 
     case ERROR_STATE: {
-        String msg = currentState->errorMsg;
+        char* msg = currentState->errorMsg;
         delete(currentState);
-        currentState = new ErrorState(msg); //(msg, this->clientPtr)
+        currentState = new ErrorState(msg, clientPtr); //(msg, this->clientPtr)
         currentState->handle();
         delete(currentState);
         currentState = new IdleState();
@@ -103,9 +104,9 @@ void StateMashine::handle(byte arduinoMsg) {
       break;
 
     case ERROR_STATE: {
-        String msg = currentState->errorMsg;
+        char* msg = currentState->errorMsg;
         delete(currentState);
-        currentState = new ErrorState(msg); //(msg, this->clientPtr)
+        currentState = new ErrorState(msg, clientPtr); //(msg, this->clientPtr)
         currentState->handle();
         delete(currentState);
         currentState = new IdleState();

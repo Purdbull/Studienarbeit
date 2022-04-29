@@ -1,22 +1,29 @@
 #include "StateMashine.h"
-#include <WiFi.h>
+#include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include "EEPROM.h"
 
 #define REED_PIN 4
 
+
+/* ##########################################
+   ##               Globals                ##
+   ##########################################
+*/
 bool isDrivingForward = true;
 
 
-//################################################
-//##           Wifi and MQTT Stuff              ##
-//################################################
-const char* ssid = "........";
-const char* password = "........";
-const char* mqtt_server = "broker.mqtt-dashboard.com";
+/* ##########################################
+   ##          Wifi and MQTT Stuff         ##
+   ##########################################
+*/
+const char* ssid = "Kimo-Lan";
+const char* password = "DU!k0mmst_h13r-n1cht.r31n!";
+const char* mqtt_server = "192.168.100.100";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
+StateMashine* handler = new StateMashine(&client);
 unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE  (50)
 char msg[MSG_BUFFER_SIZE];
@@ -47,13 +54,17 @@ void setup_wifi() {
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived [");
+  /*Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
   for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
   }
-  Serial.println();
+  Serial.println();*/
+  payload[length] = '\0';
+  int test = atoi((char*)payload);
+  Serial.println(test);
+  handler->handle(String(test));
 }
 
 void reconnect() {
@@ -69,7 +80,7 @@ void reconnect() {
       // Once connected, publish an announcement...
       client.publish("outTopic", "hello world");
       // ... and resubscribe
-      client.subscribe("inTopic");
+      client.subscribe("Train/driveToPosition");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -80,36 +91,39 @@ void reconnect() {
   }
 }
 
-
-StateMashine* handler = new StateMashine();
-
+/* ##########################################
+   ##                ISR                   ##
+   ##########################################
+*/
 void IRAM_ATTR ISR() {
   if (isDrivingForward) {
-    byte pos = EEPROM.read(42);
+    byte pos = EEPROM.read(0);
     if (pos < 15) {
       pos++;
     }
-    EEPROM.write(42, pos);
+    EEPROM.write(0, pos);
   }
   else {
-    byte pos = EEPROM.read(42);
+    byte pos = EEPROM.read(0);
     if (pos != 0) {
       pos--;
     }
-    EEPROM.write(42, pos);
+    EEPROM.write(0, pos);
   }
 }
 
 void setup() {
   Serial.begin(9600);
   //attachInterrupt(REED_PIN, ISR, RISING);
-  EEPROM.write(42, B00000011); //Fake position 3 for testing
+  EEPROM.write(0, B00000011); //Fake position 3 for testing
   pinMode(2, OUTPUT);
 
-  
+
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
+  client.subscribe("Train/driveToPosition");
+
 }
 
 void clearSerialBuffer() {
@@ -119,15 +133,16 @@ void clearSerialBuffer() {
   }
 }
 
-long mils = 0;
-
 void loop() {
-  
-  handler->handle("3");
-  client.loop();
-  if (Serial.available() > 0) {
+
+  /*handler->handle("3");
+    client.loop();
+    if (Serial.available() > 0) {
     handler->handle(Serial.read());
     clearSerialBuffer();
+    }*/
+  client.loop();
+  if (!client.connected()) {
+    reconnect();
   }
-  
 }

@@ -5,6 +5,7 @@
 
 IdleState::IdleState(){
     this->jarvis = new Decoder();
+    Serial.println("im in idlestate");
   }
 
 IdleState::~IdleState(){

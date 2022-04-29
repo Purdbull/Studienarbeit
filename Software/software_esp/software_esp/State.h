@@ -24,7 +24,7 @@ class State{
         virtual int handleWithoutParam();
         virtual void handle();
         int driveToPosition;
-        String errorMsg;
+        char* errorMsg;
 };
 
 #endif

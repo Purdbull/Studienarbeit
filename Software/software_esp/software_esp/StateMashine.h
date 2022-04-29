@@ -1,17 +1,17 @@
 #include "Arduino.h"
 #include "State.h"
 #include "IdleState.h"
-//#include "EspMQTTClient.h"
+#include <PubSubClient.h>
 
 #ifndef StateMashine_h
 #define StateMashine_h
 
 class StateMashine{
   State *currentState;
-  //EspMQTTClient* clientPtr;
+  PubSubClient* clientPtr;
 
   public:
-    StateMashine(); //EspMQTTClient*
+    StateMashine(PubSubClient*); //EspMQTTClient*
     void handle(String);
     void handle(byte);
 };

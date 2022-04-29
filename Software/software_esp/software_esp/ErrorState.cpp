@@ -1,10 +1,11 @@
 #include "Arduino.h"
 #include "ErrorState.h"
 #include "State.h"
+#include <PubSubClient.h>
 
-ErrorState::ErrorState(String msg){ //, EspMQTTClient* ptr
+ErrorState::ErrorState(char* msg, PubSubClient* ptr){ //, EspMQTTClient* ptr
     this->errorMsg = msg;
-    //this->clientPtr = ptr;
+    this->clientPtr = ptr;
   }
 
 ErrorState::~ErrorState(){
@@ -23,7 +24,7 @@ int ErrorState::handle(byte arduinoMsg){
 }
 
 void ErrorState::handle(){
-  //this->clientPtr->publish("train/error", this->errorMsg);
+  this->clientPtr->publish("Train/Error", this->errorMsg);
   digitalWrite(2, HIGH);
   delay(10000);
   digitalWrite(2, LOW);

@@ -1,16 +1,16 @@
 #include "Arduino.h"
 #include "State.h"
-//#include "EspMQTTClient.h"
+#include <PubSubClient.h>
 
 #ifndef ErrorState_h
 #define ErrorState_h
 
 class ErrorState : public State {
   public:
-    //EspMQTTClient* clientPtr;
+    PubSubClient* clientPtr;
     ErrorState();
     ~ErrorState();
-    ErrorState(String); //, EspMQTTClient*
+    ErrorState(char*, PubSubClient*); //
     int handle(String);
     int handle(byte);
     void handle();
