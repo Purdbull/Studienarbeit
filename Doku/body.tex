@@ -895,6 +895,7 @@ Auf der \textit{clk}-Leitung sollen \acrshort{pwm}-Signale zwischen $100Hz - 100
 
 \paragraph*{Konfiguration des Interrupt-Registers}\mbox{}\vspace{.1cm}\\
 %todo : einheitliche Paragraphs zaubern!
+In \autoref{code:interrupt} ist der Code zur Konfiguartion des Interrupt-Registers aufgeführt. Die Funktionen werden nachfolgend beschrieben. 
 
 \begin{lstlisting}[language=c, style=dhpaperdefault]
 void Stepper::initInterrupts() {
@@ -910,6 +911,7 @@ void Stepper::initInterrupts() {
 	Serial.println("interrupts attached");
 }
 \end{lstlisting}
+\captionof{lstlisting}{\label{code:interrupt}Konfiguration der Timer/Counter Control Registers }
 
 Die Timer des ATmega328-Chip des Arduino Nanos können über das "Timer/Counter Control Register" \textit{TCCR} konfiguriert werden. Zu Beginn wird das gesamte Register zurückgesetzt. Im Byte \textit{TCCR1B} kann mit den Bits \textit{WGM12} und \textit{WGM13} ein "Waveform Generation Mode" eingestellt werden. In diesem Fall wurde das Bit \textit{WGM12} gesetzt, wodurch der Modus "Clear Timer on Compare Match" \acrshort{ctc} aktiviert wird. 
 
@@ -924,13 +926,13 @@ Das  \acrshort{pwm}-Signal ist in \autoref{pic:pwm} veranschaulicht.
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=\textwidth]{pwm.pdf}
+		\includegraphics[width=10cm]{pwm.pdf}
 		\caption{Benutzeroberfläche zur Hochbahnsteuerung}
 		\label{pic:pwm}
 	\end{center}
 \end{figure}
 
-In der Interruptkonfiguration wurde mit dem Bit \textit{CS11} innerhalb des Registers \textit{TCCR1B} wurde der Prescaler mit dem Nenner 8 aktiviert. Als Minimal- und Maximalwerte des Vergleichregisters \textit{OCR1A} wurden die Werte 5500 und 950 ausgewählt. Damit ergibt sich für das \acrshort{pwm}-Signal:
+In der Interruptkonfiguration wurde mit dem Bit \textit{CS11} innerhalb des Registers \textit{TCCR1B} der Prescaler mit dem Nenner 8 aktiviert. Als Minimal- und Maximalwerte des Vergleichregisters \textit{OCR1A} wurden die Werte 5500 und 950 ausgewählt. Damit ergibt sich als minimale und maximale Frequenz des \acrshort{pwm}-Signals:
 
 \begin{align}
 	f_{PWM}(5500) \approx 182 Hz \\
@@ -938,31 +940,75 @@ In der Interruptkonfiguration wurde mit dem Bit \textit{CS11} innerhalb des Regi
 \end{align}
 
 
-Dies wurde mit einer \acrshort{isr}(Interrupt Service Routine) gelöst. Für das Interrupt Register wurde der Modus \acrshort{ctc} (Clear Timer on Compare Match) aktiviert. Nachfolgend wird die Einstellung des Interrupts Registers beschrieben. In den darauffolgenden Abschnitten folgt die Implementierung der \acrshort{isr} (Interrupt Service Routine) sowie die Implementierung weiterer Fahrmodi.  
+
+\paragraph*{Implementierung der Fahrfunktion}\mbox{}\vspace{.1cm}\\
+Der Motor wird außerhalb der Library mit folgender Funktion gesteuert: 
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+void run (int targetSpeed, int targetAcc)
+\end{lstlisting}
+
+Mithilfe der Parameters \textit{targetSpeed} und \textit{targetAcc} können die gewünschte Geschwindigkeit sowie Beschleunigung in \% definiert werden. Bei Aufruf der Funktion werden die Parameter in die definierten Wertebereich transfomiert und in die globalen Klassenvariabeln \textit{targetRegVal} und \textit{acc} geschrieben. Die beiden Variabeln werden von der \acrshort{isr} verwendet. 
+
+\paragraph*{Implementierung der \acrshort{isr}}\mbox{}\vspace{.1cm}\\
+Bei Aufruf der \acrshort{isr} \textit{TIMER1\_COMPA\_vect} wird die klasseninterne Funktion \textit{isr} aufgerufen. Diese erzeugt das \acrshort{pwm}-Signal durch Umschalten des CLK-Ausgangs. 
+Im nächsten Schritt wird der aktuelle Wert von 0CR1A mit dem von angestrebten Registerwert \textit{targetRegVal} verglichen. Je nach Ergebnis wird durch inkrementieren bzw. dekrementieren von 0CR1A der Motor beschleunigt oder verlangsamt. Die Häufigkeit der Veränderung des Zählwertes entspricht dem Wert der Beschleunigung und wird durch die Variable \textit{Acc} bestimmt. 
+Im letzten Schritt wird das Erreichen des gewünschten Registerwertes geprüft. Diese Information wird für die Abbremsmodi benötigt. Die Implementierung der \acrshort{isr} ist in \autoref{code:isr} dargestellt. 
+
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+
+void Stepper::isr() {
+	digitalWrite(CLK, !(digitalRead(CLK))); //togglen des CLK-Pins
+	count++;
+	
+	//acelerate
+	if (OCR1A > targetRegVal && count >= acc) {
+		cli();
+		OCR1A = OCR1A - 10;
+		sei();
+		count = 0;
+	}
+	
+	//decelerate
+	if (OCR1A < targetRegVal && count >= acc) {
+		cli();
+		OCR1A = OCR1A + 10;
+		sei();
+		count = 0;
+	}
+	
+	
+	//check target achievement (+offstet)
+	if (abs(OCR1A - targetRegVal) <= 10) {
+		accDone = true;
+		OCR1A = targetRegVal;
+}
+
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:isr} Implementierung der ISR \textit{TIMER1\_COMPA\_vect}}
 
 
-aufrecht während der Signalgenerierung noch immer Befehle über . 
-Dafür soll die Library als Input die Zielgeschwindigkeit in \% 
+\paragraph*{Vorkonfiguration verschiedener Fahrszenarien}\mbox{}\vspace{.1cm}\\
 
-- Interrupt Register mit COC-Funktion 
-- Implementierung der COC-Funktion 
-- Berechnung der Registerwerte/ Prescaler nach der Formel für die Taktrate 
-
-
-Implementierung der Geschwindigkeitsverläufe
-- Implementierung der ISR
-
-Implementierung weiterer Fahrmodi 
-- Implementierung von Schrittmodi 
-- Implementierung von Fahrmodi und Startup
-
-Implementierung als Motor-Library 
-
-Die Motorsteuerung ist auf einem Arduino Nano ausgelagert. 
-
-
-
-Der Hochbahncontroller ESP32 kann der Steuerung Befehle erteilen und erhält die aktuelle Geschwindigkeit. In \autoref{pic:motorsteuerung} ist schematisch der Steuerungsablauf  dargestellt. 
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}[h]{l|l|l}
+			\textbf{Input} & \textbf{Bezeichnung} & \textbf{Fahrverhalten} \\
+			\hline
+			0 & Aktivieren des Motors (Bestromung der Spulen) & -\\
+			\hline
+			1 & Nothalt & speed: 0\%, acc:100\%; Deaktivieren des Motors\\
+			\hline
+			2 & Normaler Halt & speed: 0\%, acc:50\%; HalbSchrittmodus; Viertelschrittmodus; Deaktivieren des Motors\\
+			\hline
+			3 & Einfahrt in Ladestation & speed: 0\%, acc:50\%; HalbSchrittmodus; Viertelschrittmodus; Deaktivieren \\
+			\hline
+			4 & Deaktivieren des Motors & \\
+		
+		\end{tabular}
+	\end{center}
+	\caption{}
+	\label{tbl:stopMode}
+\end{table}
 
 
 
