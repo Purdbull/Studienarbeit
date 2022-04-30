@@ -863,9 +863,8 @@ In diesem ersten Teil der Studienarbeit stand die Konzeptionierung in \autoref{c
 \section{Motorsteuerung}
 \label{sec:motorsteuerung}
 
-Wie in \autoref{sec:konzeptAktorik} beschrieben, wird der Schrittmotor mithilfe des Treibers DRV8834 von Texas Instruments angesteuert. Die vom Treiber benötigten Signale werden dafür von einem Arduino Nano generiert. Zu diesem Zweck wurde die Library \texttt{HighTrainStepper} geschrieben. Von außen kann der Library  eine Geschwindigkeit sowie eine Beschleunigung vorgegeben werden. Die Library steuert dann die Motordrehzahl mit entsprechender Beschleunigungsrate an. Dazu wird ein \acrshort{pwm}-Signal über Interrupts generiert. Zusätzlich sind mit der Funktion \texttt{stopMode} bereits vorkonfigurierte Anhalteszenarien implementiert. Mit \autoref{sec:driver} werden zunächst die vom Motortreiber benötigten Signale aufgeführt. Es folgt die Konfiguartation der Interrupts sowie die Implementierung der Interrupt Service Routine (\acrshort{isr}) mit \autoref{sec:interrupt} sowie \autoref{sec:isr}. Abschließend  werden die vorkonfigurierten Anhalteszenarien in \autoref{sec:stopMode} erläutert.
+Wie in \autoref{sec:konzeptAktorik} beschrieben, wird der Schrittmotor mithilfe des Treibers DRV8834 von Texas Instruments angesteuert. Die vom Treiber benötigten Signale werden dafür von einem Arduino Nano generiert. Zu diesem Zweck wurde die Library \texttt{HighTrainStepper} geschrieben. Von außen kann der Library  eine Geschwindigkeit sowie eine Beschleunigung vorgegeben werden. Die Library steuert dann die Motordrehzahl mit der definierten Beschleunigungsrate an. Dazu wird ein \acrshort{pwm}-Signal über Interrupts generiert. Zusätzlich sind mit der Funktion \texttt{stopMode} bereits vorkonfigurierte Anhalteszenarien implementiert. Mit \autoref{sec:driver} werden zunächst die vom Motortreiber benötigten Signale aufgeführt. Es folgt die Konfiguartation der Interrupts sowie die Implementierung der Interrupt Service Routine (\acrshort{isr}) mit \autoref{sec:interrupt} sowie \autoref{sec:isr}. Abschließend  werden die vorkonfigurierten Anhalteszenarien in \autoref{sec:stopMode} erläutert.
 
-Die für den Motortreiber benötigte Taktrate wird durch Interrupts generieert. \\
 
 \subsection{Signale des Schrittmotortreibers}
 \label{sec:driver}
@@ -879,7 +878,7 @@ In \autoref{tbl:pololuDriver} sind die Signale definiert.
 			\hline
 			clk & Takt zum Weiterschalten eines Schrittes, \acrshort{pwm}-Signal des Controllers\\
 			\hline
-			M0,M1 & Signalepegel für die Einstellung der Schrittmodi\\
+			m0,m1 & Signalepegel für die Einstellung der Schrittmodi\\
 			\hline
 			en & Aktiveren des Motortreibers\\
 			\hline
@@ -890,12 +889,12 @@ In \autoref{tbl:pololuDriver} sind die Signale definiert.
 	\label{tbl:pololuDriver}
 \end{table}
 
-Durch Aktivieren des Signals \textit{en} wird der Schrittmotor bestromt. Ohne das Signal besitzt der Motor ausschließlich das innere Rastmoment. Mit\textit{M0} und \textit{M1} wird der Schrittmodus eingestellt. Für das Projekt relevant sind Vollschritt, Halbschritt und Viertelschritt. Bei einer positiven Taktflanke an \textit{clk} bestromt der Treiber die nächste Spule, wodurch sich der Motor um eine Rastung weiter dreht. Während der Arduino dafür das  \acrshort{pwm}-Signal generiert, soll dieser weiterhin in der Lage sein, andere Prozesse auszuführen. Um dies zu gewährleisten, wurde die Generierung der  \acrshort{pwm} in einer \acrshort{isr} ausgelagert, welche kontinuierlich durch einen internen Timer des Arduinos aufgerufen wird. Zunächst wird die dafür vorgenommene Konfiguration des Interrupt-Registers beschrieben.\\
+Durch Aktivieren des Signals \textit{en} wird der Schrittmotor bestromt. Ohne das Signal besitzt der Motor ausschließlich das innere Rastmoment. Mit \textit{m0} und \textit{m1} wird der Schrittmodus eingestellt. Für das Projekt relevant sind Vollschritt, Halbschritt und Viertelschritt. Bei einer positiven Taktflanke an \textit{clk} bestromt der Treiber die nächste Spule, wodurch sich der Motor um eine Rastung weiter dreht. Während der Arduino dafür das  \acrshort{pwm}-Signal generiert, soll dieser weiterhin in der Lage sein, andere Prozesse auszuführen. Um dies zu gewährleisten, wurde die Generierung der  \acrshort{pwm} in einer \acrshort{isr} ausgelagert, welche kontinuierlich durch einen internen Timer des Arduinos aufgerufen wird. Nachfolgend wird die dafür vorgenommene Konfiguration des Interrupt-Registers beschrieben.\\
 
 \subsection{Konfiguration des Interrupt-Registers}
 \label{sec:interrupt}
 
-In \autoref{code:interrupt} ist der Code zur Konfiguartion des Interrupt-Registers aufgeführt. Außerdem ist in \autoref{pic:interrupt} eine Übersicht des Timer/ Counter Control \textit{TCCR1A} Registers sowie des Maskierungsregisters \textit{TIMSK1}.
+In \autoref{code:interrupt} ist der Code zur Konfiguartion des Interrupt-Registers aufgeführt. Des Weiteren zeigt \autoref{pic:interrupt} eine Übersicht des Timer/ Counter Control \textit{TCCR1A} Registers sowie des Maskierungsregisters \textit{TIMSK1}.
 
 \begin{lstlisting}[language=c, style=dhpaperdefault]
 void Stepper::initInterrupts() {
@@ -910,7 +909,7 @@ void Stepper::initInterrupts() {
 	sei(); //interrupts aktivieren 
 }
 \end{lstlisting}
-\captionof{lstlisting}{\label{code:interrupt}Konfiguration der Timer/Counter Control Registers }
+\captionof{lstlisting}{\label{code:interrupt}Konfiguration des Timer/Counter Control Registers }
 
 \begin{figure}[h]
 	\begin{center}
@@ -919,10 +918,10 @@ void Stepper::initInterrupts() {
 	\end{center}
 \end{figure}
 
-Die Timer des ATmega328-Chip des Arduino Nanos können über das "Timer/Counter Control Register" \textit{TCCR} konfiguriert werden. Zu Beginn wird das gesamte Register zurückgesetzt. Im Byte \textit{TCCR1B} kann mit den Bits \textit{WGM12} und \textit{WGM13} ein "Waveform Generation Mode" eingestellt werden. In diesem Fall wurde das Bit \textit{WGM12} gesetzt, wodurch der Modus "Clear Timer on Compare Match" \acrshort{ctc} aktiviert wird. 
+Die Timer des ATmega328-Chip können über das Timer/Counter Control Register \textit{(TCCR)} konfiguriert werden. Zu Beginn wird das gesamte Register zurückgesetzt. Im Byte \textit{TCCR1B} kann mit den Bits \textit{WGM12} und \textit{WGM13} ein sog. Waveform Generation Mode eingestellt werden. In diesem Fall wurde das Bit \textit{WGM12} gesetzt, wodurch der Modus "Clear Timer on Compare Match" \acrshort{ctc} aktiviert wird. 
+Dabei wird der aktuelle Zählwert von Timer1 fortlaufend mit dem Register \textit{OCR1A} verglichen. Hat Timer1 den Registerwert erreicht, wird die \acrshort{isr}  \texttt{TIMER1\_COMPA\_vect} ausgeführt. Innerhalb der Service Routine wird die \acrshort{pwm} durch Umschalten eines Ausgangspins generiert. \newpage
 
-Dabei wird der aktuelle Zählwert von Timer1 fortlaufend mit dem Register \textit{OCR1A} verglichen. Hat Timer1 den Registerwert erreicht, wird die \acrshort{isr}  \textit{TIMER1\_COMPA\_vect} ausgeführt. Innerhalb der Service Routine soll die \acrshort{pwm} durch Umschalten eines Ausgangspins generiert werden. 
-Der Systemtakt $f_{clock}$ des ATmega328 beträgt 16 Mhz. Durch die Einstellung eines Teilers ("Prescalers") kann der Takt, mit welchem Timer1 inkrementiert wird, eingestellt werden. Für die sich ergebende \acrshort{pwm}-Frequenz durch Vergleich mit dem Register \textit{OCR1A} gilt: 
+Der Systemtakt $f_{clock}$ des ATmega328 beträgt $16 Mhz$. Durch die Einstellung eines Teilers ("Prescalers") kann der Takt, mit welchem Timer1 inkrementiert wird, eingestellt werden. Für die sich ergebende \acrshort{pwm}-Frequenz durch Vergleich mit dem Register \textit{OCR1A} gilt: 
 
 \begin{align}
 	f_{PWM} = \frac{1}{2} \cdot \frac{f_{clock}}{Prescaler \cdot (OCR1A+1)}
@@ -951,28 +950,22 @@ Für die Geschwindigkeit der Hochbahn ergibt sich mit dem Radius der Lauffläche
 \begin{equation}
 	v(1050Hz) = \frac{2\pi \cdot f \cdot r_L}{200} \\
 	= \frac{2\pi \cdot 1050 \cdot 17 \cdot 10^{-3}}{200} \\
-	\approx 0,56 ms^{-1}
+	\approx 0,56 ms^{-1}.
 \end{equation}
 
 \subsection{Die Funktion \texttt{run}}
 \label{sec:run}	
 
-Der Motor wird außerhalb der Library mit folgender Funktion gesteuert: 
-\begin{lstlisting}[language=c, style=dhpaperdefault]
-void run (int targetSpeed, int targetAcc)
-\end{lstlisting}
-
-%todo: Richtungserkennung
-Mithilfe der Parameters \textit{targetSpeed} und \textit{targetAcc} können die gewünschte Geschwindigkeit sowie Beschleunigung in \% definiert werden. Bei Aufruf der Funktion werden die Parameter in die definierten Wertebereich transfomiert und in die globalen Klassenvariabeln \textit{targetRegVal} und \textit{acc} geschrieben. Die beiden Variabeln werden von der \acrshort{isr} verwendet. 
+Der Motor wird außerhalb der Library mit der Funktion \texttt{run(int targetSpeed, int targetAcc)} gesteuert. Mithilfe der Parameters \textit{targetSpeed} und \textit{targetAcc} können die gewünschte Geschwindigkeit sowie Beschleunigung in \% definiert werden. Anhand des Vorzeichens wird mit der Funktion \texttt{setDir(targetSpeed)} die Drehrichtung eingestellt. Anschließend werden die Parameter \textit{targetAcc} sowie der Betrag von \textit{targetSpeed} in definierte Wertebereich transfomiert und in die globalen Klassenvariabeln \textit{targetRegVal} und \textit{acc} geschrieben. 
+Die beiden Variabeln werden von der \acrshort{isr} verwendet. 
 
 \subsection{Implementierung der \acrshort{isr}}
 \label{sec:isr}	
-Bei Aufruf der \acrshort{isr} \textit{TIMER1\_COMPA\_vect} wird die klasseninterne Funktion \textit{isr()} aufgerufen. Diese erzeugt das \acrshort{pwm}-Signal durch Umschalten des CLK-Ausgangs. 
-Im nächsten Schritt wird der aktuelle Wert von 0CR1A mit dem von angestrebten Registerwert \textit{targetRegVal} verglichen. Je nach Ergebnis wird durch inkrementieren bzw. dekrementieren von 0CR1A der Motor beschleunigt oder verlangsamt. Die Häufigkeit der Veränderung des Zählwertes entspricht dem Wert der Beschleunigung und wird durch die Variable \textit{Acc} bestimmt. 
+Bei Aufruf der \acrshort{isr} \texttt{TIMER1\_COMPA\_vect} wird die klasseninterne Funktion \texttt{isr()} aufgerufen. Diese erzeugt das \acrshort{pwm}-Signal durch Umschalten des \textit{clk}-Ausgangs. 
+Im nächsten Schritt wird der aktuelle Wert von \textit{0CR1A} mit dem von angestrebten Registerwert \textit{targetRegVal} verglichen. Je nach Ergebnis wird durch inkrementieren bzw. dekrementieren von \textit{0CR1A} der Motor beschleunigt oder verlangsamt. Die Häufigkeit der Veränderung des Zählwertes entspricht dem Wert der Beschleunigung und wird durch die Variable \textit{acc} bestimmt. 
 Im letzten Schritt wird das Erreichen des gewünschten Registerwertes geprüft. Diese Information wird für die Abbremsmodi benötigt. Die Implementierung der \acrshort{isr} ist in \autoref{code:isr} dargestellt. 
 
 \begin{lstlisting}[language=c, style=dhpaperdefault]
-
 void Stepper::isr() {
 	digitalWrite(CLK, !(digitalRead(CLK))); //togglen des CLK-Pins
 	count++;
@@ -984,7 +977,7 @@ void Stepper::isr() {
 		sei();
 		count = 0;
 	}
-	
+
 	//decelerate
 	if (OCR1A < targetRegVal && count >= acc) {
 		cli();
@@ -992,7 +985,6 @@ void Stepper::isr() {
 		sei();
 		count = 0;
 	}
-	
 	
 	//check target achievement (+offstet)
 	if (abs(OCR1A - targetRegVal) <= 10) {
@@ -1025,7 +1017,7 @@ Mithilfe der Funktion \texttt{stopMode(int n)} können von außerhalb verschiede
 		
 		\end{tabular}
 	\end{center}
-	\caption{}
+	\caption{Übersicht über vorkonfigurierte Anhalteszenarien in der Funktion \texttt{stopMode(n)} mit darauffolgendem Fahrverhalten}
 	\label{tbl:stopMode}
 \end{table}
 
@@ -1035,7 +1027,7 @@ Ein Nothalt soll bspw. ausgelöst werden, wenn das Schutzfeld eines Ultraschalls
 	\omega = \frac{182}{2\pi \cdot 200 \cdot s}  \approx 0,16 s^{-1}.
 \end{align}
 
-Da das Deaktivieren des Motors aus dieser Geschwindigkeit zu abrupt wäre, werden bei der Minimalfrequenz die Schrittmodi gewechselt. Dazu wechselt der Motor sobald  das Flag \texttt{accDone} von der \acrshort{isr} gesetzt ist, in den Halbschrittmodus. Nach einer Wartezeit von einer Sekunde wird der Viertelschrittmodus aktiviert und nach einer weiteren Sekunde der Motor abgeschaltet. Bei der Einfahrt in die Ladestation wird der Motor in gleicher Weise verlangsamt mit dem Unterschied, dass dieser am Ende nicht deaktiviert wird. Für diesen letzten Schritt soll bei Erreichen des letzten \acrshort{reed}-Kontaktes der Motor mit Input 4 gezielt deaktiviert werden. 
+Da das Deaktivieren des Motors aus dieser Geschwindigkeit zu abrupt wäre, werden bei der Minimalfrequenz die Schrittmodi gewechselt. Dazu wechselt die Library sobald  das Flag \texttt{accDone} von der \acrshort{isr} gesetzt wurde, in den Halbschrittmodus. Nach einer Wartezeit von einer Sekunde wird der Viertelschrittmodus aktiviert und nach einer weiteren Sekunde der Motor abgeschaltet. Bei Einfahrt in die Ladestation wird der Motor zunächst in gleicher Weise verlangsamt. Im Vergleich zum normalen Halt wird der Motor am Ende nicht automatisch deaktiviert. Dafür kann von außen bei Erreichen des letzten \acrshort{reed}-Kontaktes der Motor gezielt abgeschaltet werden. 
 
 \section{Getriebekonstruktion}
 \label{sec:getriebekonstruktion}
