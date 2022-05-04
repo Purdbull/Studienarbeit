@@ -13,6 +13,17 @@ void sWait::handle(){
 }
 
 int sWait::handle(byte espMsg){
+  int pos = 17;
+  sWait::clearSerialBuffer();
+  if (jarvis->getHeader(espMsg) == HEADER_ORDER){
+    pos = jarvis->getBody(espMsg);
+  }
+  if (pos>=0 && pos <=15){
+    this->driveToPosition = pos;
+    Serial.write(B10000111); //acc
+    return DRIVE_STATE;
+  }
+  Serial.write(B10001011); //dec
   return ERROR_STATE;
 }
 

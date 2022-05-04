@@ -3,8 +3,9 @@
 
 
 
-StateMaschine::StateMaschine() {
+StateMaschine::StateMaschine(Stepper* ptr) {
   currentState = new sIdle();
+  this->stepPtr = ptr;
 }
 
 void StateMaschine::StateHandle(byte espMsg) {
@@ -21,6 +22,12 @@ void StateMaschine::StateHandle(byte espMsg) {
       break;
 
     case DRIVE_STATE:
+      int pos = currentState->driveToPosition;
+      delete(currentState);
+      currentState = new sDrive(pos, stepPtr);
+      currentState->handle();
+      delete(currentState);
+      currentState = new sIdle();
       break;
 
     case CHARGE_STATE:
@@ -62,7 +69,10 @@ void StateMaschine::StateHandle() {
     case DRIVE_STATE: {
         int pos = currentState->driveToPosition;
         delete(currentState);
-        currentState = new sDrive(pos);
+        currentState = new sDrive(pos, stepPtr);
+        currentState->handle();
+        delete(currentState);
+        currentState = new sIdle();
       }
       break;
 

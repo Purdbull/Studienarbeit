@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include "State.h"
+#include "Drivehandler.h"
 
 #ifndef sDrive_h
 #define sDrive_h
@@ -18,8 +19,11 @@
 
 class sDrive : public State{
   public:
-    sDrive(int);
+    sDrive(int, Stepper*);
     ~sDrive();
+
+    Stepper* stepPtr;
+    Drivehandler* drivehandler;
     void handle();
     int handle(byte);
     int handleWithoutParam();

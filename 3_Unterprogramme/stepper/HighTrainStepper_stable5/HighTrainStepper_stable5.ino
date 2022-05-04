@@ -32,20 +32,13 @@ void loop() {
   
   
   //stopBackwards
-  delay(7000);
   stepper -> linear(40);
   delay(7000);
-  stepper -> stopMode(1);
-  delay(7000);
   stepper -> linear(-50, 100);
-  delay(7000);
-  stepper -> stopMode(2);
   delay(8000);
   stepper -> linear(80,100);
   delay(7000); 
-  stepper ->stopMode(3); 
-  delay(6000); 
-  stepper ->stopMode(4); 
+  stepper ->stopMode(2); 
   delay(3000); 
 
 }

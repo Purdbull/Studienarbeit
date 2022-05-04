@@ -7,7 +7,7 @@ class Decoder{
     public:
         Decoder();
         int getHeader(byte);
-        int getBody(byte);
+        byte getBody(byte);
         int getTail(byte);
         int getPosition(String);
 };

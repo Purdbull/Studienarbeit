@@ -8,6 +8,8 @@
 #include "sCharge.h"
 #include "sOff.h"
 #include "sError.h"
+#include "Drivehandler.h"
+#include "HighTrainStepper.h"
 
 #ifndef StateMaschine_h
 #define StateMaschine_h
@@ -16,8 +18,10 @@ class StateMaschine{
   State *currentState;
 
   public:
-    StateMaschine();
+    StateMaschine(Stepper*);
     ~StateMaschine();
+
+    Stepper* stepPtr;
     
     void StateHandle(byte);
     void StateHandle();

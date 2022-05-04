@@ -2,7 +2,7 @@
 #include "sIdle.h"
 
 sIdle::sIdle() {
-  this->batteryMeasure = new BatteryMaster(1,2,3); //TODO::right numbers
+  this->batteryMeasure = new BatteryMaster(14,15,4); //TODO::right numbers
   this->jarvis = new Decoder;
   //Serial.print("hellothere");
 }

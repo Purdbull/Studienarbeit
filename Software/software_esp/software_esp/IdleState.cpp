@@ -2,10 +2,11 @@
 #include "IdleState.h"
 #include "Decoder.h"
 #include "State.h"
+#include "PubSubClient.h"
 
-IdleState::IdleState(){
+IdleState::IdleState(PubSubClient* ptr){
     this->jarvis = new Decoder();
-    Serial.println("im in idlestate");
+    this->clientPtr = ptr;
   }
 
 IdleState::~IdleState(){
@@ -21,10 +22,9 @@ int IdleState::handle(String serverMsg){
 int IdleState::handle(byte arduinoMsg){
     if(jarvis->getHeader(arduinoMsg) == HEADER_BATTERY){
       float bat = jarvis->getBody(arduinoMsg)*6.25;
-      //TODO: schick battery an server
-      digitalWrite(2, HIGH);
-      delay(40);
-      digitalWrite(2, LOW);
+      String buf = String(bat);
+      const char* batMsg = buf.c_str();
+      this->clientPtr->publish("Train/Battery", batMsg);
       return IDLE_STATE;
     } 
     this->errorMsg = "idle handle with byte called no battery";

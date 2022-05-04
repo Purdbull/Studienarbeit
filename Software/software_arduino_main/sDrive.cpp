@@ -1,20 +1,23 @@
 #include "Arduino.h"
 #include "sDrive.h"
+#include "Drivehandler.h"
+#include "EEPROM.h"
 
-sDrive::sDrive(int pos){
-  this->driveToPosition = pos;
+sDrive::sDrive(int pos, Stepper* ptr){
+  int currentPos = (int)EEPROM.read(0);
+  this->drivehandler = new Drivehandler(currentPos, pos, ptr);
 }
 
 sDrive::~sDrive(){
-  //todo
+  delete(this->drivehandler);
 }
 
 void sDrive::handle(){
-  
+  this->drivehandler->drive();
 }
 
 int sDrive::handleWithoutParam(){
-  //todo:drive function!! then
+  this->drivehandler->drive();
   return IDLE_STATE;
   //if something crashes
   return ERROR_STATE;

@@ -1,9 +1,12 @@
 #include "Arduino.h"
 #include "EndState.h"
 #include "State.h"
+#include "PubSubClient.h"
+#include "EEPROM.h"
 
-EndState::EndState() {
+EndState::EndState(PubSubClient* ptr) {
   this->jarvis = new Decoder();
+  this->clientPtr = ptr;
 }
 
 EndState::~EndState(){
@@ -18,14 +21,16 @@ int EndState::handle(String serverMsg) {
 int EndState::handle(byte arduinoMsg) {
   if (jarvis->getHeader(arduinoMsg) == HEADER_ACC) {
     if (jarvis->getBody(arduinoMsg) == 1) {
-      //Serial.println("akzeptiert");
+      this->clientPtr->publish("Train/Info", "Success");
       digitalWrite(2, HIGH);
       delay(1000);
       digitalWrite(2, LOW);
+      byte pos = EEPROM.read(0);
+      String p = String(pos);
+      this->clientPtr->publish("Train/Position", p.c_str());
       return IDLE_STATE;
     }
     if (jarvis->getBody(arduinoMsg) == 2) {
-      //Serial.println("abgelehnt");
       this->errorMsg = "order declined";
     }
   } else{

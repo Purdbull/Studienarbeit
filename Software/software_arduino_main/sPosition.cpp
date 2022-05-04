@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include "sPosition.h"
+#include "EEPROM.h"
 
 sPosition::sPosition(){
   
@@ -19,9 +20,12 @@ int sPosition::handle(byte espMsg){
 
 
 int sPosition::handleWithoutParam(){
-  delay(2500); // wait for the buffer on esp to be cleared
-  //TODO: send its current position
-  Serial.write(B10001110);  //FAKE! position 3
+  delay(2500);
+  byte pos = EEPROM.read(0);
+  pos  = pos << 2;
+  pos = pos | B10000010; //with order mask
+  Serial.write(pos);
+  //Serial.write(B10001110);  //FAKE! position 3
   //if interrupted return error
   //else
   return WAIT_STATE;

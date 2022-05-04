@@ -23,7 +23,7 @@ class State{
         virtual int handle(String);
         virtual int handleWithoutParam();
         virtual void handle();
-        int driveToPosition;
+        byte driveToPosition;
         char* errorMsg;
 };
 

@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include "Decoder.h"
+#include "State.h"
 
 Decoder::Decoder() {}
 
@@ -10,20 +11,20 @@ int Decoder::getHeader(byte message) {
     return result;
   }
   else if (Decoder::getTail(message) == 1) {
-    return 4; //header_ask
+    return HEADER_ASK; //header_ask
   } 
   else if (Decoder::getTail(message) == 2) {
-    return 0;  //header_battery
+    return HEADER_BATTERY;  //header_battery
   }
   return 5;
 }
 
 
 
-int Decoder::getBody(byte message) {
+byte Decoder::getBody(byte message) {
   byte bodyMask = B00111100;
   byte result = message & bodyMask;
-  return (int)(result >> 2);
+  return (result >> 2);
 }
 
 int Decoder::getTail(byte message) {

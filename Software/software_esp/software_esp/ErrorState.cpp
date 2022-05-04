@@ -25,7 +25,4 @@ int ErrorState::handle(byte arduinoMsg){
 
 void ErrorState::handle(){
   this->clientPtr->publish("Train/Error", this->errorMsg);
-  digitalWrite(2, HIGH);
-  delay(10000);
-  digitalWrite(2, LOW);
 }
