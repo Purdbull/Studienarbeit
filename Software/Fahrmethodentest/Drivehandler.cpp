@@ -30,7 +30,7 @@ void Drivehandler::drive() {
       //position aktualisieren in eeprom
       Serial.print("Moritz will zu ");
       Serial.println(driveSpeeds[i]);
-      this->stepper->linear(driveSpeeds[i]);
+      stepper->linear(driveSpeeds[i]);
       delay(6000);
     }
   }
@@ -44,16 +44,16 @@ void Drivehandler::drive() {
       s = driveSpeeds[i] * (-1);
       Serial.print("Moritz will zu ");
       Serial.println(s);
-      this->stepper->linear(s);
+      stepper->linear(s);
       delay(6000);
     }
   }
 
   if (this->to == 0 || this->to == 7) {
-    this->stepper->stopMode(3);
+    stepper->stopMode(3);
   }
   else {
-    this->stepper->stopMode(2);
+    stepper->stopMode(2);
   }
 
 

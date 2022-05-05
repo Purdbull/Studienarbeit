@@ -8,6 +8,10 @@ StateMaschine::StateMaschine(Stepper* ptr) {
   this->stepPtr = ptr;
 }
 
+StateMaschine::~StateMaschine(){
+  delete(currentState);
+}
+
 void StateMaschine::StateHandle(byte espMsg) {
   switch (currentState->handle(espMsg)) {
     case IDLE_STATE:

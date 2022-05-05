@@ -19,7 +19,10 @@ Stepper::Stepper() {
 
   targetRegVal = MAXVAL;
   Stepper::dis();
+}
 
+Stepper::~Stepper(){
+  
 }
 
 
@@ -100,7 +103,7 @@ void Stepper::linear(int targetSpeed, int targetAcc) {
   //set acceleration
   if (acc != _acc) {
     acc = _acc;
-    Serial.println("---->ACC=" + String(targetAcc) + " %<--- " + String(acc) );
+    Serial.println("ACC=" + String(targetAcc) + " %<--- " + String(acc) );
   }
 }
 

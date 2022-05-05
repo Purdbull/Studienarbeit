@@ -34,7 +34,7 @@ void Drivehandler::drive() {
       //Serial.print("Moritz will zu ");
       //Serial.println(driveSpeeds[i]);
       this->stepper->linear(driveSpeeds[i]);
-      delay(6000); //fake reed contact
+      delay(7000); //fake reed contact
       if (pos < 8) {
         pos++;
       }
@@ -51,7 +51,7 @@ void Drivehandler::drive() {
       //Serial.print("Moritz will zu ");
       //Serial.println(s);
       this->stepper->linear(s);
-      delay(6000); //fake reed contact
+      delay(7000); //fake reed contact
       if (pos > 0) {
         pos--;
       }

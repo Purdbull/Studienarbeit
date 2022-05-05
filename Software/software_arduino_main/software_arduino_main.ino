@@ -1,22 +1,30 @@
 #include "StateMaschine.h"
 #include "Drivehandler.h"
 #include "EEPROM.h"
+#include "Arduino.h"
 
-Stepper* highTrainStepper = new Stepper();
-StateMaschine* handler = new StateMaschine(highTrainStepper);
+#include "HighTrainStepper.h"
 
-
-
-void setup(){
-  Serial.begin(9600);
-  pinMode(13, OUTPUT);
-  highTrainStepper->initInterrupts();
-  delay(1000);
-}
+Stepper highTrainStepper = Stepper();
+StateMaschine* handler;
 
 ISR(TIMER1_COMPA_vect) { //Timer1 Interrupt Service Routine
-  highTrainStepper->isr();
+  highTrainStepper.isr();
 }
+
+
+void setup() {
+  Serial.begin(9600);
+  
+highTrainStepper.initInterrupts();
+  pinMode(13, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
+  
+delay(5000);
+handler = new StateMaschine(&highTrainStepper);
+}
+
+
 
 void loop() {
   handler->handle();

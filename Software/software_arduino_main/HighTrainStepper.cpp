@@ -19,7 +19,10 @@ Stepper::Stepper() {
 
   targetRegVal = MAXVAL;
   Stepper::dis();
+}
 
+Stepper::~Stepper(){
+  
 }
 
 
@@ -39,33 +42,33 @@ void Stepper::initInterrupts() {
 
 void Stepper::isr() {
   digitalWrite(CLK, !(digitalRead(CLK)));
-  this->count++;
+  count++;
 
   //accelerate
-  if (OCR1A > this->targetRegVal && this->count >= this->acc) {
+  if (OCR1A > targetRegVal && count >= acc) {
     cli();
     OCR1A = OCR1A - 10;
     sei();
-    this->count = 0;
+    count = 0;
   }
 
   //decelerate
-  if (OCR1A < this->targetRegVal && this->count >= this->acc) {
+  if (OCR1A < targetRegVal && count >= acc) {
     cli();
     OCR1A = OCR1A + 10;
     sei();
-    this->count = 0;
+    count = 0;
   }
 
 
   //check target achievement (+offstet)
-  if (abs(OCR1A - this->targetRegVal) <= 10) {
-    this->accDone = true;
-    OCR1A = this->targetRegVal;
+  if (abs(OCR1A - targetRegVal) <= 10) {
+    accDone = true;
+    OCR1A = targetRegVal;
   }
 
   else {
-    this->accDone = false;
+    accDone = false;
   }
 
 }
@@ -91,16 +94,16 @@ void Stepper::linear(int targetSpeed, int targetAcc) {
 
 
   //set Register Value
-  if (_targetRegVal != this->targetRegVal) {
+  if (_targetRegVal != targetRegVal) {
     //Stepper::setDir(targetSpeed);
-    this->targetRegVal = _targetRegVal;
+    targetRegVal = _targetRegVal;
     //Serial.println("---->Acc./ Dec. to " + String(targetSpeed) + " %<---");
   }
 
   //set acceleration
-  if (this->acc != _acc) {
-    this->acc = _acc;
-    //Serial.println("---->ACC=" + String(targetAcc) + " %<--- " + String(acc) );
+  if (acc != _acc) {
+    acc = _acc;
+    //Serial.println("ACC=" + String(targetAcc) + " %<--- " + String(acc) );
   }
 }
 
@@ -127,7 +130,7 @@ void Stepper::setDir(int targetSpeed) {
     digitalWrite(DIR, 0);
   }
 
-  if (targetSpeed * this->targetRegVal < 0) {
+  if (targetSpeed * targetRegVal < 0) {
     //illegal, error!
     return;
   }
@@ -167,7 +170,7 @@ void Stepper::stopMode(int n) {
     //Serial.println("---->EmergencyStop<----");
     Stepper::linear(0, 100);
     delay(1);
-    while (!this->accDone) {
+    while (!accDone) {
       delay(1);
     }
     Stepper::dis();
@@ -178,7 +181,7 @@ void Stepper::stopMode(int n) {
     //Serial.println("---->Stop<----");
     Stepper::linear(0, 50);
     delay(1);
-    while (!this->accDone) {
+    while (!accDone) {
       delay(1);
     }
     Stepper::stepMode(2);
@@ -193,7 +196,7 @@ void Stepper::stopMode(int n) {
     //Serial.println("---->StopInStation<----");
     Stepper::linear(0, 50);
     delay(1);
-    while (!this->accDone) {
+    while (!accDone) {
       delay(1);
     }
     Stepper::stepMode(2);
