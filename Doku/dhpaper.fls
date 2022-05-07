@@ -1573,10 +1573,16 @@ INPUT dhpaper.toc
 INPUT dhpaper.toc
 INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmbx12.tfm
 INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmro12.tfm
+INPUT D:\Program Files (x86)\MikTech\tex\latex\lm\t1lmtt.fd
+INPUT D:\Program Files (x86)\MikTech\tex\latex\lm\t1lmtt.fd
+INPUT D:\Program Files (x86)\MikTech\tex\latex\lm\t1lmtt.fd
+INPUT D:\Program Files (x86)\MikTech\tex\latex\lm\t1lmtt.fd
+INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmtt12.tfm
 OUTPUT dhpaper.toc
 INPUT .\dhpaper.lof
 INPUT dhpaper.lof
 INPUT dhpaper.lof
+INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmri12.tfm
 OUTPUT dhpaper.lof
 INPUT .\dhpaper.lot
 INPUT dhpaper.lot
@@ -1600,7 +1606,6 @@ INPUT .\intro.tex
 INPUT intro.tex
 INPUT .\intro.tex
 INPUT intro.tex
-INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmri12.tfm
 INPUT .\foundations.tex
 INPUT .\foundations.tex
 INPUT .\foundations.tex
@@ -1741,11 +1746,6 @@ INPUT .\levelShifter.PNG
 INPUT .\levelShifter.PNG
 INPUT .\levelShifter.PNG
 INPUT .\levelShifter.PNG
-INPUT D:\Program Files (x86)\MikTech\tex\latex\lm\t1lmtt.fd
-INPUT D:\Program Files (x86)\MikTech\tex\latex\lm\t1lmtt.fd
-INPUT D:\Program Files (x86)\MikTech\tex\latex\lm\t1lmtt.fd
-INPUT D:\Program Files (x86)\MikTech\tex\latex\lm\t1lmtt.fd
-INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmtt12.tfm
 INPUT .\spannungsteiler.PNG
 INPUT .\spannungsteiler.PNG
 INPUT spannungsteiler.PNG
@@ -1820,12 +1820,20 @@ INPUT D:\Program Files (x86)\MikTech\tex\latex\listings\lstmisc.sty
 INPUT D:\Program Files (x86)\MikTech\tex\latex\listings\lstmisc.sty
 INPUT D:\Program Files (x86)\MikTech\tex\latex\listings\lstmisc.sty
 INPUT D:\Program Files (x86)\MikTech\tex\latex\listings\lstmisc.sty
+INPUT .\interrupts.png
+INPUT .\interrupts.png
+INPUT interrupts.png
+INPUT .\interrupts.png
+INPUT .\interrupts.png
+INPUT .\interrupts.png
+INPUT .\interrupts.png
 INPUT .\pwm.pdf
 INPUT .\pwm.pdf
 INPUT pwm.pdf
 INPUT .\pwm.pdf
 INPUT .\pwm.pdf
 INPUT .\pwm.pdf
+INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmtk10.tfm
 INPUT .\getriebe.pdf
 INPUT .\getriebe.pdf
 INPUT getriebe.pdf
@@ -1947,5 +1955,7 @@ INPUT D:\Program Files (x86)\MikTech\fonts\type1\public\lm\lmsy10.pfb
 INPUT D:\Program Files (x86)\MikTech\fonts\type1\public\lm\lmsy10.pfb
 INPUT D:\Program Files (x86)\MikTech\fonts\type1\public\lm\lmsy8.pfb
 INPUT D:\Program Files (x86)\MikTech\fonts\type1\public\lm\lmsy8.pfb
+INPUT D:\Program Files (x86)\MikTech\fonts\type1\public\lm\lmtk10.pfb
+INPUT D:\Program Files (x86)\MikTech\fonts\type1\public\lm\lmtk10.pfb
 INPUT D:\Program Files (x86)\MikTech\fonts\type1\public\lm\lmtt12.pfb
 INPUT D:\Program Files (x86)\MikTech\fonts\type1\public\lm\lmtt12.pfb
