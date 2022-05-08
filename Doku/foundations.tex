@@ -107,19 +107,37 @@ Eine weitere Betriebsart ist der Mikroschrittbetrieb. Dabei wird die Stromstärk
 \newpage
 \section{MQTT} 
 \label{sec:mqtt}
-\acrshort{mqtt} ist ein Protokoll, welches zur digitalen Datenübertragung in ethernet-basierten Systemen dient. Es benötigt nur wenig Bandbreite und Ressourcen und verwendet eine 
+\acrfull{mqtt} ist ein Protokoll, welches zur digitalen Datenübertragung in ethernet-basierten Systemen dient. Es benötigt nur wenig Bandbreite und Ressourcen und verwendet eine 
 Publish/Subscribe - Architektur. Das bedeutet, dass Nachrichten sogenannter Topics von Publishern bereitgestellt und von Subscribern empfangen werden. Der Datenverkehr wird über einen 
-zentralen Broker verwaltet. Um die Publish Subscribe Architektur zu verstehen, ist es hilfreich, die Analogie zum Fernsehen zu bilden. Dabei sendet ein TV-Sender sein Programm an einen bestimmten Kanal.
-Auf diesen Kanal können nun beliebig viele Fernseher (Subscriber) zugreifen. Auch wenn keine aktive Verbindung zwischen Sender und Empfänger aufgebaut wird, erhalten beliebig viele Empfänger die benötigten Daten.
-kennen, dass die Daten nicht zwischen Publisher und Subscriber direkt, sondern über den zentralen Broker versendet werden. (Vgl. \cite{mqtt})
+zentralen Broker verwaltet. In \autoref{pic:mqttbroker} ist eine typische \acrshort{mqtt}-Topologie aufgezeigt. 
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=8cm]{mqttbroker.png}
-        \caption{\acrshort{mqtt}-Datenübertragung über den Broker}
-        \label{pic:mqttbroker}
+        \includegraphics[width=11cm]{mqtt.pdf}
+        \caption{
+			\label{pic:mqttbroker}\acrshort{mqtt}-Datenübertragung über den Broker}
     \end{center}
 \end{figure}
+
+Zu sehen ist besagter Broker, welcher die Kommunikation verwaltet. Publisher schicken Daten an Topics, welche an Subscriber jener Topics übermittelt werden.
+Um die Publish Subscribe Architektur zu verstehen, ist es hilfreich, die Analogie zum Fernsehen zu bilden. Dabei sendet ein TV-Sender sein Programm an einen bestimmten Kanal.
+Auf diesen Kanal können nun beliebig viele Fernseher (Subscriber) zugreifen. Auch wenn keine aktive Verbindung zwischen Sender und Empfänger aufgebaut wird, erhalten beliebig viele Empfänger die benötigten Daten.
+kennen, dass die Daten nicht zwischen Publisher und Subscriber direkt, sondern über den zentralen Broker versendet werden. \acrshort{mqtt} ist neben der einfachen Topologie auch für die sehr niedrige Netzlast bekannt. Echtzeitfähigkeit ist ebenfalls gegeben. (Vgl. \cite{mqtt})
+
+
+
+\section{UART}
+\label{sec:uart}
+\acrfull{uart} bezeichnet eine Hardware-Schnittstelle, die zur seriellen Kommunikation zwischen zwei Geräten verwendet wird. In \autoref{pic:uartCon} ist die Verbindung zwischen zwei Geräten, die über \acrshort{uart} kommunizieren, gezeigt.
+
+\begin{figure}[h]
+    \begin{center}
+        \includegraphics[width=8cm]{uart.PNG}
+        \caption{\label{pic:uartCon}Verbindung zwischen zwei Geräten die über \acrshort{uart} kommunizieren}
+    \end{center}
+\end{figure}
+
+Zu erkennen sind zwei Pins pro Gerät: Einer um Daten zu senden und einer um sie zu empfangen. Das generelle Prinzip von \acrshort{uart} ist, dass Daten in Pakete konvertiert werden, die dann Bit für Bit übermittelt werden. Ein Paket besteht aus einem Start-Bit, gefolgt von fünf bis neun Data-Bits, welche mit ein bis zwei Stop-Bits abgeschlossen werden. Daten werden also Byte für Byte an den Empfänger übertragen. Ein Arduino hat mehrere Pins, die für die \acrshort{uart}-Kommunikation verwendet werden können. In diesem Projekt werden nur die Standart-Pins verwendet, da nur zwei Geräte miteinander kommunikzieren müsen (vgl. \cite{uart}). 
 \newpage
 \section{Zustandsautomaten}
 Ein Zustadsautomat ist ein Graph, bei dem die Knoten die Zustände des Automaten darstellen. Die Kanten zeigen die Übergangskriterien von einem in einen anderen Zustand (vgl. \cite{infoSkript}). In folgender Grafik ist ein einfacher Zustandsautomat aufgezeichnet: 

@@ -1655,13 +1655,19 @@ INPUT .\schrittbetrieb.png
 INPUT .\schrittbetrieb.png
 INPUT .\schrittbetrieb.png
 INPUT .\schrittbetrieb.png
-INPUT .\mqttbroker.png
-INPUT .\mqttbroker.png
-INPUT mqttbroker.png
-INPUT .\mqttbroker.png
-INPUT .\mqttbroker.png
-INPUT .\mqttbroker.png
-INPUT .\mqttbroker.png
+INPUT .\mqtt.pdf
+INPUT .\mqtt.pdf
+INPUT mqtt.pdf
+INPUT .\mqtt.pdf
+INPUT .\mqtt.pdf
+INPUT .\mqtt.pdf
+INPUT .\uart.PNG
+INPUT .\uart.PNG
+INPUT uart.PNG
+INPUT .\uart.PNG
+INPUT .\uart.PNG
+INPUT .\uart.PNG
+INPUT .\uart.PNG
 INPUT .\simpleState.pdf
 INPUT .\simpleState.pdf
 INPUT simpleState.pdf
@@ -1910,6 +1916,7 @@ INPUT .\conclusion.tex
 INPUT conclusion.tex
 INPUT .\conclusion.tex
 INPUT conclusion.tex
+INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmcsc10.tfm
 INPUT dhpaper.aux
 INPUT .\intro.aux
 INPUT intro.aux
