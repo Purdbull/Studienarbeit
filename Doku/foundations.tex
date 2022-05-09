@@ -107,9 +107,7 @@ Eine weitere Betriebsart ist der Mikroschrittbetrieb. Dabei wird die Stromstärk
 \newpage
 \section{MQTT} 
 \label{sec:mqtt}
-\acrfull{mqtt} ist ein Protokoll, welches zur digitalen Datenübertragung in ethernet-basierten Systemen dient. Es benötigt nur wenig Bandbreite und Ressourcen und verwendet eine 
-Publish/Subscribe - Architektur. Das bedeutet, dass Nachrichten sogenannter Topics von Publishern bereitgestellt und von Subscribern empfangen werden. Der Datenverkehr wird über einen 
-zentralen Broker verwaltet. In \autoref{pic:mqttbroker} ist eine typische \acrshort{mqtt}-Topologie aufgezeigt. 
+\acrfull{mqtt} ist ein Protokoll, welches zur digitalen Datenübertragung in Ethernet-basierten Systemen dient. Es benötigt dabei nur wenig Bandbreite und verwendet eine Publish/Subscribe - Architektur. Das bedeutet, dass Nachrichten sogenannter Topics von Publishern bereitgestellt und von Subscribern empfangen werden. Der Datenverkehr wird über einen zentralen Broker verwaltet. In \autoref{pic:mqttbroker} ist eine typische \acrshort{mqtt}-Topologie aufgezeigt. 
 
 \begin{figure}[h]
     \begin{center}
@@ -119,16 +117,16 @@ zentralen Broker verwaltet. In \autoref{pic:mqttbroker} ist eine typische \acrsh
     \end{center}
 \end{figure}
 
-Zu sehen ist besagter Broker, welcher die Kommunikation verwaltet. Publisher schicken Daten an Topics, welche an Subscriber jener Topics übermittelt werden.
-Um die Publish Subscribe Architektur zu verstehen, ist es hilfreich, die Analogie zum Fernsehen zu bilden. Dabei sendet ein TV-Sender sein Programm an einen bestimmten Kanal.
-Auf diesen Kanal können nun beliebig viele Fernseher (Subscriber) zugreifen. Auch wenn keine aktive Verbindung zwischen Sender und Empfänger aufgebaut wird, erhalten beliebig viele Empfänger die benötigten Daten.
-kennen, dass die Daten nicht zwischen Publisher und Subscriber direkt, sondern über den zentralen Broker versendet werden. \acrshort{mqtt} ist neben der einfachen Topologie auch für die sehr niedrige Netzlast bekannt. Echtzeitfähigkeit ist ebenfalls gegeben. (Vgl. \cite{mqtt})
+Zu sehen ist besagter Broker, welcher die Kommunikation verwaltet. In diesem Beispiel sendet  Gerät-A Daten an Topic-A, auf welches Gerät-B subscribed hat. Diese Daten werden umgehend an Gerät-B übermittelt. Auf ähnlichem Weg erhält Gerät-A Daten von Gerät-B über das Topi-B.\\
+Um die Publish Subscribe Architektur zu verstehen ist es hilfreich, eine Analogie zum Fernsehen zu bilden. Dabei sendet ein TV-Sender sein Programm an einen bestimmten Kanal.
+Auf diesen Kanal können nun beliebig viele Fernseher (\textit{Subscriber}) zugreifen. Auch wenn keine aktive Verbindung zwischen Sender und Empfänger aufgebaut wird, erhalten beliebig viele Empfänger die benötigten Daten.
+Wichtig dabei ist, dass die Daten nicht zwischen Publisher und Subscriber direkt, sondern über den zentralen Broker versendet werden. \acrshort{mqtt} ist neben der einfachen Topologie auch für die sehr niedrige Netzlast bekannt. Echtzeitfähigkeit ist ebenfalls gegeben. (Vgl. \cite{mqtt})
 
 
 
 \section{UART}
 \label{sec:uart}
-\acrfull{uart} bezeichnet eine Hardware-Schnittstelle, die zur seriellen Kommunikation zwischen zwei Geräten verwendet wird. In \autoref{pic:uartCon} ist die Verbindung zwischen zwei Geräten, die über \acrshort{uart} kommunizieren, gezeigt.
+\acrfull{uart} bezeichnet eine Hardware-Schnittstelle, welche zur seriellen Kommunikation verwendet wird. In \autoref{pic:uartCon} ist die Verbindung zwischen zwei Geräten, die über \acrshort{uart} kommunizieren, gezeigt.
 
 \begin{figure}[h]
     \begin{center}
@@ -137,10 +135,10 @@ kennen, dass die Daten nicht zwischen Publisher und Subscriber direkt, sondern �
     \end{center}
 \end{figure}
 
-Zu erkennen sind zwei Pins pro Gerät: Einer um Daten zu senden und einer um sie zu empfangen. Das generelle Prinzip von \acrshort{uart} ist, dass Daten in Pakete konvertiert werden, die dann Bit für Bit übermittelt werden. Ein Paket besteht aus einem Start-Bit, gefolgt von fünf bis neun Data-Bits, welche mit ein bis zwei Stop-Bits abgeschlossen werden. Daten werden also Byte für Byte an den Empfänger übertragen. Ein Arduino hat mehrere Pins, die für die \acrshort{uart}-Kommunikation verwendet werden können. In diesem Projekt werden nur die Standart-Pins verwendet, da nur zwei Geräte miteinander kommunikzieren müsen (vgl. \cite{uart}). 
+Zu erkennen sind zwei Pins pro Gerät: Einer um Daten zu Senden und einer um sie zu Empfangen. Das generelle Prinzip von \acrshort{uart} ist, Daten in Pakete zu konvertieren, die dann Bit für Bit übermittelt werden. Ein Paket besteht aus einem Start-Bit, gefolgt von fünf bis neun Data-Bits, welche mit ein bis zwei Stop-Bits abgeschlossen werden. Daten werden also Byte für Byte an den Empfänger übertragen. Ein Arduino hat mehrere Pins, welche \acrshort{uart}-Kommunikation ermöglichen könnten. In diesem Projekt werden nur die Standart-Pins verwendet, da nur zwei Geräte miteinander kommunikzieren müssen (vgl. \cite{uart}). 
 \newpage
 \section{Zustandsautomaten}
-Ein Zustadsautomat ist ein Graph, bei dem die Knoten die Zustände des Automaten darstellen. Die Kanten zeigen die Übergangskriterien von einem in einen anderen Zustand (vgl. \cite{infoSkript}). In folgender Grafik ist ein einfacher Zustandsautomat aufgezeichnet: 
+Ein Zustadsautomat ist ein Graph, bei dem die Knoten Zustände des Automaten darstellen. Kanten zeigen die Übergangskriterien von einem Zustand in einen Anderen (vgl. \cite{infoSkript}). In folgender Grafik ist ein einfacher Zustandsautomat aufgezeichnet: 
 
 \begin{figure}[h]
 	\begin{center}
@@ -149,5 +147,5 @@ Ein Zustadsautomat ist ein Graph, bei dem die Knoten die Zustände des Automaten
 	\end{center}
 \end{figure}
 
-In \autoref{pic:simpleState} ist ein Automat gezeigt, welcher zwei Zustände hat:$A$ und $B$. befindet er sich in Zustand $A$, kann er nur unter der Bedingung $x$ in Zustand $B$ wechseln und daraufhin auch nur über $y$ wieder zurück zu $A$. Die doppelte Umrandung von $A$ zeigt, dass es sich hierbei Um den Startzustand, also den zu beginnenden, Zustand handelt. \\
-Zustandsautomaten finden oft Anwendung in Softwareentwicklung. Sie werden hauptsächlich verwendet um Nachrichten oder Eingaben zu lesen. In dieser Arbeit wird das GEsamtkonzept einzelner Softwarekomponenten als Zustandsautomaten implementiert.
+\autoref{pic:simpleState} zeigt ein Automat, welcher zwei Zustände hat:$A$ und $B$. Beim Start befindet er sich in Zustand $A$ und kann nur unter der Bedingung $x$ in Zustand $B$ wechseln. Aus Zustand $B$ kann er nur über Bedingung $y$ wieder zurück zu $A$. Die doppelte Umrandung von $A$ zeigt, dass es sich hierbei m den Startzustand handelt. \\
+Zustandsautomaten finden oft Anwendung in Softwareentwicklung. Sie werden hauptsächlich zum Lesen von Nachrichten oder Eingaben verwendet. In dieser Arbeit wird das Gesamtkonzept einzelner Softwarekomponenten als Zustandsautomaten implementiert.

@@ -47,16 +47,17 @@ Sensorik soll zu folgenden Zwecken eingesetzt werden:
 \end{itemize}
 
 Mit der Positionserkennung soll die Lage der Hochbahn auf der Transportstrecke erfasst werden können. Die Information soll der Steuerung zur Verfügung gestellt werden. Aufgrund der Information soll der Lieferungsvorgang nachvollzogen werden können und die Geschwindigkeitsregelung der Hochbahn eingestellt werden. Mit der Kollisionsvermeidung sollen Hindernisse im Fahrweg der Gondel rechtzeitig erkannt werden. Innerhalb eines definierten Warnbereiches soll die Geschwindigkeit stark gedrosselt werden. Wird durch das Hindernis außerdem ein Schutzfeld verletzt, muss die Bahn komplett zum Stillstand kommen. Die Konzeptionierung zur Sensorik wird in \autoref{sec:konzeptSensorik} beschrieben.
-\newpage
 
+\section{Benutzeroberfläche}
+Nutzern soll es ermöglicht werden, die Bahn per Handy oder Tablet an eine gewünschte Position fahren zu lassen. Dabei soll die Oberfläche möglichst übersichtlich sein, sodass neue Nutzer schnell erkennen, wie die Bahn anzusteuern ist. Ebenfalls sollen aktuelle Informationen der Bahn, wie beispielsweise aktuelle Position, angezeigt werden.
 
 \section{Bestellsystem}
 \label{sec:anforderungBestellstystem}
 
 Das Bestellsystem soll es Nutzern ermöglichen, die Hochbahn von der Terrasse aus mit einem Bestellauftrag zur Küche zu schicken. 
 Dort soll ein Tablet die aktuelle Bestellung anzeigen. Ist alles für den Transport vorbereitet, kann ein Nutzer aus der Küche den Auftrag 
-bestätigen und die Bahn fährt zur gewünschten Position zurück. Ein Webserver soll diese Funktionen über ein benutzerfreundliches \acrfull{gui} bereitstellen, welches über beliebige Endgeräte (z.B. Smartphone oder Tablet) erreichbar ist.
-Zudem soll die Möglichkeit bestehen, den Bestand zu erfassen. Das System soll selbstorganisierend sein, sodass sich auch das Kontingent durch Bestellungen aktualisiert. Dadurch soll verhindert werden, dass mehr bestellt werden kann als vorhanden ist.
+bestätigen und die Bahn fährt zur gewünschten Position zurück. \\
+Zudem soll die Möglichkeit bestehen, den Bestand zu erfassen. Das System soll selbstorganisierend sein, sodass sich auch das Kontingent durch Bestellungen aktualisiert. Dadurch soll verhindert werden, dass mehr bestellt werden kann, als vorhanden ist.
 Ebenfalls sollen Nutzer, die etwas bestellt haben, den aktuellen Lieferzustand einsehen können. D. h. es soll angezeigt werden, wo sich die Bahn befindet und welche Bestellung gerade bearbeitet wird.
 
 %---------------------VORGEHENSWEISE-----------------
@@ -323,26 +324,27 @@ In dem Schema sind die Komponenten hierarchisch dargestellt. Die Pfeile dazwisch
 
 \chapter{Entwicklung der Platine}
 \label{sec:ecardConcept}
-In \autoref{sec:konzeptSchnittstellen} wurde bereits angedeutet, dass auf der Hochbahn mehrere elektronische Komponenten zusammenarbeiten müssen (Arduino, ESP32, etc.). Daher werden diese Komponenten, sowie benötigte Peripherie, auf einer Platine zu einem verteilten System vereint. 
+In \autoref{sec:konzeptSchnittstellen} wurde bereits angedeutet, dass auf der Hochbahn mehrere elektronische Komponenten zusammenarbeiten müssen (Arduino, ESP32, etc.). Daher werden diese Komponenten, sowie die benötigte Peripherie, auf einer Platine zu einem verteilten System vereint. 
 Die Entwicklung dieser Platine wird in Folgendem erläutert.
 
 \section{Anforderungen an die Platine}
-Folgende Anforderungen an die Platine müssen erfüllt sein: 
+Die Platine muss folgende Anforderungen erfüllen: 
 \begin{center}
 	\begin{itemize}
-		\item Kommunikation zwischen ESP32 und Arduino,
+		\item Kommunikation zwischen Hochbahn-Controller und Motorsteuerung,
 		\item Spannungsversorgung der einzelnen Mikrokontroller,
 		\item Spannungsüberwachung beider Batteriezellen,
-		\item Interruptleitungen von Reed-Kontakt und Kollisionsvorbeugung,
+		\item Interruptleitungen von Reed-Kontakt und Sicherheitssteuerung,
 		\item Selbstabschaltung des Systems
 		\item und Anschluss des Motortreibers.
 	\end{itemize}
 \end{center}
-All diese Anforderungen sollen möglichst gering im Leistungsverbrauch sein. Das bedeutet, dass beispielsweise Spannungsteiler für die Spannungsüberwachung nur dann in Aktion treten, wenn auch wirklich Spannung gemessen wird. Ansonsten würde hierbei ein ständiger Stromverbrauch bestehen.
+All diese Anforderungen sollen möglichst gering im Leistungsverbrauch sein. Das bedeutet, dass beispielsweise Spannungsteiler für die Spannungsüberwachung nur dann in Aktion treten, wenn auch wirklich Spannung gemessen wird. Ansonsten bestünde hierbei ein ständiger Stromverbrauch.
 
-\section{Kommunikation zwischen ESP32 und Arduino}
-Generell erfolgt die Kommunikation der beiden Mikrocontroller über \acrshort{uart}. Daraus folgt, dass \acrfull{rx}-Pin vom ESP32 mit \acrfull{tx}-Pin des Arduinos, sowie \acrshort{rx} des Arduinos mit \acrshort{tx} des ESP32 verbunden sein muss. 
-Daraus resultiert folgendes Problem: der Arduino läuft mit einer Betriebsspannung von 5V, während der ESP32 mit 3,3V fungiert. Dadurch erhielte der ESP32 beim Empfangen von Nachrichten einen zu hohen HIGH-Pegel, während der Arduino Nachrichten mit zu niedriger Spannung bekäme.
+\section{Kommunikation über UART}
+Generell erfolgt die Kommunikation der beiden Mikrocontroller über \acrshort{uart}. Daraus folgt, dass \acrfull{rx}-Pin des Hochbahn-Controllers (ESP32) mit \acrfull{tx}-Pin der Motorsteuerung (Arduino), sowie \acrshort{rx} des Arduinos mit \acrshort{tx} des ESP32 verbunden sein muss. 
+Daraus resultiert folgendes Problem: \\
+Ein Arduino läuft mit einer Betriebsspannung von 5V, während der ESP32 mit 3,3V fungiert. Dadurch erhielte der ESP32 beim Empfangen von Nachrichten einen zu hohen HIGH-Pegel, während der Arduino Nachrichten mit zu niedriger Spannung bekäme.
 
 \subsection{Level-Shifter}
 Um die Pulse des ESP32 auf die richtige Spannung zu erhöhen, wird ein sogenannter Level-Shifter verwendet. Dieser übermittelt Signale mit einer Höhe von 5V an den Arduino, während der ESP32 nur 3,3V ausgibt.
@@ -356,12 +358,12 @@ Der zugehörige Schaltplan ist in \autoref{pic:levelshift} gezeigt.
 	\end{center}
 \end{figure}
 
-Angenommen der ESP32 gibt an \textit{data in} ein \texttt{Low}-Signal, also 0V. Aufgrund der 3,3V am Gate des Mosfets schaltet sich dieses ein. Somit wird \textit{data out} durch das Mosfet ebenfalls auf 0V gezogen. 
-Liegt \textit{data in} jedoch auf 3,3V, gibt es keinen Spannungsunterschied zwischen Gate und Source des Mosfets. Dies deaktiviert das Mosfet, sodass \textit{data out} auf 5V gezogen wird. 
+Angenommen, der ESP32 gibt an \textit{data in} ein \texttt{Low}-Signal, also 0V. Aufgrund der 3,3V am Gate des Mosfets, wird dieses aktiviert. Somit wird \textit{data out} durch das Mosfet ebenfalls auf 0V gezogen. 
+Liegt \textit{data in} jedoch auf 3,3V, gibt es keinen Spannungsunterschied zwischen Gate und Source des Mosfets. Dadurch wird es deaktiviert, sodass \textit{data out} auf 5V gezogen wird. 
 Somit erzeugt eine positive Flanke von 3,3V des ESP32 eine Flanke von 5V am Arduino.
 
 \subsection{Spannungsteiler}
-Um 5V Pulse auf 3,3V zu ziehen, ist nicht zwingend eine Mosfet oder Transistorschaltung nötig. Hierbei genügt ein Spannungsteiler. Dieser ist in \autoref{pic:spannungsteiler} gezeigt.
+Um 5V Pulse zu 3,3V zu konvertieren, ist nicht zwingend eine Mosfet oder Transistorschaltung nötig. Hierzu genügt ein Spannungsteiler. Dieser ist in \autoref{pic:spannungsteiler} gezeigt.
 
 \begin{figure}[h]
 	\begin{center}
@@ -370,7 +372,7 @@ Um 5V Pulse auf 3,3V zu ziehen, ist nicht zwingend eine Mosfet oder Transistorsc
 	\end{center}
 \end{figure}
 
-Aus dem Verhältnis von $1 \div 1,6$ der beiden Widerstandsgrößen wird eine Ausgansspannung von ca. 3,08V bei einem 5V Pegel erzeugt. Diese wird in jedem Fall als logisches \texttt{High} interpretiert.
+Aus dem Verhältnis von $1 \div 1,6$ der beiden Widerstandsgrößen wird eine Ausgansspannung von ca. 3,08V bei einem 5V Pegel erzeugt. Diese wird in jedem Fall als logisches \texttt{HIGH} interpretiert.
 
 \subsection{Spannungsversorgung}
 Auf der Platine gibt es drei unterschiedliche Betriebsspannungen: 
@@ -381,18 +383,18 @@ Auf der Platine gibt es drei unterschiedliche Betriebsspannungen:
 		\item und 10V für den Schrittmotor.
 	\end{itemize}
 \end{center}
-All diese Spannungen kommen aus der Stromquelle, welche aus den zwei Zellen des Litium-Ionen Akkus besteht. Die Spannung liegt je nach Ladezustand zwischen ca. 7,4V und 8,2V. Da die Komponenten jedoch zu jedem Zeitpunkt die gleiche Spannung benötigen, werden Spannungsregler benötigt. 
-Einer davon ist ein DCDC-Wandler, welcher die Zellspannung auf konsistente 5V für die Arduini regelt. Da der ESP32 besitzt selbst einen Spannungsregler von 5V auf 3,3V besitzt, kann dieser ebenfalls an die Arduino-Versorgungsleitung gelegt werden. Wie schon in TODO erwähnt, erzeugt ein Step-Up-Wandler eine Spannung von 10V für Motortreiber und Schrittmotor. 
+All diese Spannungen kommen aus der Stromquelle, welche aus den zwei Zellen des Litium-Ionen Akkus besteht. Die Spannung liegt, je nach Ladezustand, zwischen ca. 7,4V und 8,2V. Da die Komponenten jedoch zu jedem Zeitpunkt die gleiche Spannung benötigen, werden Spannungsregler benötigt. 
+Einer davon ist ein DCDC-Wandler, welcher die Zellspannung auf konsistente 5V für beide Arduini regelt. Da der ESP32 selbst einen Spannungsregler von 5V auf 3,3V besitzt, kann dieser ebenfalls an die Arduino-Versorgungsleitung angeschlossen werden. Ein Step-Up-Wandler erzeugt aus besagten 5V eine Spannung von 10V für Motortreiber und Schrittmotor. 
 
 \section{Spannungsmessungen an den Batteriezellen}
 \label{sec:mess}
-Die Stromversorgung der Hochbahn stellen zwei in Reihe geschaltete Lithium Ionen Akkus zur Verfügung. Diese Reihenschaltung ist in \autoref{pic:messfalsch} gezeigt. Während bei einfachen Batterien die Gesamtspannung gemessen werden kann, müssen hier die beiden Zellen einzeln betrachtet werden.
+Die Stromversorgung der Hochbahn stellen zwei in Reihe geschaltete Lithium Ionen Akkus dar. Diese Reihenschaltung ist in \autoref{pic:messfalsch} gezeigt. Während bei einfachen Batterien die Gesamtspannung gemessen werden kann, müssen hier die beiden Zellen einzeln betrachtet werden.
 Um die einzelnen Zellen zu messen, soll die Spannung jeweils am + Pol abgegriffen werden. Somit muss die Messeinrichtung von der Gesamtspannung jene der ersten Zelle abziehen, um die Spannung der zweiten Zelle zu erhalten. Dieser Vorgang ist erforderlich, da kein Spannungsunterschied zwischen + und - der oberen Zelle gemessen werden kann. Grund dafür ist, dass \gls{gnd} des Arduinos gleich mit \gls{gnd} der unteren Zelle ist, nicht der oberen.
 Verbände man, wie in \autoref{pic:messfalsch} gezeigt, zwei analoge Pins direkt mit den + Polen, wäre eine Spannungsmessung in der Theorie möglich.
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=8cm]{wrongMeasure.PNG}
+		\includegraphics[width=7.5cm]{wrongMeasure.PNG}
 		\caption{\label{pic:messfalsch} Einfache Spannungsmessung der Zellen}
 	\end{center}
 \end{figure}
@@ -401,14 +403,14 @@ In der Praxis ergeben sich dabei jedoch zwei Probleme:
 
 \begin{center}
 	\begin{itemize}
-		\item 1. Wenn die Spannungsversorgung der Platine abgeschaltet ist, würde ein Arduino sich über die analogen Pins selbst versorgen, wodurch ein unnötiger Stromverbrauch entstände. Dadurch würden sich die beiden Zellen im Schlimmsten Fall tiefenentladen.
-		\item 2. Ein Arduino kann nur Spannungen zwischen 0V und 5V messen, wodurch eine Reihenschaltung der beiden 3,7V Zellen auch im entladenen Zustand am analogen Input 5V, also 100\%, erzeugen. 
+		\item [1.] Wenn die Spannungsversorgung der Platine abgeschaltet ist, würde ein Arduino sich über die analogen Pins selbst versorgen, wodurch ein unnötiger Stromverbrauch entstände. Dadurch würden sich die beiden Zellen im schlimmsten Fall tiefenentladen.
+		\item [2.] Ein Arduino kann nur Spannungen zwischen 0V und 5V messen, wodurch eine Reihenschaltung der beiden 3,7V Zellen auch im entladenen Zustand am analogen Input 5V, also 100\%, erzeugen. 
 	\end{itemize}
 \end{center}
 
-Die im folgenden erklärte Schaltung soll diese Probleme umgehen.
+Die in Folgendem erklärte Schaltung soll diese Probleme umgehen.
 \subsection{Mosfetschaltung zur aktivierbaren Spannungsmessung}
-Diese Schaltung soll ermöglichen, die Spannungsmessung per Signal aktivieren zu können. Das Signal wird dabei vom messenden Arduino mit einem 5V-Pegel erzeugt. Aktiviert, sollen ähnlich wie in \autoref{pic:messfalsch} beide Spannungen abgegriffen werden.
+Diese Schaltung soll ermöglichen, die Spannungsmessung per Signal aktivieren zu können. Das Signal wird dabei vom messenden Arduino mit einem 5V-Pegel erzeugt. Ist die Schaltung aktiviert, sollen ähnlich wie in \autoref{pic:messfalsch} beide Spannungen abgegriffen werden.
 
 \begin{figure}[h]
 	\begin{center}
@@ -418,7 +420,7 @@ Diese Schaltung soll ermöglichen, die Spannungsmessung per Signal aktivieren zu
 \end{figure}
 
 Die Mosfetschaltung zur Messung der ersten unten liegenden Zelle ist in \autoref{pic:messrichtig} gezeigt.
-Zu sehen sind ein p- und ein n-Kanal Mosfet. Das unten geschaltete n-Kanal-Mosfet verbindet bei einer positiven Spannung auf \textit{digital in} das Gate vom p-Kanal-Mosfet mit \gls{gnd}. Dadurch wird das p-Kanal-Mosfet geschaltet, wodurch bei \textit{voltage out} eine Spannungsmessung möglich wird. Die Spannung ist jene, die am 1M$\Omega$ Widerstand abfällt. Der Widerstand bildet einen Spannungsteiler mit 10K$\Omega$. Da 1M$\Omega$ im Verhältnis jedoch viel größer ist, fällt fast die gesamte Spannung an diesem Widerstand ab, sodass diese auch an \textit{voltage out} gemessen werden kann.
+Zu sehen sind ein p- und ein n-Kanal Mosfet. Das unten geschaltete n-Kanal-Mosfet verbindet bei einer positiven Spannung auf \textit{digital in} das Gate vom p-Kanal-Mosfet mit \gls{gnd}. Dadurch wird das p-Kanal-Mosfet geschaltet, wodurch bei \textit{voltage out} eine Spannungsmessung möglich wird. Die Spannung ist jene, die am 1M$\Omega$ Widerstand abfällt. Der Widerstand bildet einen Spannungsteiler mit 10K$\Omega$. Da 1M$\Omega$ im Verhältnis jedoch viel größer ist, fällt fast die gesamte Spannung an diesem Widerstand ab, sodass diese an \textit{voltage out} gemessen werden kann.
 
 \subsection{Spannungteiler für die zweite Zelle}
 In \autoref{sec:mess} wurde beriets erwähnt, dass die gemessene Spannung an der zweiten Zelle zu hoch für den Arduino ist. Deshalb muss die Schaltung aus \autoref{pic:messrichtig} folgendermaßen erweitert werden:
@@ -430,72 +432,70 @@ In \autoref{sec:mess} wurde beriets erwähnt, dass die gemessene Spannung an der
 	\end{center}
 \end{figure}
 \newpage
-In \autoref{pic:messrichtigmitteiler} ist zu sehen, dass die Schaltung um einen Spannungsteiler erweitert wurde. Da beide Widerstände den gleichen Wert haben, kann zwischen ihnen die halbierte Spannung gemessen werden. 
-Um in der Software die richtige Spannung der Zelle zu erhalten, muss der gemessene Wert verdoppelt werden. Zieht man nun die Spannung der ersten Zelle ab, ergibt das den richtigen Wert für die zweite Zelle.
+In \autoref{pic:messrichtigmitteiler} ist zu sehen, dass die Schaltung um einen Spannungsteiler erweitert wurde. Da beide Widerstände den gleichen Wert haben, kann zwischen ihnen die Hälfte der Spannung gemessen werden. 
+Um in der Software die richtige Spannung der Zelle zu erhalten, ist der gemessene Wert zu verdoppeln. Zieht man nun die Spannung der ersten Zelle ab, ist das Ergebnis die Spannung der zweiten Zelle.
 
 \chapter{Konzeption des verteilten Systems auf der Hochbahn}
 \label{sec:software}
-Die Software der Anlage lässt sich in die zwei Bereiche \textit{Webserver im Heimnetzwerk} und \textit{Client auf der Hochbahn} gliedern. Der Webserver soll ein Interface für Benutzer der Anlage bereitstellen, auf dem die Hochbahn gesteuert werden kann. 
+Die Software der Anlage lässt sich in zwei Bereiche gliedern: \textit{Webserver im Heimnetzwerk} und \textit{Client auf der Hochbahn}. Der Webserver soll ein Interface für Benutzer der Anlage bereitstellen, auf dem die Hochbahn gesteuert werden kann. 
 Der Client bekommt daraufhin Befehle vom Webserver und führt diese, sofern möglich, aus. 
 
 \section{Konzept für die Aufgabenverteilung auf der Hochbahn}
 \label{sec:hochbahnAlsClient}
 Wie schon in \autoref{sec:konzeptSchnittstellen} aufgeführt, sollte die Software ursprünglich in drei Hauptkomponenten getrennt weden:
 \begin{itemize}
-	\item ESP32 zur Befehlserkennung und Steuerung der Hochbahn
-	\item Arduino Nano zur Motorsteuerung
-	\item Arduino Nano zur Ultraschallüberwachung %@moritz: Bereichsüberwachung statt Ultraschallüberwachung
+	\item ESP32 als Hochbahn-Controller zur Befehlserkennung und Steuerung der Hochbahn,
+	\item Arduino als Motorsteuerung
+	\item  und Arduino als Sicherheitssteuerung zur Ultraschallüberwachung 
 \end{itemize}
 \autoref{sec:konzeptSchnittstellen} stellt das erste Konzept zur Aufteilung der Aufgabenbereiche dar. Nach Evaluierung der hierbei aufkommenden Fehlerquellen sind einige Änderungen getroffen worden.
-Ursprünglich sollte der ESP32 die Hauptsteuerung übernehmen. Er sollte Befehle wie \texttt{beschleunigen} oder \texttt{abbremsen auf Geschwindigkeit x} zur Motorsteuerung geben und dabei die aktuelle Position und damit die nächsten Schritte selbst errechnen. Die Erfahrung zeigt jedoch, dass ein ESP32 mit hoher Netzlast oder Verbindungsabbrüchen leicht zum Neustart oder gar Abstürzen neigt. Würde das passieren während die Bahn beispielsweise auf die Endstation zurollt, bekäme die Motorsteuerung nicht rechtzeitig den Befehl zum abbremsen und es käme zu einem Unfall.
-Deswegen wurde die Hauptsteuerung an den Arduino Nano, welcher ursprünglich nur den Motor steuern sollte, übergeben. Daraus resultiert das folgende KOnzept für die Aufgabenverteilung auf der Hochbahn:
+Ursprünglich sollte der ESP32 die Hauptsteuerung übernehmen. Er sollte Befehle wie \texttt{beschleunigen} oder \texttt{abbremsen auf Geschwindigkeit x} zur Motorsteuerung geben und dabei die aktuelle Position und die daraus resultierenden nächsten Schritte selbst berechnen. Die Erfahrung zeigt jedoch, dass ein ESP32 durch erhöhte Netzlast oder Verbindungsabbrüche leicht abgelenkt werden kann. Würde das passieren während die Bahn beispielsweise auf die Endstation zurollt, bekäme die Motorsteuerung nicht rechtzeitig den Befehl zum abbremsen und es käme zu einem Unfall.
+Aufgrund dessen wurde die Hauptsteuerung an den Arduino, welcher ursprünglich nur den Motor steuern sollte, übergeben. Daraus resultiert folgendes Konzept zur Aufgabenverteilung auf der Hochbahn:
 
 \subsection{ESP32 als Schnittstelle zum Server}
 \label{sec:aufgabeESP}
-Der ESP32 nimmt nachwievor Befehle des Webservers entgegen. Er ist ebenfalls mit dem Reedkontakt welcher über Magneten an der Schiene die Position aktualisiert, verbunden. Das ermöglicht ihm, unabhängeíg von der Hauptsteuerung Positionsmeldungen an den Webserver schicken. Zudem gibt er Befehle an die Hauptsteuerung, welche sich allerdings auf die anzufahrende Position beschränken. Die Fahrt selbst wird vom Arduino Nano gesteuert:
+Der ESP32 nimmt nachwievor Befehle des Webservers entgegen. Er ist ebenfalls mit dem Reedkontakt, welcher über Magneten an der Schiene die Position aktualisiert, verbunden. Dies ermöglicht ihm, unabhängeíg von der Motorsteuerung, Positionsmeldungen an den Webserver zu schicken. Zudem gibt er Befehle an die Motorsteuerung, welche sich allerdings auf die anzufahrende Position beschränken. Die Fahrt selbst wird vom Arduino gesteuert:
 
-%@moritz: Motorsteuerung besser als Hauptsteuerung (etws verwirrend, da zuvor immer ESP32 als Hauptsteuerung bezeichnet wurde  und auch oben so bezeichnet wird)
-\subsection{Arduino Nano als Hauptsteuerung}
+\subsection{Arduino-Nano als Motorsteuerung}
 \label{sec:aufgabeArduinoNanoMotor}
-Die Hauptsteuerung erhält vom ESP32 Anfahrpositionen. Über den Interrupt des Reedkontakts, wie auch beim ESP (\autoref{sec:aufgabeESP}), ist dem Arduino die aktuelle Position bekannt. Daraufhin soll ein individuelles Fahrprogramm des Schemas \textit{Von x nach y} berechnet und ausgeführt werden. Ebenfalls sind zwei analoge Pins angeschlossen, über jene Auskunft über den Ladezustand der Batteriezellen getroffen werden kann. Der zweite an den Arduino angeschlossene Interrupt dient der Kollisionserkennung. Dieser wird vom Arduino, welcher die Ultraschallsensoren steuert, übermittelt. Dabei gibt die Länge des Pulses Auskunft darüber, um welche Art der Kollisionserkennung es sich handelt.
+Die Motorsteuerung erhält vom ESP32 Anfahrpositionen. Über den Interrupt des Reedkontakts ist dem Arduino die aktuelle Position bekannt. Daraufhin soll ein individuelles Fahrprogramm des Schemas \textit{Von x nach y} berechnet und ausgeführt werden. Ebenfalls sind zwei analoge Pins angeschlossen, über jene Auskunft über den Ladezustand der Batteriezellen getroffen werden kann. Der zweite an die Motorsteuerung angeschlossene Interrupt dient der Kollisionserkennung. Dieser wird vom Arduino, welcher die Ultraschallsensoren steuert, übermittelt. Dabei gibt die Länge des Pulses Auskunft darüber, um welche Art der Kollisionserkennung es sich handelt.
 
 \subsection{Arduino Nano zur Ultraschallüberwachung} 
 \label{sec:aufgabeArduinoNanoUltraschall}
 Dieser Arduino hat nur die Aufgabe beide Ultraschallsensoren (jeweils einer auf jeder Seite des Tabletts) zu überwachen und mit einem Pin Auskunft darüber zu geben, welches Warn- oder Schutzfeld verletzt wurde. Da nur ein Pin zur Verfügung steht, bestimmt die Länge des \texttt{High}-Signals die Art der Kollisionserkennung.
-
+\newpage
 \section{Protokoll der Seriellen Schnittstelle}
-Die Datenübertragung erfolgt, wie in \autoref{sec:konzeptSchnittstellen} erwähnt, über \acrshort{uart}. In den Grundlagen unter TODO ist zu lesen, dass \acrshort{uart} die Daten byteweise überträgt. Die Bytes werden in einen Puffer geschrieben und können auf Anwendungsschicht Byte für Byte ausgelesen werden. Daher ist es logisch, das Protokoll so zu konzeptionieren, dass möglichst wenige, bzw. pro Befehl nur ein Byte verwendet wird. 
+Die Datenübertragung erfolgt, wie in \autoref{sec:konzeptSchnittstellen} erwähnt, über \acrshort{uart}. In den Grundlagen (\autoref{sec:uart}) ist zu lesen, dass \acrshort{uart} die Daten byteweise überträgt. Die Bytes werden in einen Puffer geschrieben und können auf Anwendungsebene Byte für Byte ausgelesen werden. Daher ist es logisch, das Protokoll so zu konzeptionieren, dass möglichst wenige, bzw. pro Befehl nur ein Byte verwendet wird. 
 
 \subsection{Anfragen- und Befehlsarten}
-Anfrage- oder Befehlsnachrichten können auf zwei Wegen erfolgen: Von ESP zu Arduino und umgekehrt. Es gibt insgesamt fünf Kategorien von Datenübertragungen:
-%@moritz: nochmal nennen, welcher Arduino gemeint ist 
+Anfrage- oder Befehlsnachrichten können auf zwei Wegen erfolgen: Von ESP32(Hochbahn-Controller) zu Arduino (Motorsteuerung) und umgekehrt. Es soll insgesamt fünf Kategorien von Datenübertragungen geben:
 
 \begin{itemize}
-	\item Positionsabfrage zur Positionssynchronisation,
-	\item Fahrbefehl von ESP zu Arduino mit anzufahrender Position,
-	\item Akkumeldung von Arduino zu ESP,
-	\item Positionsmeldung zur Positionssynchronisierung
-	\item und Akzeptieren oder Ablehnen von Fahrbefehlen.
+	\item [1.] Positionsabfrage (ESP32 $\rightarrow$ Arduino),
+	\item [2.] Positionsmeldung (Arduino $\rightarrow$ ESP32),
+	\item [3.] Akkustandsmeldung (Arduino $\rightarrow$ ESP32),
+	\item [4.] Fahrbefehl (ESP32 $\rightarrow$ Arduino)
+	\item [5.] und Bestätigung von Fahrbefehlen (Arduino $\rightarrow$ ESP32).
 \end{itemize}
 
 Da es pro Übertragungsweg nur maximal drei verschiedene Arten von Nachrichten sind, ergeben sich zwei Bits für den Header des Protokolls. Dadurch kann festgestellt werden, um welche Art von Nachricht es sich handelt.
 Soll eine Nachricht nur ein Byte groß sein, bleiben somit sechs Bits für den Body der Nachricht. 
-\autoref{tab:header} zeigt den Header der verschiedenen Nachrichtenarten:
+\autoref{tab:header} zeigt die Header der verschiedenen Nachrichtenarten:
 %---------------TODO-------------
 \begin{table}[h]
 	\begin{center}
 		\begin{tabular}{m{2cm} | m{2cm} | m{5cm} | m{5cm}}
 			Bit \texttt{0} & Bit \texttt{1} & Bedeutung & Nachrichtenweg\\
 			\hline 
-			\texttt{0} & \texttt{0} & Positionsabfrage  & ESP      ->  Arduino\\
+			\texttt{0} & \texttt{0} & Positionsabfrage  & ESP32 $\rightarrow$ Arduino\\
 			\hline 
-			\texttt{0} & \texttt{0} & Akkumeldung & Arduino  ->      ESP\\
+			\texttt{0} & \texttt{0} & Akkumeldung & Arduino $\rightarrow$ ESP32\\
 			\hline 
-			\texttt{0} & \texttt{1} & Fahrbefehl & ESP      ->  Arduino\\
+			\texttt{0} & \texttt{1} & Fahrbefehl & ESP32 $\rightarrow$ Arduino\\
 			\hline 
-			\texttt{1} & \texttt{0} & Positionsmeldung & Arduino  ->      ESP\\
+			\texttt{1} & \texttt{0} & Positionsmeldung & Arduino $\rightarrow$ ESP32\\
 			\hline 
-			\texttt{1} & \texttt{1} & Befehlsakzeptierung & Arduino  ->      ESP\\
+			\texttt{1} & \texttt{1} & Befehlsakzeptierung & Arduino $\rightarrow$ ESP32\\
 		\end{tabular}
 	\end{center}
 	\caption{\label{tab:header}Header des Nachrichtenprotokolls}
@@ -510,9 +510,9 @@ In folgender Tabelle sind die verschiedenen Arten des Contexts mit entsprechende
 		\begin{tabular}{r | l | l}
 			Body & Header & Bedeutung \\
 			\hline
-			\texttt{000000} - \texttt{001111} & \texttt{10} & Positionsmeldungen von 0 - 15 \\
+			\texttt{000000} - \texttt{000111} & \texttt{10} & Positionsmeldungen von 0 - 7 \\
 			\hline
-			\texttt{000000} - \texttt{001111} & \texttt{01} & Fahrbefehle von 0 - 15 \\
+			\texttt{000000} - \texttt{000111} & \texttt{01} & Fahrbefehle von 0 - 7 \\
 			\hline
 			\texttt{000000} & \texttt{00} & Positionsabfrage \\
 			\hline
@@ -525,13 +525,13 @@ In folgender Tabelle sind die verschiedenen Arten des Contexts mit entsprechende
 \end{table}
 
 \subsection{Tail}
-In \autoref{tab:body} ist zu erkennen, dass nie die letzten beiden Bits verwendet werden. Diese dienen dazu, den Transportweg der Nachricht zu erkennen. Dadurch ist eine Aussagen darüber, ob es sich beim Header \texttt{00} um eine Positionsabfrage oder eine Akkumeldung handelt, möglich.
+In \autoref{tab:body} ist zu erkennen, dass nie die letzten beiden Bits verwendet werden. Diese dienen dazu, den Transportweg der Nachricht zu erkennen. Dadurch ist es möglich, zu erkennen, ob es sich beim Header \texttt{00} um eine Positionsabfrage oder eine Akkumeldung handelt.
 Ist das Tail mit \texttt{01} gekennzeichnet, handelt es sich um eine Nachricht von ESP32 zu Arduino. \texttt{10} steht für die umgekehrte Richtung.
 In folgendem sind zwei Beispielnachrichten genannt, welche der Definition des Protokolls entsprechen:
 
 \begin{center}
 	\begin{itemize}
-		\item \texttt{01000000}; Positionsabfrage von ESP zu Arduino
+		\item \texttt{01000000}; Positionsabfrage von ESP32 zum Arduino
 		\item \texttt{10001110}; Positionsmeldung mit dem Context: Position 3  
 	\end{itemize}
 \end{center}
@@ -540,21 +540,22 @@ In folgendem sind zwei Beispielnachrichten genannt, welche der Definition des Pr
 
 \chapter{Konzeptionierung der einzelnen Softwarekomponenten der Hochbahn}
 \section{Zustandsautomaten}
-Auf der Hochbahn befinden sich zwei Softwarekomponenten, die untereinander Nachrichten austauschen. Dies dient zur synchronisierung und zur Ausführung von Fahrbefehlen. Der Ablauf, welcher im erfolgreichen Fahren mündet ergibt sich wie folgt:
+Auf der Hochbahn befinden sich zwei Softwarekomponenten, die untereinander Nachrichten austauschen. Dies dient der Synchronisierung und Ausführung von Fahrbefehlen. Der Ablauf, welcher im erfolgreichen Fahren mündet, ergibt sich wie folgt:
 \begin{center}
 	\begin{itemize}
 		\item ESP32 $\Leftarrow$ Server: \textit{Fahr mal zu Position y!}
-		\item ESP32 $\Rightarrow$ Arduino: \textit{Welche Position hast du?}
+		\item ESP32 $\Rightarrow$ Arduino: \textit{Wo genau stehen wir?}
 		\item ESP32 $\Leftarrow$ Arduino: \textit{Position x!}
 		\item ESP32 $\Rightarrow$ Arduino: \textit{Fahr mal zu Position y!}
-		\item ESP32 $\Leftarrow$ Arduino: \textit{Ok, mach ich!}
+		\item ESP32 $\Leftarrow$ Arduino: \textit{Alles klar, mach ich!}
 	\end{itemize}
 \end{center}
-Der oben aufgelistete Ablauf ist fehlerlos dargestellt. Sofern Positionen nicht synchron sind oder falsche Befehle geschickt werden, würde er abbrechen. Zur Kommunikation und genereller Steuerung der Software auf den Microcontrollern werden Zustandsautomaten verwendet. Der Gedanke dabei ist, dass ein Zustand nur eine gewissen Eingabe erwartet. So ist es möglich, dynamisch auf falsche Geschehnisse zu reagieren.
+Der hier aufgelistete Ablauf ist fehlerlos dargestellt. Die Positionsabfrage dient dazu, auch auf dem ESP32 immer die richtige Position zu speichern. Er besitzt hierbei einen falschen Wert, falls er durch Netzkommunikation einen Positionswechsel nicht mitbekommt. \\
+ Zur Kommunikation und genereller Steuerung der Software auf den Microcontrollern werden Zustandsautomaten verwendet. Der Gedanke dabei ist, dass ein Zustand nur eine gewissen Eingabe erwartet. So ist es möglich, dynamisch auf falsche Geschehnisse zu reagieren.
 
 \subsection{Zustandsautomat des ESP32}
 \label{sec:stateESP}
-Dieser Zustandsautomat hat, wie schon in \autoref{sec:aufgabeESP} erwähnt, die Aufgabe zwischen Server und Hauptsteuereung auf dem Arduino zu vermitteln.
+Dieser Zustandsautomat hat, wie schon in \autoref{sec:aufgabeESP} erwähnt, folgende Aufgabe: Vermittlung zwischen Server und Motorsteuerung.
 
 \begin{figure}[h]
 	\begin{center}
@@ -563,41 +564,39 @@ Dieser Zustandsautomat hat, wie schon in \autoref{sec:aufgabeESP} erwähnt, die 
 	\end{center}
 \end{figure}
 
-\newpage
-In \autoref{pic:statemaschineESP} sind alle Zustände, sowie Zustandsübergänge gezeigt. Das Programm startet im Zustand \texttt{IDLE}. Ein Zustandswechsel kann durch eine Nachricht vom Server oder Arduino erfolgen. Eine Akkumeldung des Arduinos führt zu einer Akkumeldung zum Server und bleibt dabei im Zustand \texttt{IDLE}.
-Erhält der ESP einen Fahrbefehl vom Server, wechselt er zu Zustand \texttt{START}. Dieser beginnt eine Folge von Nachrichten und Handlungen mit dem Ziel \textit{die aktuelle Position der Hochbahn zu synchronisieren und den Fahrbefehl auszuführen}. \\
-Dazu wird erst eine Positionsanfrage an den Arduino geschickt und in den Zustand Position gewechselt. Erhält der ESP daraufhin die Position kann er die eigens gespeicherte aktualisieren und den Fahrbefehl an den Arduino schicken. Ist dies geschehen, befindet der ESP sich im End-ZUstand und wartet auf eine Akzeptierung seitens des Arduinos. Wird akzeptiert, befindet sich der ESP wieder im IDLE-Zustand und die Kette beginnt wieder von vorne. Sollte der Arduino die Anfrage ablehnen oder sonst auf diesem Weg irgendwas schiefgehen, wird die Kette unterbrochen und in den Error-Zustand gewechselt. Dieser kann mittels des vorherigem Zustand eine Fehlermeldung an den Server schicken, welche dem Nutzer angezeigt wird. Daraufhin kann ein neuer Fahrbefehl oder Akkuzustand empfangen werden. 
+In \autoref{pic:statemaschineESP} sind alle Zustände, sowie Zustandsübergänge gezeigt. Das Programm startet im Zustand \texttt{IDLE}. Ein Zustandswechsel kann durch eine Nachricht von Server oder Arduino erfolgen. Eine Akkumeldung des Arduinos führt zu einer Akkumeldung zum Server. Der Automat bleibt dabei im Zustand \texttt{IDLE}.
+Erhält der ESP32 einen Fahrbefehl vom Server, wechselt er zu Zustand \texttt{START}. Dieser beginnt eine Folge von Nachrichten und Handlungen mit dem Ziel \textit{die aktuelle Position der Hochbahn zu synchronisieren und den Fahrbefehl auszuführen}. \\
+Dazu wird erst eine Positionsanfrage an den Arduino geschickt und in den Zustand \texttt{POSITION} gewechselt. Erhält der ESP32 daraufhin die Position, kann er die eigens gespeicherte aktualisieren und einen Fahrbefehl an den Arduino schicken. Ist dies geschehen, befindet sich der ESP32 im Zustand \texttt{END} und wartet auf eine Akzeptierung seitens des Arduinos. Wird akzeptiert, wechselt der ESP32 wieder zu Zustand IDLE und der Kreislauf beginnt von vorne. Sollte der Arduino die Anfrage ablehnen oder sonst irgendetwas schiefgehen, wird die Kette unterbrochen und in Zustand \texttt{ERROR} gewechselt. Dieser kann mittels des vorherigem Zustand eine Fehlermeldung an den Server schicken, welche dem Nutzer angezeigt wird. Daraufhin kann ein neuer Fahrbefehl oder Akkuzustand empfangen werden. 
 
-\subsection{Zustandsautomat der Hauptsteuerung}
+\subsection{Zustandsautomat der Motorsteuerung}
 \label{sec:stateARD}
-Ähnlich wie in \autoref{sec:stateESP} wird auch die Software der Hauptsteuerung (Arduino) als Zustandsautomat realisiert. 
+Ähnlich wie in \autoref{sec:stateESP} wird auch die Software der Motorsteuerung (Arduino) als Zustandsautomat realisiert. 
 Der Automat ist in \autoref{pic:statemaschineARD} gezeigt.
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=17cm]{stateMaschineARD.pdf}
+		\includegraphics[width=16cm]{stateMaschineARD.pdf}
 		\caption{\label{pic:statemaschineARD}Zustandsautomat der Hauptsteuerung als Grafik}
 	\end{center}
 \end{figure}
 
-Zu sehen ist dabei wieder eine Kreisstruktur, bei der die einzelnen Zustände über ERROR unterbrechen und wieder zu IDLE rücksetzen können. In Zustand ERROR wird dabei zusätzlich überprüft, ob es sich um einen fatalen Fehler wie falsche Positionsvariable handelt. In diesem Fall müsste die Hochbahn an der Ladestation resettet werden. Der generelle Ablauf welcher in einer erfolgreich ausgeführten Fahrt mündet ergibt sich wie folgt:
-Zusätzlich werden im IDLE-Zustand die Batteriespannungen überprüft um rechtzeitig zur Ladestation zu fahren, falls sie zu leer sind. In diesem Fall schaltet sich die Bahn ab, sobald sie an der Ladestation angedockt ist. 
+Zu sehen ist dabei wieder eine Kreisstruktur, bei der die einzelnen Zustände über \texttt{ERROR} unterbrechen und wieder zu \texttt{IDLE} rücksetzen können. In Zustand \texttt{IDLE} wird die Batteriespannungen überprüft um rechtzeitig zur Ladestation zu fahren, falls sie zu leer sind. In diesem Fall schaltet sich die Bahn ab, sobald sie an der Ladestation angedockt ist. Wird eine Positionsanfrage empfangen, übermittelt Zustand \texttt{POSITION} die aktuelle Position und der Automat wechselt zu Zustand \texttt{WAIT}. Dieser wartet auf den Fahrbefehl und akzeptiert diesen nach Überprüfung. Zustand \texttt{DRIVE} führt den Fahrbefehl aus und der Automat wechselt zurück zu \texttt{IDLE}
 
 \section{Konzeptionierung der Fahrfunktion}
-Die Hauptfunktion dieser Methode lässt sich mit folgendem Satz zusammenfassen: \textit{Die Bahn fährt von A nach B.} B ist in diesem Fall die anzufahrende Position, welche vom Server übermittelt wurde. Mit Acht Abschnitten auf der Strecke und der Möglichkeit jeden Abschnitt von jedem Abschnitt aus anzufahren ergeben sich 56 individuelle Fahrprogramme. Eine Möglichkeit wäre, jedes dieser Fahrprogramme einzeln auszuprogrammieren. Ein viel eleganterer Weg ist jedoch, den Arduino selbst für jede Fahrt das Fahrprogramm bestimmen zu lassen. 
+Die Hauptfunktion dieser Methode lässt sich mit folgendem Satz zusammenfassen: \textit{Die Bahn fährt von A nach B.} B ist in diesem Fall die anzufahrende Position, welche vom Server übermittelt wurde. Aus acht Abschnitten auf der Strecke und der Möglichkeit jeden Abschnitt von jedem Abschnitt aus anzufahren ergeben sich 56 individuelle Fahrprogramme. Eine Möglichkeit wäre, jedes dieser Fahrprogramme einzeln auszuprogrammieren. Ein viel eleganterer Weg ist jedoch, den Arduino selbst das Fahrprogramm bestimmen zu lassen. 
 
 \subsection{Regeln zur Bestimmung des Fahrprogramms}
 Auf der Strecke gibt es zwei unterschiedlich Arten von anzufahrenden Positionen:
 \begin{center}
 	\begin{itemize}
-		\item Ein Abschnitt auf der Strecke
-		\item und eine der beiden Endpositionen.
+		\item [1.] Ein Abschnitt auf der Strecke
+		\item [2.] Eine der beiden Endpositionen.
 	\end{itemize}
 \end{center}
-Der Unterschied liegt darin, dass die Bahn bei einer der beiden Endpositionen exakt am Magneten anhalten muss, während bei Anfahrten von Aschnitten ledigliche zwischen zwei Magneten zu Stoppen ist. Die anzupeilende Geschwindigkeit sei in Prozent der Maximalgeschwindigkeit angegeben.
+Der Unterschied liegt darin, dass die Bahn bei einer der beiden Endpositionen exakt am Magneten anhalten muss, während beim Anfahren von Aschnitten ledigliche zwischen zwei Magneten zu Stoppen ist. Die anzupeilende Geschwindigkeit sei in Prozent der Maximalgeschwindigkeit angegeben.
 \newpage 
 \subsubsection{Regel 1: Maximalgeschwindigkeit einzelner Abschnitte}
-\autoref{pic:streckengrafik} zeigt die Strecke der Hochbahn.
+\autoref{pic:streckengrafik} zeigt die Strecke (schwarz) der Hochbahn.
 
 \begin{figure}[h]
 	\begin{center}
@@ -606,7 +605,7 @@ Der Unterschied liegt darin, dass die Bahn bei einer der beiden Endpositionen ex
 	\end{center}
 \end{figure}
 
-Wie zu erkennen ist, gibt es sowohl sehr kurvige als auch längere gerade Streckenanteile. Die Strecke wird nun in acht Abschnitte unterteilt, welche jeweils anfahrbar sind. Abschnitt Null und Sieben sind die Endpunkte der Hochbahnstrecke. Wie schon in TODO erwähnt, sind die einzelnen Abschnitte jeweils mit Magneten von einander getrennt. In \autoref{pic:positionen} sind diese Acht Abschnitte zu sehen.
+Wie zu erkennen ist, gibt es sowohl sehr kurvige als auch längere gerade Streckenteile. Die Strecke wird nun in acht Abschnitte unterteilt, welche jeweils anfahrbar sind. Abschnitt null und sieben sind die Endpunkte der Hochbahnstrecke.  In \autoref{pic:positionen} sind diese Acht Abschnitte, jeweils durch Magnete von einander getrennt, zu sehen.
 \newpage
 \begin{figure}[h]
 	\begin{center}
@@ -615,21 +614,21 @@ Wie zu erkennen ist, gibt es sowohl sehr kurvige als auch längere gerade Streck
 	\end{center}
 \end{figure}
 
-Das Tablett welches an der Hochbahn befestigt ist, kann auf horizontaler Ebene schwingen. Ein solcher Schwingvorgang kann unter anderem durch schnelle Kurvenfahrten entstehen und sollte in möglichst allen Fällen vermieden werden. DAraus folgt, dass beispielsweise in den ersten drei Abschnitten die Höchstgeschwindigkeit bei 30\% liegt, damit die Kurven keinen hohen Schwingvorgang verursachen. Für jeden Abschnitt wird also eine Maximalgeschwindigkeit festgelegt.
+Das Tablett, welches an der Hochbahn befestigt ist, kann auf horizontaler Ebene schwingen. Ein solcher Schwingvorgang kann unter anderem durch schnelle Kurvenfahrten entstehen und sollte in möglichst allen Fällen vermieden werden. Daraus folgt, dass beispielsweise in den ersten drei Abschnitten die Höchstgeschwindigkeit bei 30\% liegt, damit die Kurven keinen hohen Schwingvorgang verursachen. Für jeden Abschnitt wird also eine Maximalgeschwindigkeit festgelegt.
 
 \subsubsection{Regel 2: Geschwindigkeit des vorletzten Abschnitts}
-Die Geschwindigkeit muss bereits vor eintreten in den letzten Abschnitt so gering sein, dass innerhalb des Abschnittes angehalten, bzw. der letzte Magnet angefahren werden kann. Angenommen von 50\% ist es immer möglich innerhalb eines Abschnitts auf 0\% abzubremsen. Daraus folgt, dass die Maximalgeschwindigkeit im vorletzten Abschnitt einer Fahrstrecke 50\% nicht überschreiten darf. 
+Die Geschwindigkeit muss bereits vor eintreten in den letzten Abschnitt so gering sein, dass innerhalb des Abschnitts angehalten, bzw. der letzte Magnet angefahren werden kann. Angenommen von 50\% ist es immer möglich innerhalb eines Abschnitts auf 0\% abzubremsen. Daraus folgt, dass die Maximalgeschwindigkeit im vorletzten Abschnitt einer Fahrstrecke 50\% nicht überschreiten darf. 
 
 \subsubsection{Regel 3: Geschwindigkeit des ersten Abschnitts}
-Der erste Asbchnitt ist jener, aus dem die Bahn die Fahrstrecke beginnt. Er wird also nur teilweise durchfahren, bevor die Bahn in den zweiten Abschnitt mit anderer Maximalgeschwindigkeit fährt. Daraus folgt, dass die Höchstgeschwindigkeit im ersten Abschnitt nicht höher sein soll als die des zweiten Abschnitts, da sonst die Bahn nach beschleunigen direkt wieder abbremsen müsste. So lässt sich weitere Schwingung in Fahrtrichtung vermeiden.
+Der erste Asbchnitt ist jener, aus dem die Bahn die Fahrstrecke beginnt. Er wird also nur teilweise durchfahren, bevor die Bahn in den zweiten Abschnitt mit anderer Maximalgeschwindigkeit fährt. Daraus folgt, dass die Höchstgeschwindigkeit im ersten Abschnitt nicht höher sein soll als die des zweiten Abschnitts, da sonst die Bahn nach Beschleunigen direkt wieder abbremsen müsste. So lässt sich weitere Schwingung in Fahrtrichtung vermeiden.
 
 \subsubsection{Regel 4: Geschwindigkeit des letzten Abschnitts}
-Im letzten Abschnitt muss die Geschwindigkeit $= 0$ sein, sodass die Bahn anhält. Handelt es sich beim letzten Abschnitt um eine Endposition, wird die Geschwindigkeit auf ein Minimum gesetzt und erst beim Ankommen am letzten Magneten angehalten.  
+Im letzten Abschnitt muss die Geschwindigkeit $= 0$ sein, sodass die Bahn anhält. Handelt es sich beim letzten Abschnitt um eine Endposition, wird die Geschwindigkeit auf ein Minimum gesetzt, um erst beim Ankommen am letzten Magneten anzuhalten.  
 
 \subsection{Priorisierung der Regeln}
-Je nach Länge der Fahrstrecke variiert die Anzahl der überfahrenen Abschnitte zwischen Zwei und Acht. Bei einer kleinen Anzahl von Abschnitten können die einzelnen Regeln andere überschreiben was im schmlimmsten Fall zu Regelverstoß, bzw falschen Geschwindigkeiten führt. Die niedrigste Priorität hat die zuerst angewendete Regel, da alle folgenden Regeln sie überschreiben können.
-
-Betrachtet wird eine Fahrt von Abschnitt Fünf zu Abschnitt Vier. Regel Eins wird zuerst angewendet, da sie die generellen und nicht die fahrspezifischen Geschwindigkeiten bestimmt. In diesem Fall ergäben sich die Abshchnitte wie folgt:
+Je nach Länge der Fahrstrecke variiert die Anzahl der überfahrenen Abschnitte zwischen zwei und acht. Einzelne Regeln können andere überschreiben, was im schmlimmsten Fall zu Regelverstoß, bzw falschen Geschwindigkeiten führt. Die niedrigste Priorität hat die zuerst angewendete Regel, da alle gesetzten Geschwindigkeitswerte von anderen Regeln überschrieben werden können.
+\\
+Betrachtet wird nun eine Fahrt von Abschnitt fünf zu Abschnitt vier. Regel eins wird zuerst angewendet, da sie generelle und nicht fahrspezifische Geschwindigkeiten bestimmt. In diesem Fall ergäben sich die Abschnitte wie folgt:
 
 \begin{center}
 	\begin{itemize}
@@ -637,7 +636,7 @@ Betrachtet wird eine Fahrt von Abschnitt Fünf zu Abschnitt Vier. Regel Eins wir
 	\end{itemize}
 \end{center}
 
-Regel 4 sollte die höchste Priorität besitzen, da durch Verletzung die Hochbahn zu spät anhält. Da ein Abbremsen innerhalb des letzten Abschnitts wichtiger ist als das Verhidnern einer zu hohen beschleunigung im ersten Abschnitt, wird Regel Drei niedriger priorisiert als Regel 4. Somit ergeben sich die Abschnitte nach dem zweiten Regeldurchlauf folgendermaßen:
+Regel 4 sollte die höchste Priorität besitzen, da durch Verletzung die Hochbahn zu spät anhält. Da ein Abbremsen innerhalb des letzten Abschnitts wichtiger ist als das Verhidnern einer zu hohen Beschleunigung im ersten Abschnitt, wird Regel drei niedriger priorisiert als Regel vier. Somit ergeben sich die Abschnitte nach dem zweiten Regeldurchlauf folgendermaßen:
 
 \begin{center}
 	\begin{itemize}
@@ -647,28 +646,28 @@ Regel 4 sollte die höchste Priorität besitzen, da durch Verletzung die Hochbah
 
 Nach dem dritten Durchlauf wird somit die Geschwindigkeit des vorletzten Abschitts auf 50 verringert, wonach im letzten Durchlauf die Zielabschnittsgeschwindigkeit auf 0 gesetzt wird. 
 
-Ein weiteres Beispiel mit einer Fahrt von Abschnitt Zwei zu Abschnitt Sechs zeigt die Geschwindigkeitsverteilung bei einer längeren Fahrt:
+Ein weiteres Beispiel mit einer Fahrt von Abschnitt zwei zu Abschnitt sechs zeigt die Geschwindigkeitsverteilung bei einer längeren Fahrt:
 
 \begin{center}
 	\begin{itemize}
-		\item Regel 1: 30 | 40 | 80 | 100 | 90 
-		\item Regel 3: 30 | 40 | 80 | 100 | 90 
-		\item Regel 2: 30 | 40 | 80 |  50 | 90 
-		\item Regel 4: 30 | 40 | 80 |  50 |  0 
+		\item Anwendung von Regel 1: 30 | 40 | 80 | 100 | 90 
+		\item Anwendung von Regel 3: 30 | 40 | 80 | 100 | 90 
+		\item Anwendung von Regel 2: 30 | 40 | 80 |  50 | 90 
+		\item Anwendung von Regel 4: 30 | 40 | 80 |  50 |  0 
 	\end{itemize}
 \end{center}
 
-Die Priorisierung $Regel1 <  Regel3 <  Regel2  < Regel4$ kann  sowohl verhindern dass die Bahn im letzten Abschnitt zu schnell ankommt, als auch unnötige Beschleunigungen vermeiden.
+Die Priorisierung $Regel1 <  Regel3 <  Regel2  < Regel4$ kann  sowohl ein zu schnelles Ankommen der Bahn im letzten Abschnitt, als auch unnötige Beschleunigungen vermeiden.
 
 \chapter{Server}
-Die ursprüngliche Konzeptionierung der Hochbahn sah Server und \acrshort{mqtt}-Broker als zwei getrennte Systeme vor. Ebenfalls war ein Bestellsystem vorgesehen. Dieses wurde aufgrund der stark gestiegenen Komplexität des verteilten Systems auf der Hochbahn in den Ausblick dieser Arbeit verschoben. Da ein Server nun nur Steuerbefehle weiterleitet, wäre es einfach, diesen vom ESP der Hochbahn selbst hosten zu lassen. Da das System jedoch auch nach Ende dieser Arbeit weiterentwickelt werden soll, wird auch hier die Grundlage geschaffen um ein Bestellsystem später hinzuzufügen. Daher ist ein Server zu entwickeln, welcher eine komplexe Implementierung eines Bestellsystems ermöglicht. 
+Die ursprüngliche Konzeptionierung dieses Projekts plante ein Bestellsystem. Dieses wurde aufgrund der stark gestiegenen Komplexität des verteilten Systems auf der Hochbahn in den Ausblick dieser Arbeit verschoben. Da ein Server nun nur Steuerbefehle weiterleitet, wäre es einfach, diesen vom ESP32 der Hochbahn selbst hosten zu lassen. Da das System jedoch auch nach Ende dieser Arbeit weiterentwickelt werden soll, wird hierbei trotzdem eine Grundlage geschaffen, um später das Bestellsystem leichter hinzufügen zu können. Daher ist ein Server zu entwickeln, welcher die komplexe Implementierung eines Bestellsystems ermöglicht. 
 \section{ASP.NET-Core}
-Nach evaluierung verschiedener Frameworks für die Serverprogrammierung, fiel die Entscheidung auf APS.NET-Core. Grund dafür war einerseits eine persönliche Vorliebe für die Programmiersprache C\# im Gegensatz zu beispielsweise Python mit Django als Framework. Andererseits bietet ASP.NET-Core auch die Möglichkeit einen \acrshort{mqtt}-Broker als zusätzliche Komponente des Systems zu hosten. Somit wird im Betrieb auf dem Raspberry PI nur noch der Server getartet, ohne noch einen Broker installieren und starten zu müssen. \\
-Das Framework baut auf \acrfull{mvc} auf. Die Models werden aktuell noch vernachlässigt, da aufgrund der geringen Funktionlität keinerlei Objekte beispielsweise in eine Datenbank geschrieben werden müssen. Kommt das Bestellsystem dazu, würden hierbei Models für Bestellungen oder Nutzer für die Datenbank verwendet. Der Server dient jedoch vorerst nur als Vermittler zwischen Nutzer und Hochbahn ohne individuelle Anforderungen zu erfüllen, welche Models benötigen. Auf Views und Controller kann trotz geringer Fnktionalität nicht verzichtet werden. 
+Nach evaluierung verschiedener Frameworks für die Serverprogrammierung, fiel die Entscheidung auf APS.NET-Core. Grund dafür war einerseits die persönliche Vorliebe für die Programmiersprache C\# im Gegensatz zu beispielsweise Python mit Django als Framework. Ebenfalls bietet ASP.NET-Core die Möglichkeit einen \acrshort{mqtt}-Broker als zusätzliche Komponente des Systems zu hosten. Somit wird im Betrieb auf dem Raspberry PI nur noch der Server getartet, ohne einen Broker installieren und starten zu müssen. \\
+Das Framework baut auf \acrfull{mvc} auf. Models werden aktuell noch vernachlässigt, da aufgrund der geringen Funktionlität keinerlei Objekte beispielsweise in eine Datenbank geschrieben werden müssen. Kommt das Bestellsystem hinzu, sind Models für Bestellungen oder Nutzer zu implementieren. Der Server dient jedoch vorerst nur als Vermittler zwischen Benutzer und Hochbahn ohne individuelle Anforderungen zu erfüllen, welche Models benötigen. Auf Views und Controller kann trotz geringer Fnktionalität nicht verzichtet werden. 
 
 \section{Views}
 \subsection{Index}
-Index ist jene Seite, die beim ersten Aufruf der Website gezeigt wird. Sie soll dem Nutzer anzeigen wo sich die Bahn aktuell befindet. Zudem soll die Möglichkeit geboten werden einen Fahrbefehl an die Bahn zu schicken. Der Konzeptionierung der Fahrfunktion ist eine Grafik zu entnehmen, bei der die einzelnen Abschnitte der Bahn erkennbar sind (\autoref{pic:streckengrafik}). Ist diese Grafik auch auf der Seite zu sehen, kann ein Nutzer bei einer Eingabe die gewünschte Position auswählen und als Fahrbefehl verschicken. Als Eingabefunktion wurde aufgrund symbolischer Ähnlichkeit ein Slider verwendet. Auf Darlegung des Design-Codes, also css und Bootstrap wird in dieser Arbeit verzichtet, da der Fokus auf Technik und FUnktionalität liegt. 
+Index ist jene Seite, die beim ersten Aufruf der Website gezeigt wird. Sie soll dem Nutzer anzeigen wo sich die Bahn aktuell befindet. Zudem soll die Möglichkeit geboten werden einen Fahrbefehl an die Bahn zu schicken. Der Konzeptionierung der Fahrfunktion ist eine Grafik zu entnehmen, bei der die einzelnen Abschnitte der Bahn erkennbar sind (\autoref{pic:streckengrafik}). Ist diese Grafik auch auf der Seite zu sehen, kann ein Nutzer bei einer Eingabe die gewünschte Position auswählen und als Fahrbefehl verschicken. Als Eingabefunktion wurde aufgrund symbolischer Ähnlichkeit ein Slider verwendet. Auf Darlegung des Design-Codes (hierbei bestehend aus css und Bootstrap) wird in dieser Arbeit verzichtet, da der Fokus auf Technik und Funktionalität liegt. 
 \vspace{1cm}
 
 \begin{lstlisting}[language=html, style=dhpaperdefault]
@@ -687,8 +686,8 @@ Index ist jene Seite, die beim ersten Aufruf der Website gezeigt wird. Sie soll 
 \captionof{lstlisting}{\label{code:index} Index.html des Servers}
 \vspace{1cm}
 
-In \autoref{code:index} ist der HTML-Code der Hauptseite zu sehen. Er wird im Body als zu renderndes Objekt übergeben, sofern die Hauptseite aufgerufen wird. Zu erkennen ist ein Input des Types Range (Slider), dessen Wert über seine ID erhalten werden kann. Die Funktion \texttt{driveTo()}, welche beim Klicken auf den Button gestartet wird, entnimmt diesen Wert und sendet ihn via \acrshort{mqtt} an die Bahn (Mehr dazu unter \autoref{sec:serverMqtt}). Die Hochbahn schickt bei Änderung der Position diese an den Server. Auf dem Server soll also immer die aktuelle Position der Bahn gespeichert sein. Änderungen des Inhalts auf der Seite des Servers hat generell keine Auswirkung auf jene die Beispielsweise auf dem Handy angezeigt wird, da das Handy sich beim ersten Aufruf die Seite holt und diese auch nicht aktualisiert. Daher ist es nötig eine Funktionalität einzubauen, die Clientseitig periodisch die Daten wie aktuelle Position aktualisiert. Die Position soll im div der ID \texttt{data-position} angezeigt werden. Um aktuelle DAten vom Server zu erhalten wird Clientseitig ein GET-Request durchgeführt. Dieses Request erbittet definierte DAten vom Server und kann von jedem GErät welches die Seite aufruft durchgeführt werden. Beim ersten Aufruf der Website wird ebenfalls ein GET-Request auf die Seite Index durchgeführt. \\
-HTML bietet die Möglichkeit einer \texttt{onload} - Methode. Diese wird ausgeführt, sobald die Seite aufgerufen wurde. Im Falle des Hochbahnservers initialisiert sie die periodische Ausführung verschiedener GET-Requests. 
+In \autoref{code:index} ist der HTML-Code der Hauptseite zu sehen. Zu erkennen ist ein \texttt{Input} des Types \texttt{Range} (Slider), dessen Wert über seine \texttt{ID} erhalten werden kann. Die Funktion \texttt{driveTo()}, welche beim Klicken auf den \texttt{Button} gestartet wird, entnimmt diesen Wert und sendet ihn via \acrshort{mqtt} an die Bahn (Mehr dazu unter \autoref{sec:serverMqtt}). Die Hochbahn schickt, bei Änderung der Position, diese an den Server. Auf dem Server soll also immer die aktuelle Position der Bahn gespeichert sein. Änderungen des Inhalts auf der Seite des Servers hat generell keine Auswirkung auf jene die Beispielsweise auf dem Handy angezeigt wird, da das Handy sich beim ersten Aufruf die Seite holt und diese nicht aktualisiert. Daher ist der Einbau einer Funktionalität nötig, die Clientseitig periodisch Daten wie die aktuelle Position aktualisiert. Die Position soll im \texttt{div} der ID \texttt{data-position} angezeigt werden. Um aktuelle Daten vom Server zu erhalten wird Clientseitig ein GET-Request durchgeführt. Dieses Request erfragt definierte Daten vom Server und kann von jedem Gerät welches die Seite aufruft durchgeführt werden. Beim ersten Aufruf der Website wird beispielsweise ein GET-Request auf die Seite Index durchgeführt. \\
+HTML bietet die Möglichkeit einer \texttt{onload} - Methode. Diese wird ausgeführt, sobald die Seite aufgerufen wird. Im Falle des Hochbahnservers initialisiert die \texttt{onload} - Methode die periodische Ausführung verschiedener GET-Requests. 
 \vspace{0.5cm}
 \begin{lstlisting}[language=html, style=dhpaperdefault]
 	function init() {
@@ -702,10 +701,10 @@ HTML bietet die Möglichkeit einer \texttt{onload} - Methode. Diese wird ausgef�
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:init} Initialisierung der periodischen GET-Requests}
 \vspace{1cm}
-In \autoref{code:init} ist die Initialisierungsfunktion zu erkennen. Sie setzt ein intervall von 500 Millisekunden. Das bedeutet, das alle 500 Millisekunden die Funktion ausgeführt wird. Sie führt jeweils ein GET-Request auf verschiedene Informationen, wie auch die Position, die immer aktuell gehalten werden müssen. 
+In \autoref{code:init} ist die Initialisierungsfunktion zu erkennen. Sie setzt ein intervall von 500 Millisekunden. Das bedeutet, dass die Methode alle 500 Millisekunden ausgeführt wird. So führt jedes Gerät welches die Hauptseite lädt alle 500 Millisekunden verschiedene Get-Requests auf verschiedene Informationen der Hochbahn durch. 
 
 \subsection{Info}
-Auf der Infoseite sind aktuelle Informationen über die Hochbahn zu sehen. Es gibt hierbei drei Kategorien:
+Auf der Infoseite sind aktuelle Informationen über die Hochbahn zu sehen. Hierbei gibt es drei Kategorien:
 
 \begin{center}
 	\begin{itemize}
@@ -715,7 +714,7 @@ Auf der Infoseite sind aktuelle Informationen über die Hochbahn zu sehen. Es gi
 	\end{itemize}
 \end{center}
 
-Die GET-Requests auf diese Informationen werden mit jener für die Position der Hochbahn initialisiert. Eine solche Anfrage erfolgt folgendermaßen:
+Die GET-Requests auf diese Informationen werden mit jener für die Position der Hochbahn initialisiert. Ein solches Request erfolgt folgendermaßen:
 
 \begin{lstlisting}[language=html, style=dhpaperdefault]
 	function getErrorMsg() {
@@ -733,9 +732,8 @@ Die GET-Requests auf diese Informationen werden mit jener für die Position der 
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:get}GET-Request auf die Fehlermeldungen}
 \vspace{1cm}
-In \autoref{code:get} ist ein GET-Request auf die URL \texttt{Home/Error} zu sehen. Mit der Antwort des Servers wird im Parameter \texttt{data} die aktuelle Fehlermeldung übergtagen. Diese wird im Anschluss an das Textfeld mit der ID \texttt{data-error} übergeben. 
-\newpage
-\subsubsection{Benutzeroberfläche}
+\autoref{code:get} zeigt ein GET-Request auf die URL \texttt{Home/Error}. Mit der Antwort des Servers wird im Parameter \texttt{data} die aktuelle Fehlermeldung übergtagen. Diese wird im Anschluss an das Textfeld mit der ID \texttt{data-error} übergeben. 
+\subsection{Benutzeroberfläche}
 Ein Nutzer der mit einem Smartphone die Seite im Heimnetzwerk aufruft, also im Browser die IP-Adresse des Servers eingibt, kann auf die beiden Seiten zugreifen, welche in \autoref{pic:ui} gezeigt sind.
 
 \begin{figure}[h]
@@ -745,14 +743,15 @@ Ein Nutzer der mit einem Smartphone die Seite im Heimnetzwerk aufruft, also im B
 	\end{center}
 \end{figure}
 
-Links ist die Seite Index, rechts Info zu sehen. Die Streckengrafik zeigt dem Nutzer, wo sich die einzelnen Abshcnitte befinden. So kann er auf dem Slider genau bestimmen, wohin die Bahn fahren soll. Unter Info werden aktuelle Fehlermeldungen, Warnungen sowie der Batteriezustand gezeigt. Sie zeigen jeweils die neueste Meldung der Hochbahn. SOfern die Bahn eine Fahrt erfolgreich ausgeführt hat, werden die Werte für Warnung und Error zurückgesetzt, damit ein aufgetretener Fehler nicht auf der Seite angezeigt wird, sofern er bereits behoben wurde. 
-
+Links ist die Seite \textit{Index}, rechts die Seite \textit{Info} zu sehen. Die Streckengrafik zeigt dem Nutzer, wo sich die einzelnen Abschnitte befinden. So kann er auf dem \texttt{Slider} genau bestimmen, wohin die Bahn fahren soll. Unter Info werden aktuelle Fehlermeldungen, Warnungen sowie der Batteriezustand gezeigt. Sie zeigen jeweils die neueste Meldung der Hochbahn. Sofern die Bahn eine Fahrt erfolgreich ausgeführt hat, werden die Werte für Warnung und Error zurückgesetzt, damit ein aufgetretener Fehler nicht auf der Seite angezeigt wird, sofern er an bedeutung verloren hat. 
+\newpage
 \section{Controller}
 \label{sec:controller}
-Da nur zwei Seiten existieren, wird nur ein Controller benötigt. Handelte es sich um eine Website mit wesentlich mehr einzelseiten und Funktionalitäten wie Bestellsystem wäre es sinnvoll, auch die Controller zu Gliedern in beispielsweise Home- und Bestellcontroller. \\
-\subsection{Home-Controller}
-Der einzige Controller des Servers hat die Aufgabe Anfragen an die beiden Seiten des Servers zu verwalten. Das können GET oder auch POST-Requests sein, welche sowohl auf die ganze Seite, als auch einzelne Inhalte erfolgen können.
+Da nur zwei Seiten existieren, wird nur ein Controller benötigt. Handelte es sich um eine Website mit wesentlich mehr Einzelseiten und Funktionalitäten wie Bestellsystem, wäre es sinnvoll, auch Controller in beispielsweise Home- und Bestellcontroller zu Gliedern. \\
 
+\subsection{Home-Controller}
+Der einzige Controller des Servers hat die Aufgabe Anfragen an beide Seiten des Servers zu verwalten. Dies können GET oder auch POST-Requests sein, welche sowohl auf die ganze Seite, als auch einzelne Inhalte erfolgen können.
+\newpage
 \begin{lstlisting}[language=c, style=dhpaperdefault]
 //get index-page
 public IActionResult Index()
@@ -782,7 +781,7 @@ public IActionResult getPosition()
 \captionof{lstlisting}{\label{code:requests} Anfragen an den Server}
 \vspace{0.5cm}
 
-In \autoref{code:requests} sind die drei verschiedenen Anfragen gezeigt, welche an den Server gestellt werden können. Die erste ist ein GET an die Hauptseite. Das \texttt{return}-Statement sucht in diesem Fall nach einer HTML-Date Namens Index, welche an das fragende Gerät zurückgegeben wird. Die zweite Funktion zeigt ein POST-Request, bzw. die serverseitige Antwort auf ein POST-Request an die URL \texttt{Home/Position}. Diese entnimmt dem POST die Position und übermittelt diese mit dem \texttt{\_mqttService} an das richtige Topic (\texttt{Train/driveToPosition}), sodass der ESP32 auf der Hochbahn dies entwerten kann. Die dritte Anfage ist wieder ein GET, jedoch mit dem Ziel nur die Information \texttt{position} und keine ganze Seite zu erhalten. Zurückgegeben wird hier die Variable \texttt{Position}, welche im \texttt{\_mqttService} gespeichert ist. Wie diese Information von der Hochbahn erhalten wird, ist im Folgenden erklärt.
+In \autoref{code:requests} sind die drei verschiedenen Anfragen gezeigt, welche an den Server gestellt werden können. Die erste ist ein GET-Request an die Hauptseite. Das \texttt{return}-Statement sucht in diesem Fall nach einer HTML-Datei Namens Index, welche an das fragende Gerät zurückgegeben wird. Die zweite Funktion zeigt ein POST-Request, bzw. die serverseitige Antwort auf ein POST-Request an die URL \texttt{Home/Position}. Diese entnimmt dem POST die Position und übermittelt diese mit \texttt{\_mqttService} an das Topic (\texttt{Train/driveToPosition}), sodass der ESP32 auf der Hochbahn die Position entwerten kann. Die dritte Anfage ist wieder ein GET, jedoch mit dem Ziel nur die Information \texttt{position} und keine ganze Seite zu erhalten. Zurückgegeben wird hier die Variable \texttt{Position}, welche im \texttt{\_mqttService} gespeichert ist. Wie diese Information von der Hochbahn erhalten wird, ist im Folgenden erklärt.
 \section{MQTT}
 \label{sec:serverMqtt}
 Neben dem laufenden \acrshort{mqtt}-Broker wird zusätzlich ein \acrshort{mqtt}-Server benötigt, um Nachrichten zu empfangen und zu senden. Dieser wird im \texttt{Startup} als ein Service registriert. Dieser Service wird anschließend als Singleton umgesetzt, damit von überall im Code auf den gleichen Service zugegriffen wird:
@@ -815,7 +814,7 @@ Neben dem Singleton werden in \autoref{code:services} weitere Handler-Funktionen
 \end{center}
 
 Um eine Nachricht zu verschicken werden zwei Übergabeparameter benötigt: Die zu verschickende NAchricht und das Topic, an jenes sie geschickt werden soll. 
-
+\newpage
 \begin{lstlisting}[language=c, style=dhpaperdefault]
 public Task sendMessage(string topic, string payload)
 {
@@ -1168,7 +1167,7 @@ C++ ist die hierbei verwendete Programmiersprache. Die Idee ist eine State Masch
 \section{Die State Klassen}
 Um den Validierungsaufwand innerhalb der Zustandsmaschine zu verringern, d.h. die Maschine muss nicht schauen, was für ein State \texttt{currentState} ist, erben alle Zustände von einer State-Klasse. Somit muss die Maschine später nur wissen, dass sie einen State hat und nicht welchen.
 \autoref{code:state.h} zeigt die Header-Datei dieser State-Klasse.
-
+\newpage
 \begin{lstlisting}[language=c, style=dhpaperdefault]
 	class State{
 		public:
@@ -1210,7 +1209,6 @@ Idle-State hat dabei drei Aufgaben:
 Hierbei ist zu bemerken, dass der Übergang $Idle State \Rightarrow  Idle State$ ebenfalls als Zustadswechsel angesehen wird.
 Abhängig davon ob empfangene bytes im seriellen Puffer liegen oder nicht (d.h. es wurde eine Nachricht empfangen oder nicht), wird die jeweilige \texttt{handle} - Methode mit oder ohne Parameter aufgerufen. Der Parameter ist die empfangene Nachricht als byte.
 Gibt es keine Empfangene Nachricht, führt Idle-State die Aufgabe \textit{Batterie messen} durch. Die Implementierung ist in \autoref{code:IdleState:handleWithoutParam} gezeigt.
-\newpage
 \begin{lstlisting}[language=c, style=dhpaperdefault]
 	int sIdle::handleWithoutParam() {
 		float cell1 = batteryMeasure->getCellOneInPercent();
@@ -1258,14 +1256,11 @@ void StateMaschine::StateHandle() {
 		delete (this->currentState);
 		this->currentState = new sIdle;
 		break;
-
 		case POSITION_STATE:
 		delete(this->currentState);
 		this->currentState = new sError();
 		break;
-
 		//other states
-
 		case ERROR_STATE:
 		delete(this->currentState);
 		this->currentState = new sError();
