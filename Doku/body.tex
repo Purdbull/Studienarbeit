@@ -438,38 +438,38 @@ Um in der Software die richtige Spannung der Zelle zu erhalten, ist der gemessen
 
 \chapter{Konzeption des verteilten Systems auf der Hochbahn (INF)}
 \label{sec:software}
-Die Software der Anlage lässt sich in zwei Bereiche gliedern: \textit{Webserver im Heimnetzwerk} und \textit{Client auf der Hochbahn}. Der Webserver soll ein Interface für Benutzer der Anlage bereitstellen, auf dem die Hochbahn gesteuert werden kann. 
+Die Software der Anlage lässt sich in zwei Bereiche gliedern: \textit{Webserver im Heimnetzwerk} und \textit{Client auf der Hochbahn}. Der Webserver soll ein Interface für Benutzer der Anlage bereitstellen, mit dem die Hochbahn gesteuert werden kann. 
 Der Client bekommt daraufhin Befehle vom Webserver und führt diese, sofern möglich, aus. 
 
 \section{Konzept für die Aufgabenverteilung auf der Hochbahn}
 \label{sec:hochbahnAlsClient}
-Wie schon in \autoref{sec:konzeptSchnittstellen} aufgeführt, sollte die Software ursprünglich in drei Hauptkomponenten getrennt weden:
+Wie schon in \autoref{sec:konzeptSchnittstellen} angeführt, sollte die Software ursprünglich in drei Hauptkomponenten getrennt weden:
 \begin{itemize}
 	\item ESP32 als Hochbahn-Controller zur Befehlserkennung und Steuerung der Hochbahn,
 	\item Arduino als Motorsteuerung
-	\item  und Arduino als Sicherheitssteuerung zur Ultraschallüberwachung 
+	\item  und Arduino als Sicherheitssteuerung zur Ultraschallüberwachung .
 \end{itemize}
-\autoref{sec:konzeptSchnittstellen} stellt das erste Konzept zur Aufteilung der Aufgabenbereiche dar. Nach Evaluierung der hierbei aufkommenden Fehlerquellen sind einige Änderungen getroffen worden.
-Ursprünglich sollte der ESP32 die Hauptsteuerung übernehmen. Er sollte Befehle wie \texttt{beschleunigen} oder \texttt{abbremsen auf Geschwindigkeit x} zur Motorsteuerung geben und dabei die aktuelle Position und die daraus resultierenden nächsten Schritte selbst berechnen. Die Erfahrung zeigt jedoch, dass ein ESP32 durch erhöhte Netzlast oder Verbindungsabbrüche leicht abgelenkt werden kann. Würde das passieren während die Bahn beispielsweise auf die Endstation zurollt, bekäme die Motorsteuerung nicht rechtzeitig den Befehl zum abbremsen und es käme zu einem Unfall.
-Aufgrund dessen wurde die Hauptsteuerung an den Arduino, welcher ursprünglich nur den Motor steuern sollte, übergeben. Daraus resultiert folgendes Konzept zur Aufgabenverteilung auf der Hochbahn:
+\autoref{sec:konzeptSchnittstellen} stellte das erste Konzept zur Aufteilung der Aufgabenbereiche dar. Nach Evaluierung der hierbei aufkommenden Fehlerquellen sind einige Änderungen getroffen worden.
+Ursprünglich sollte der ESP32 die Hauptsteuerung übernehmen. Er sollte Befehle wie \texttt{beschleunigen} oder \texttt{abbremsen auf Geschwindigkeit x} zur Motorsteuerung geben und dabei die aktuelle Position sowie die daraus resultierenden nächsten Schritte selbst berechnen. Die Erfahrung zeigt jedoch, dass ein ESP32 durch erhöhte Netzlast oder Verbindungsabbrüche leicht zum Absturz gebracht werden kann. Würde das bspw. passieren während die Bahn auf die Endstation zurollt, bekäme die Motorsteuerung nicht rechtzeitig den Befehl zum Abbremsen und es käme zu einem Unfall.
+Deshalbwurde die Hauptsteuerung an den Arduino, welcher ursprünglich nur den Motor steuern sollte, übergeben. Daraus resultiert das nachfolgend vorgestellte Konzept zur Aufgabenverteilung auf der Hochbahn.
 
 \subsection{ESP32 als Schnittstelle zum Server}
 \label{sec:aufgabeESP}
-Der ESP32 nimmt nachwievor Befehle des Webservers entgegen. Er ist ebenfalls mit dem Reedkontakt, welcher über Magneten an der Schiene die Position aktualisiert, verbunden. Dies ermöglicht ihm, unabhängeíg von der Motorsteuerung, Positionsmeldungen an den Webserver zu schicken. Zudem gibt er Befehle an die Motorsteuerung, welche sich allerdings auf die anzufahrende Position beschränken. Die Fahrt selbst wird vom Arduino gesteuert:
+Der ESP32 soll nach wie vor Befehle des Webservers entgegen nehmen. Er ist ebenfalls mit dem Reedkontakt, welcher über Magneten an der Schiene die Position aktualisiert, verbunden. Dies ermöglicht, unabhängeíg von der Motorsteuerung, Positionsmeldungen an den Webserver zu schicken. Zudem gibt der ESP32 Befehle an die Motorsteuerung, welche sich allerdings auf die anzufahrende Position beschränken. Die Fahrt selbst wird vom Arduino wie folgt gesteuert.
 
 \subsection{Arduino-Nano als Motorsteuerung}
 \label{sec:aufgabeArduinoNanoMotor}
-Die Motorsteuerung erhält vom ESP32 Anfahrpositionen. Über den Interrupt des Reedkontakts ist dem Arduino die aktuelle Position bekannt. Daraufhin soll ein individuelles Fahrprogramm des Schemas \textit{Von x nach y} berechnet und ausgeführt werden. Ebenfalls sind zwei analoge Pins angeschlossen, über jene Auskunft über den Ladezustand der Batteriezellen getroffen werden kann. Der zweite an die Motorsteuerung angeschlossene Interrupt dient der Kollisionserkennung. Dieser wird vom Arduino, welcher die Ultraschallsensoren steuert, übermittelt. Dabei gibt die Länge des Pulses Auskunft darüber, um welche Art der Kollisionserkennung es sich handelt.
+Die Motorsteuerung erhält vom ESP32 Anfahrpositionen. Über den Interrupt des Reedkontakts zählt der Arduino die aktuelle Fahrposition mit. Daraufhin soll ein individuelles Fahrprogramm des Schemas \textit{Von x nach y} berechnet und ausgeführt werden. Außerdem sind zwei analoge Pins angeschlossen, über die der Ladezustand der Batteriezellen gemessen werden kann. Der zweite - an die Motorsteuerung angeschlossene Interrupt - dient der Kollisionserkennung. Dieser wird von einem weiteren Arduino, welcher die Ultraschallsensoren steuert, übermittelt. 
 
 \subsection{Arduino Nano zur Ultraschallüberwachung} 
 \label{sec:aufgabeArduinoNanoUltraschall}
-Dieser Arduino hat nur die Aufgabe beide Ultraschallsensoren (jeweils einer auf jeder Seite des Tabletts) zu überwachen und mit einem Pin Auskunft darüber zu geben, welches Warn- oder Schutzfeld verletzt wurde. Da nur ein Pin zur Verfügung steht, bestimmt die Länge des \texttt{High}-Signals die Art der Kollisionserkennung.
+Dieser Arduino hat ausschließlich die Aufgabe, beide Ultraschallsensoren (jeweils einer auf jeder Seite des Tabletts) zu überwachen und mit einem Pin Auskunft darüber zu geben, welches Warn- oder Schutzfeld verletzt wurde. Da nur ein Pin zur Verfügung steht, bestimmt die Länge des \texttt{High}-Signals die Art der Kollisionserkennung.
 \newpage
 \section{Protokoll der Seriellen Schnittstelle}
-Die Datenübertragung erfolgt, wie in \autoref{sec:konzeptSchnittstellen} erwähnt, über \acrshort{uart}. In den Grundlagen (\autoref{sec:uart}) ist zu lesen, dass \acrshort{uart} die Daten byteweise überträgt. Die Bytes werden in einen Puffer geschrieben und können auf Anwendungsebene Byte für Byte ausgelesen werden. Daher ist es logisch, das Protokoll so zu konzeptionieren, dass möglichst wenige, bzw. pro Befehl nur ein Byte verwendet wird. 
+Die Datenübertragung erfolgt, wie in \autoref{sec:konzeptSchnittstellen} besechrieben, über \acrshort{uart}. In den Grundlagen (\autoref{sec:uart}) ist zu aufgeführt, wie \acrshort{uart} die Daten byteweise übertragen werden. Die Bytes werden in einen Puffer geschrieben und können auf Anwendungsebene Byteweise ausgelesen werden. Daher ist es logisch, das Protokoll so zu konzeptionieren, dass möglichst wenige (bzw. pro Befehl nur ein Byte) verwendet wird. 
 
 \subsection{Anfragen- und Befehlsarten}
-Anfrage- oder Befehlsnachrichten können auf zwei Wegen erfolgen: Von ESP32(Hochbahn-Controller) zu Arduino (Motorsteuerung) und umgekehrt. Es soll insgesamt fünf Kategorien von Datenübertragungen geben:
+Anfrage- oder Befehlsnachrichten können auf zwei Wegen erfolgen: Vom ESP32(Hochbahn-Controller) zum Arduino (Motorsteuerung) oder umgekehrt. Es soll insgesamt fünf Kategorien an Datenübertragungen geben:
 
 \begin{itemize}
 	\item [1.] Positionsabfrage (ESP32 $\rightarrow$ Arduino),
@@ -479,10 +479,10 @@ Anfrage- oder Befehlsnachrichten können auf zwei Wegen erfolgen: Von ESP32(Hoch
 	\item [5.] und Bestätigung von Fahrbefehlen (Arduino $\rightarrow$ ESP32).
 \end{itemize}
 
-Da es pro Übertragungsweg nur maximal drei verschiedene Arten von Nachrichten sind, ergeben sich zwei Bits für den Header des Protokolls. Dadurch kann festgestellt werden, um welche Art von Nachricht es sich handelt.
+Da es pro Übertragungsweg nur maximal drei verschiedene Arten von Nachrichten gibt, ergeben sich zwei Bits für den Header des Protokolls. Dadurch kann festgestellt werden, um welche Art von Nachricht es sich handelt.
 Soll eine Nachricht nur ein Byte groß sein, bleiben somit sechs Bits für den Body der Nachricht. 
 \autoref{tab:header} zeigt die Header der verschiedenen Nachrichtenarten:
-%---------------TODO-------------
+
 \begin{table}[h]
 	\begin{center}
 		\begin{tabular}{m{2cm} | m{2cm} | m{5cm} | m{5cm}}
@@ -556,7 +556,7 @@ Der hier aufgelistete Ablauf ist fehlerlos dargestellt. Die Positionsabfrage die
 
 \subsection{Zustandsautomat des ESP32}
 \label{sec:stateESP}
-Dieser Zustandsautomat hat, wie schon in \autoref{sec:aufgabeESP} erwähnt, folgende Aufgabe: Vermittlung zwischen Server und Motorsteuerung.
+Dieser Zustandsautomat hat - wie schon in \autoref{sec:aufgabeESP} erwähnt - die Aufgabe der Vermittlung zwischen Server und Motorsteuerung.
 
 \begin{figure}[h]
 	\begin{center}
@@ -565,9 +565,9 @@ Dieser Zustandsautomat hat, wie schon in \autoref{sec:aufgabeESP} erwähnt, folg
 	\end{center}
 \end{figure}
 
-In \autoref{pic:statemaschineESP} sind alle Zustände, sowie Zustandsübergänge gezeigt. Das Programm startet im Zustand \texttt{IDLE}. Ein Zustandswechsel kann durch eine Nachricht von Server oder Arduino erfolgen. Eine Akkumeldung des Arduinos führt zu einer Akkumeldung zum Server. Der Automat bleibt dabei im Zustand \texttt{IDLE}.
-Erhält der ESP32 einen Fahrbefehl vom Server, wechselt er zu Zustand \texttt{START}. Dieser beginnt eine Folge von Nachrichten und Handlungen mit dem Ziel \textit{die aktuelle Position der Hochbahn zu synchronisieren und den Fahrbefehl auszuführen}. \\
-Dazu wird erst eine Positionsanfrage an den Arduino geschickt und in den Zustand \texttt{POSITION} gewechselt. Erhält der ESP32 daraufhin die Position, kann er die eigens gespeicherte aktualisieren und einen Fahrbefehl an den Arduino schicken. Ist dies geschehen, befindet sich der ESP32 im Zustand \texttt{END} und wartet auf eine Akzeptierung seitens des Arduinos. Wird akzeptiert, wechselt der ESP32 wieder zu Zustand IDLE und der Kreislauf beginnt von vorne. Sollte der Arduino die Anfrage ablehnen oder sonst irgendetwas schiefgehen, wird die Kette unterbrochen und in Zustand \texttt{ERROR} gewechselt. Dieser kann mittels des vorherigem Zustand eine Fehlermeldung an den Server schicken, welche dem Nutzer angezeigt wird. Daraufhin kann ein neuer Fahrbefehl oder Akkuzustand empfangen werden. 
+In \autoref{pic:statemaschineESP} sind alle Zustände, sowie Zustandsübergänge dargestellt. Das Programm startet im Zustand \texttt{IDLE}. Ein Zustandswechsel kann durch eine Nachricht von Server oder Arduino erfolgen. Eine Akkumeldung des Arduinos führt zu einer Akkumeldung zum Server. Der Automat bleibt dabei im Zustand \texttt{IDLE}.
+Erhält der ESP32 einen Fahrbefehl vom Server, wechselt er zu Zustand \texttt{START}. Dieser beginnt eine Folge von Nachrichten und Handlungen mit dem Ziel, \textit{die aktuelle Position der Hochbahn zu synchronisieren und den Fahrbefehl auszuführen}. \\
+Dazu wird zunächst eine Positionsanfrage an den Arduino geschickt und in den Zustand \texttt{POSITION} gewechselt. Erhält der ESP32 daraufhin die Position, kann er die eigens gespeicherte aktualisieren und einen Fahrbefehl an den Arduino senden. Ist dies geschehen, befindet sich der ESP32 im Zustand \texttt{END} und wartet auf eine Akzeptierung seitens des Arduinos. Akzeptiert dieser, wechselt der ESP32 wieder zu Zustand IDLE und der Kreislauf beginnt von vorne. Sollte der Arduino die Anfrage ablehnen oder sonst irgendetwas schiefgehen, wird die Kette unterbrochen und in den Zustand \texttt{ERROR} gewechselt. Dieser kann mittels des vorherigem Zustand eine Fehlermeldung an den Server schicken, welche dem Nutzer angezeigt wird. Daraufhin kann ein neuer Fahrbefehl oder Akkuzustand empfangen werden. 
 
 \subsection{Zustandsautomat der Motorsteuerung}
 \label{sec:stateARD}
@@ -581,21 +581,21 @@ Der Automat ist in \autoref{pic:statemaschineARD} gezeigt.
 	\end{center}
 \end{figure}
 
-Zu sehen ist dabei wieder eine Kreisstruktur, bei der die einzelnen Zustände über \texttt{ERROR} unterbrechen und wieder zu \texttt{IDLE} rücksetzen können. In Zustand \texttt{IDLE} wird die Batteriespannungen überprüft um rechtzeitig zur Ladestation zu fahren, falls sie zu leer sind. In diesem Fall schaltet sich die Bahn ab, sobald sie an der Ladestation angedockt ist. Wird eine Positionsanfrage empfangen, übermittelt Zustand \texttt{POSITION} die aktuelle Position und der Automat wechselt zu Zustand \texttt{WAIT}. Dieser wartet auf den Fahrbefehl und akzeptiert diesen nach Überprüfung. Zustand \texttt{DRIVE} führt den Fahrbefehl aus und der Automat wechselt zurück zu \texttt{IDLE}
+Zu sehen ist dabei wieder eine Kreisstruktur, bei der die einzelnen Zustände über \texttt{ERROR} unterbrechen und wieder zu \texttt{IDLE} rücksetzen können. Im Zustand \texttt{IDLE} wird die Batteriespannungen überprüft um rechtzeitig zur Ladestation zu fahren, falls diese die Entladeschlussspannung beinahe erreicht haben. In diesem Fall schaltet sich die Bahn ab, sobald sie an der Ladestation angedockt ist. Wird eine Positionsanfrage empfangen, übermittelt Zustand \texttt{POSITION} die aktuelle Position und der Automat wechselt zu Zustand \texttt{WAIT}. Dieser wartet auf den Fahrbefehl und akzeptiert diesen nach Überprüfung. Zustand \texttt{DRIVE} führt den Fahrbefehl aus und der Automat wechselt zurück zu \texttt{IDLE}
 
 \section{Konzeptionierung der Fahrfunktion}
 \label{sec:konFahr}
-Die Hauptfunktion dieser Methode lässt sich mit folgendem Satz zusammenfassen: \textit{Die Bahn fährt von A nach B.} B ist in diesem Fall die anzufahrende Position, welche vom Server übermittelt wurde. Aus acht Abschnitten auf der Strecke und der Möglichkeit jeden Abschnitt von jedem Abschnitt aus anzufahren ergeben sich 56 individuelle Fahrprogramme. Eine Möglichkeit wäre, jedes dieser Fahrprogramme einzeln auszuprogrammieren. Ein viel eleganterer Weg ist jedoch, den Arduino selbst das Fahrprogramm bestimmen zu lassen. 
+Die Hauptfunktion dieser Methode folgt der folgenden Struktur: \textit{Die Bahn fährt von A nach B.} B ist in diesem Fall die anzufahrende Position, welche vom Server übermittelt wurde. Aus acht Abschnitten auf der Strecke und der Möglichkeit jeden Abschnitt von jedem Abschnitt aus anzufahren ergeben sich 56 individuelle Fahrprogramme. Die Ausprogramierung aller Fahrprogramme würde einen erheblichen Aufwand bedeuten. Aus diesem Grund wurden Regeln ausformuliert, nach denen der Controller die Fahrpgromme selbst zusammenstellt. Diese werden nachfolgend beschrieben. 
 
 \subsection{Regeln zur Bestimmung des Fahrprogramms}
-Auf der Strecke gibt es zwei unterschiedlich Arten von anzufahrenden Positionen:
+Auf der Strecke gibt es zwei unterschiedlich Arten anfahrbaren Positionen:
 \begin{center}
 	\begin{itemize}
 		\item [1.] Ein Abschnitt auf der Strecke
 		\item [2.] Eine der beiden Endpositionen.
 	\end{itemize}
 \end{center}
-Der Unterschied liegt darin, dass die Bahn bei einer der beiden Endpositionen exakt am Magneten anhalten muss, während beim Anfahren von Aschnitten ledigliche zwischen zwei Magneten zu Stoppen ist. Die anzupeilende Geschwindigkeit sei in Prozent der Maximalgeschwindigkeit angegeben.
+Der Unterschied liegt darin, dass die Bahn bei einer der beiden Endpositionen exakt am Magneten anhalten muss, während beim Anfahren von Aschnitten der Stopp zwischen zwei Magneten erfolgen soll. Die anzupeilende Geschwindigkeit ist in Prozent der Maximalgeschwindigkeit angegeben.
 \newpage 
 \subsubsection{Regel 1: Maximalgeschwindigkeit einzelner Abschnitte}
 \autoref{pic:streckengrafik} zeigt die Strecke (schwarz) der Hochbahn.
@@ -607,7 +607,7 @@ Der Unterschied liegt darin, dass die Bahn bei einer der beiden Endpositionen ex
 	\end{center}
 \end{figure}
 
-Wie zu erkennen ist, gibt es sowohl sehr kurvige als auch längere gerade Streckenteile. Die Strecke wird nun in acht Abschnitte unterteilt, welche jeweils anfahrbar sind. Abschnitt null und sieben sind die Endpunkte der Hochbahnstrecke.  In \autoref{pic:positionen} sind diese Acht Abschnitte, jeweils durch Magnete von einander getrennt, zu sehen.
+Wie zu erkennen ist, gibt es sowohl sehr kurvige als auch längere gerade Streckenteile. Die Strecke wird nun in acht Abschnitte unterteilt, die jeweils angefahren werden können. Abschnitt null und sieben sind die Endpunkte der Hochbahnstrecke.  In \autoref{pic:positionen} sind diese Acht Abschnitte - jeweils durch Magnete von einander getrennt - zu sehen.
 \newpage
 \begin{figure}[h]
 	\begin{center}
@@ -616,21 +616,21 @@ Wie zu erkennen ist, gibt es sowohl sehr kurvige als auch längere gerade Streck
 	\end{center}
 \end{figure}
 
-Das Tablett, welches an der Hochbahn befestigt ist, kann auf horizontaler Ebene schwingen. Ein solcher Schwingvorgang kann unter anderem durch schnelle Kurvenfahrten entstehen und sollte in möglichst allen Fällen vermieden werden. Daraus folgt, dass beispielsweise in den ersten drei Abschnitten die Höchstgeschwindigkeit bei 30\% liegt, damit die Kurven keinen hohen Schwingvorgang verursachen. Für jeden Abschnitt wird also eine Maximalgeschwindigkeit festgelegt.
+Das Tablett, welches an der Hochbahn befestigt ist, kann auf horizontaler Ebene schwingen. Ein solcher Schwingvorgang kann unter anderem durch schnelle Kurvenfahrten entstehen und sollte vermieden werden. Aus diesem Grund wird für eine erste Annahme als Höchstgeschwindigkeit bei Kurvenfahrten 30\%  angenommen. Nach dieser ersten Regel wird für jeden Abschnitt eine Maximalgeschwindigkeit festgelegt.
 
 \subsubsection{Regel 2: Geschwindigkeit des vorletzten Abschnitts}
-Die Geschwindigkeit muss bereits vor eintreten in den letzten Abschnitt so gering sein, dass innerhalb des Abschnitts angehalten, bzw. der letzte Magnet angefahren werden kann. Angenommen von 50\% ist es immer möglich innerhalb eines Abschnitts auf 0\% abzubremsen. Daraus folgt, dass die Maximalgeschwindigkeit im vorletzten Abschnitt einer Fahrstrecke 50\% nicht überschreiten darf. 
+Die Geschwindigkeit muss bereits vor Eintreten in den letzten Abschnitt so gering sein, dass innerhalb des Abschnitts angehalten, bzw. der letzte Magnet angefahren werden kann. Es wird angenommen dass bei einer Geschwindigkeit von 50\% immer möglich sei, innerhalb eines Abschnitts auf 0\% abzubremsen. Daraus folgt, dass die Maximalgeschwindigkeit im vorletzten Abschnitt einer Fahrstrecke 50\% nicht überschreiten darf. 
 
 \subsubsection{Regel 3: Geschwindigkeit des ersten Abschnitts}
-Der erste Asbchnitt ist jener, aus dem die Bahn die Fahrstrecke beginnt. Er wird also nur teilweise durchfahren, bevor die Bahn in den zweiten Abschnitt mit anderer Maximalgeschwindigkeit fährt. Daraus folgt, dass die Höchstgeschwindigkeit im ersten Abschnitt nicht höher sein soll als die des zweiten Abschnitts, da sonst die Bahn nach Beschleunigen direkt wieder abbremsen müsste. So lässt sich weitere Schwingung in Fahrtrichtung vermeiden.
+Der erste Asbchnitt ist jener, mit dem die Bahn die Fahrstrecke beginnt. Er wird also nur teilweise durchfahren, bevor die Bahn in den zweiten Abschnitt mit anderer Maximalgeschwindigkeit fährt. Daraus folgt, dass die Höchstgeschwindigkeit im ersten Abschnitt nicht höher sein soll als die des zweiten Abschnitts, da sonst die Bahn nach Beschleunigen direkt wieder abbremsen müsste. So lässt sich weitere Schwingung in Fahrtrichtung vermeiden.
 
 \subsubsection{Regel 4: Geschwindigkeit des letzten Abschnitts}
-Im letzten Abschnitt muss die Geschwindigkeit $= 0$ sein, sodass die Bahn anhält. Handelt es sich beim letzten Abschnitt um eine Endposition, wird die Geschwindigkeit auf ein Minimum gesetzt, um erst beim Ankommen am letzten Magneten anzuhalten.  
+Im letzten Abschnitt muss die Geschwindigkeit $= 0$ sein, sodass die Bahn anhält. Handelt es sich beim letzten Abschnitt um eine Endposition, wird die Geschwindigkeit auf ein Minimum gesetzt, um erst beim Ankommen am letzten Magneten anzuhalten. Das Anhalten selbst wird durch eine Fahrfunktion der Motorlibrary erreicht. 
 
 \subsection{Priorisierung der Regeln}
 Je nach Länge der Fahrstrecke variiert die Anzahl der überfahrenen Abschnitte zwischen zwei und acht. Einzelne Regeln können andere überschreiben, was im schmlimmsten Fall zu Regelverstoß, bzw falschen Geschwindigkeiten führt. Die niedrigste Priorität hat die zuerst angewendete Regel, da alle gesetzten Geschwindigkeitswerte von anderen Regeln überschrieben werden können.
 \\
-Betrachtet wird nun eine Fahrt von Abschnitt fünf zu Abschnitt vier. Regel eins wird zuerst angewendet, da sie generelle und nicht fahrspezifische Geschwindigkeiten bestimmt. In diesem Fall ergäben sich die Abschnitte wie folgt:
+Betrachtet wird nun beispielhaft die Fahrt von Abschnitt fünf zu Abschnitt vier. Regel eins wird zuerst angewendet, da sie generelle und nicht fahrspezifische Geschwindigkeiten bestimmt. In diesem Fall ergäben sich die Abschnitte wie folgt:
 
 \begin{center}
 	\begin{itemize}
@@ -664,7 +664,7 @@ Die Priorisierung $Regel1 <  Regel3 <  Regel2  < Regel4$ kann  sowohl ein zu sch
 \chapter{Server (INF)}
 Die ursprüngliche Konzeptionierung dieses Projekts plante ein Bestellsystem. Dieses wurde aufgrund der stark gestiegenen Komplexität des verteilten Systems auf der Hochbahn in den Ausblick dieser Arbeit verschoben. Da ein Server nun nur Steuerbefehle weiterleitet, wäre es einfach, diesen vom ESP32 der Hochbahn selbst hosten zu lassen. Da das System jedoch auch nach Ende dieser Arbeit weiterentwickelt werden soll, wird hierbei trotzdem eine Grundlage geschaffen, um später das Bestellsystem leichter hinzufügen zu können. Daher ist ein Server zu entwickeln, welcher die komplexe Implementierung eines Bestellsystems ermöglicht. 
 \section{ASP.NET-Core}
-Nach evaluierung verschiedener Frameworks für die Serverprogrammierung, fiel die Entscheidung auf APS.NET-Core. Grund dafür war einerseits die persönliche Vorliebe für die Programmiersprache C\# im Gegensatz zu beispielsweise Python mit Django als Framework. Ebenfalls bietet ASP.NET-Core die Möglichkeit einen \acrshort{mqtt}-Broker als zusätzliche Komponente des Systems zu hosten. Somit wird im Betrieb auf dem Raspberry PI nur noch der Server getartet, ohne einen Broker installieren und starten zu müssen. \\
+Nach Evaluierung verschiedener Frameworks für die Serverprogrammierung, fiel die Entscheidung auf APS.NET-Core. Grund dafür war einerseits die persönliche Vorliebe für die Programmiersprache C\# im Gegensatz zu beispielsweise Python mit Django als Framework. Ebenfalls bietet ASP.NET-Core die Möglichkeit, einen \acrshort{mqtt}-Broker als zusätzliche Komponente des Systems zu hosten. Somit wird im Betrieb auf dem Raspberry PI nur noch der Server getartet, ohne einen Broker installieren und starten zu müssen. \\
 Das Framework baut auf \acrfull{mvc} auf. Models werden aktuell noch vernachlässigt, da aufgrund der geringen Funktionlität keinerlei Objekte beispielsweise in eine Datenbank geschrieben werden müssen. Kommt das Bestellsystem hinzu, sind Models für Bestellungen oder Nutzer zu implementieren. Der Server dient jedoch vorerst nur als Vermittler zwischen Benutzer und Hochbahn ohne individuelle Anforderungen zu erfüllen, welche Models benötigen. Auf Views und Controller kann trotz geringer Fnktionalität nicht verzichtet werden. 
 
 \section{Views}
@@ -715,7 +715,7 @@ Auf der Infoseite sind aktuelle Informationen über die Hochbahn zu sehen. Hierb
 		\item und der Akkustand.
 	\end{itemize}
 \end{center}
-
+\newpage
 Die GET-Requests auf diese Informationen werden mit jener für die Position der Hochbahn initialisiert. Ein solches Request erfolgt folgendermaßen:
 
 \begin{lstlisting}[language=html, style=dhpaperdefault]
@@ -736,7 +736,7 @@ Die GET-Requests auf diese Informationen werden mit jener für die Position der 
 \vspace{0.5cm}
 \autoref{code:get} zeigt ein GET-Request auf die URL \texttt{Home/Error}. Mit der Antwort des Servers wird im Parameter \texttt{data} die aktuelle Fehlermeldung übergtagen. Diese wird im Anschluss an das Textfeld mit der ID \texttt{data-error} übergeben. 
 \subsection{Benutzeroberfläche}
-Ein Nutzer der mit einem Smartphone die Seite im Heimnetzwerk aufruft, also im Browser die IP-Adresse des Servers eingibt, kann auf die beiden Seiten zugreifen, welche in \autoref{pic:ui} gezeigt sind.
+Ein Nutzer, der mit einem Smartphone die Seite im Heimnetzwerk aufruft, also im Browser die IP-Adresse des Servers eingibt, kann auf die beiden Seiten zugreifen, welche in \autoref{pic:ui} gezeigt sind.
 
 \begin{figure}[h]
 	\begin{center}
@@ -856,11 +856,11 @@ _mqttServer.UseApplicationMessageReceivedHandler(async e =>
 \captionof{lstlisting}{\label{code:mqttReceive}Emfangsmethode des \acrshort{mqtt} - Services}
 \vspace{0.5cm}
 
-Die in \autoref{code:mqttReceive} gezeigte Methode überprüft, um welches Topic es sich handelt, bzw. an welches Topic die NAchricht geschickt wurde. Je nach Topic wird im Anschluss das Payload, bzw. der NAchrichtencontext, in der ihm zugewiesenen Variable gespeichert. Eine Fehlermeldung landet somit immer in der Variable \texttt{ErrorMsg}. Für den gleichen Zweck existieren noch die Variablen \texttt{WarningMsg, PositionMsg und BatteryMsg}. In \autoref{sec:controller} ist bereits gezeigt, wann diese Variablen ausgelesen werden. 
+Die in \autoref{code:mqttReceive} gezeigte Methode überprüft, um welches Topic es sich handelt, bzw. an welches Topic die Nachricht geschickt wurde. Je nach Topic wird im Anschluss das Payload, bzw. der Nachrichtencontext, in der ihm zugewiesenen Variable gespeichert. Eine Fehlermeldung landet somit immer in der Variable \texttt{ErrorMsg}. Für den gleichen Zweck existieren noch die Variablen \texttt{WarningMsg, PositionMsg und BatteryMsg}. In \autoref{sec:controller} ist bereits gezeigt, wann diese Variablen ausgelesen werden. 
 
 \chapter{Umsetzung (MT)} 
 \label{cha:umsetzung}
-In diesem ersten Teil der Studienarbeit stand die Konzeptionierung in \autoref{cha:konzeptionierung} im Vordergrund. Auf dieses Kapitel aufbauend soll der aktuelle Stand der Umsetzung beschrieben werden. Dieser beschränkt sich bislang auf die Motorsteuerung in \autoref{sec:motorsteuerung} sowie die Getriebekonstruktion in \autoref{sec:getriebekonstruktion}.
+Im ersten Teil der Studienarbeit stand die Konzeptionierung in \autoref{cha:konzeptionierung} im Vordergrund. Auf dieses Kapitel aufbauend soll der aktuelle Stand der Umsetzung beschrieben werden. Dieser beschränkt sich  auf die Motorsteuerung in \autoref{sec:motorsteuerung} sowie die Getriebekonstruktion in \autoref{sec:getriebekonstruktion}.
 \newpage
  
 \section{Motorsteuerung}
@@ -1408,23 +1408,38 @@ else {
 
 \texttt{stopMode(3)} hält erst am Ende, also mit Erkennen des letzten Magneten an, während \texttt{stopMode(2)} die Bahn auf Geschwindigkeit 0 abbremst.
 
-\chapter{Ergebnis (INF + MT)}
-Nach Implementierung der gesamten Software konnte erstmals das System auf der Platine getestet werden. Der Server lief lokal über den Computer und sowohl Smartphone als auch Hochbahn-Controller konnten ihn erreichen. Auf der Website wurde bereits der Akkustand angezeigt. Nach senden eines Fahrbefehls, führte die Platine, bzw. der Schrittmotor, eine Simulierte Fahrt von Position null bis Position sieben durch. Dabei war zu erkennen, dass die Geschwindigkeiten richtig gesetzt wurden, da der Motor in den ersten Abschnitten langsam lief, während er gegen Ende hin auf volle Geschwindigkeit beschleunigte. \\
-Nach diesem erfolgreichen Test galt es, die Hochbahn zusammenzubauen. Die letzten benötigten Teile wurden gedruckt, ein Plexiglas in den Platinekasten geklebt, und alle Komponenten miteinander verkabelt. Der Server wurde währenddessen auf einem Raspberry Pi installiert, sodass er im Netzwerk gehostet werden kann. An der Schiene wurden die benötigten Magneten befestigt und die Bahn konnte ihre erwste Testfahrt erfolgreich durchführen. Die fertige Anlage mit noch fehlendem Tablett (welches jedoch sehr einfach installiert werden kann) ist in Abbildung TODO zu sehen.
+\chapter{Montage und finaler Stand (INF + MT)}
+Bevor die Endmontage angestoßen werden konnte, mussten die mechatronischen Komponenten mit dem softwareseitigen Part verknüpft werden. Als Schlüsselstelle stellte sich dabei die Fahrfunktion heraus. Diese diente letztlich auch als Test für die erfolgreiche Verknpüfung der beiden Bereiche. Dazu wurde die gesamte Software auf die Controller geladen und die Komponenten über die Platine verdrahtet. Der Server lief lokal über den Computer. Dabei konnten sowohl Smartphone als auch Hochbahn-Controller darauf zugreifen. Auf der Website wurde bereits der Akkustand angezeigt. Durch Senden von Fahrbefehlen wurden als Test Transportfahrten simuliert. Innerhalb dieser Tests wurden die Geschwindigkeitsprofile durch den Motor entsprechend der Regeln wie gewünscht ausgeführt. \\
+
+Für die Endmontage wurden als weitere Komponenten eine Ladevorrichtung sowie eine Haltuerung für den Reed-Kontakt entwickelt. Die beiden Komponenten sind in \autoref{pic:ladeReedVorrichtung} dargestellt. Über die Ladevorrichtung können die Akkus der Hochbahn in der Ladestation geladen werden. Dafür sind auf der Ladevorrichtung zwei Schleifkonakte, die von Märklin für H0-Eisenbahnen verkauft werden, angebracht. \\ 
+In der Halterung der Reed-Kontakte sind Aussparungen zum Einkleben des Kontaktes vorgesehen. Für die Anschlussdrähte sind weitere Aussparungen vorgesehen. Die Neodym-Magnete wurden ebenfalls während der Endmontage an den Schienen angebracht.\\
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=14cm]{ladevorrichtungReedHalter.pdf}
+		\caption{Initialzustand der Gondel}
+		\label{pic:ladeReedVorrichtung}
+	\end{center}
+\end{figure}
+\newpage
+
+
+
+Der fertige Aufbau der Gartenhochbahn mit Tablett ist %todo 
+dargestellt. Abschließend wurde eine finale Testfahrt in der vorgesehenen Umgebung durcheführt. An der Schiene wurden Neodym-Magneten für die Reed-Kontakte befestigt. Dieser wurde erfolgreich abgeschlossen.
+
 
 %-------------------------FAZIT UND AUSBLICK-----------------
 
 
 \chapter{Fazit und Ausblick (INF + MT)}
-Im ersten Teil der Studienarbeit standen Grundlagen, Anforderungen sowie Konzepte im Bereich der im Vordergrund. Diese Arbeit wurde nun mit der Implementierungsphase vorangeführt. Währenddessen musste flexibel notwendige Anpassungen reagiert werden und besonders auf die Funktion der Schnittstellen geachtet werden. Abscließend können können wir mit dieser Arbeit ein fertiges und voll funktionsfähiges Endprodukt vorstellen. \\
+Im ersten Teil der Studienarbeit standen Grundlagen, Anforderungen sowie Konzepte im Vordergrund. Diese Arbeit wurde nun mit der Implementierungsphase fortgeführt. Währenddessen musste flexibel auf notwendige Anpassungen reagiert werden und besonders auf die Funktion der Schnittstellen geachtet werden. Abschließend können  wir mit dieser Arbeit ein fertiges und voll funktionsfähiges Endprodukt vorstellen. \\
 
-Abschließend folgen mit \autoref{sec:fazit} die persönlichen Fazits zur eigenen Disziplin sowie Zusammenarbeit und mit \autoref{sec:ausblick} ein Ausblick. 
+Mit diesemTeil folgen mit \autoref{sec:fazit} die persönlichen Fazits zur eigenen Disziplin sowie Zusammenarbeit und mit \autoref{sec:ausblick} ein Ausblick. 
 
 
 \section{Persönliche Fazits}
 \label{sec:fazit}
-
-Mit diesem letzten Kapitel der Arbeit stellt in Abschnitt  jeder sein eigenes Fazit über die vor und äu
 
 \subsection{Jan Bantle - Mechatronik}
 
