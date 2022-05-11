@@ -116,7 +116,7 @@ Eine weitere Betriebsart ist der Mikroschrittbetrieb. Dabei wird die Stromstärk
 			\label{pic:mqttbroker}\acrshort{mqtt}-Datenübertragung über den Broker}
     \end{center}
 \end{figure}
-
+\newpage
 Zu sehen ist besagter Broker, welcher die Kommunikation verwaltet. In diesem Beispiel sendet  Gerät-A Daten an Topic-A, auf welches Gerät-B subscribed hat. Diese Daten werden umgehend an Gerät-B übermittelt. Auf ähnlichem Weg erhält Gerät-A Daten von Gerät-B über das Topi-B.\\
 Um die Publish Subscribe Architektur zu verstehen ist es hilfreich, eine Analogie zum Fernsehen zu bilden. Dort sendet ein TV-Sender sein Programm an einen bestimmten Kanal.
 Auf diesen Kanal können nun beliebig viele Fernseher (\textit{Subscriber}) zugreifen. Auch wenn keine aktive Verbindung zwischen Sender und Empfänger aufgebaut wird, erhalten beliebig viele Empfänger die benötigten Daten.
@@ -127,15 +127,13 @@ Wichtig dabei ist, dass die Daten nicht zwischen Publisher und Subscriber direkt
 \section{UART}
 \label{sec:uart}
 \acrfull{uart} bezeichnet eine Hardware-Schnittstelle, welche zur seriellen Kommunikation verwendet wird. In \autoref{pic:uartCon} ist die Verbindung zwischen zwei Geräten, die über \acrshort{uart} kommunizieren, gezeigt.
-
 \begin{figure}[h]
     \begin{center}
         \includegraphics[width=8cm]{uart.PNG}
         \caption{\label{pic:uartCon}Verbindung zwischen zwei Geräten die über \acrshort{uart} kommunizieren}
     \end{center}
 \end{figure}
-
-Zu erkennen sind zwei Pins pro Gerät: Einer um Daten zu Senden und einer um sie zu Empfangen. Das generelle Prinzip von \acrshort{uart} ist, Daten in Pakete zu konvertieren, die dann Bit für Bit übermittelt werden. Ein Paket besteht aus einem Start-Bit, gefolgt von fünf bis neun Data-Bits, welche mit ein bis zwei Stop-Bits abgeschlossen werden. Daten werden also Byte für Byte an den Empfänger übertragen. Ein Arduino hat mehrere Pins, welche \acrshort{uart}-Kommunikation ermöglichen könnten. In diesem Projekt werden nur die Standart-Pins verwendet, da nur zwei Geräte miteinander kommunikzieren müssen (vgl. \cite{uart}). 
+Zu erkennen sind zwei Pins pro Gerät: Einer um Daten zu Senden und einer um sie zu Empfangen. Das grundlegende Prinzip ist, Daten in Pakete zu konvertieren, die dann Bit für Bit übermittelt werden. Ein Paket besteht aus einem Start-Bit, gefolgt von fünf bis neun Data-Bits, welche mit ein bis zwei Stop-Bits abgeschlossen werden. Daten werden also Byte für Byte an den Empfänger übertragen. Ein Arduino hat mehrere Pins, welche \acrshort{uart}-Kommunikation ermöglichen könnten. In diesem Projekt werden nur die Standart-Pins verwendet, da nur zwei Geräte miteinander kommunikzieren müssen (vgl. \cite{uart}). 
 \newpage
 \section{Zustandsautomaten}
 Ein Zustadsautomat ist ein Graph, bei dem die Knoten Zustände des Automaten darstellen. Kanten zeigen die Übergangskriterien von einem Zustand in einen Anderen (vgl. \cite{infoSkript}). In folgender Grafik ist ein einfacher Zustandsautomat aufgezeichnet: 

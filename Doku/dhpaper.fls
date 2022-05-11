@@ -1514,7 +1514,6 @@ INPUT .\dhbw-logo.png
 INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmr17.tfm
 INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmcsc10.tfm
 INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmr12.tfm
-INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmr17.tfm
 INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmbx12.tfm
 INPUT D:\Program Files (x86)\MikTech\tex\latex\lm\ot1lmr.fd
 INPUT D:\Program Files (x86)\MikTech\tex\latex\lm\ot1lmr.fd
@@ -1566,6 +1565,7 @@ INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\amsfonts\symbols\msbm10.tf
 INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\amsfonts\symbols\msbm7.tfm
 OUTPUT dhpaper.ist
 INPUT C:\Users\Moritz Knapp\AppData\Local\MiKTeX\pdftex\config\pdftex.map
+INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmr17.tfm
 INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmbx12.tfm
 INPUT D:\Program Files (x86)\MikTech\fonts\tfm\public\lm\ec-lmbx12.tfm
 INPUT .\dhpaper.toc
