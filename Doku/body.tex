@@ -49,15 +49,15 @@ Sensorik soll zu folgenden Zwecken eingesetzt werden:
 Mit der Positionserkennung soll die Lage der Hochbahn auf der Transportstrecke erfasst werden können. Die Information soll der Steuerung zur Verfügung gestellt werden. Aufgrund der Information soll der Lieferungsvorgang nachvollzogen werden können und die Geschwindigkeitsregelung der Hochbahn eingestellt werden. Mit der Kollisionsvermeidung sollen Hindernisse im Fahrweg der Gondel rechtzeitig erkannt werden. Innerhalb eines definierten Warnbereiches soll die Geschwindigkeit stark gedrosselt werden. Wird durch das Hindernis außerdem ein Schutzfeld verletzt, muss die Bahn komplett zum Stillstand kommen. Die Konzeptionierung zur Sensorik wird in \autoref{sec:konzeptSensorik} beschrieben.
 
 \section{Benutzeroberfläche}
-Nutzern soll es ermöglicht werden, die Bahn per Handy oder Tablet an eine gewünschte Position fahren zu lassen. Dabei soll die Oberfläche möglichst übersichtlich sein, sodass neue Nutzer schnell erkennen, wie die Bahn anzusteuern ist. Ebenfalls sollen aktuelle Informationen der Bahn, wie beispielsweise aktuelle Position, angezeigt werden.
+Nutzern soll ermöglicht werden, die Bahn per Handy oder Tablet an eine gewünschte Position fahren zu lassen. Dabei soll die Oberfläche möglichst selbsterklärend sein, sodass neue Nutzer schnell erkennen, wie die Bahn anzusteuern ist. Ebenfalls sollen aktuelle Informationen der Bahn, wie beispielsweise die Position, angezeigt werden.
 
 \section{Bestellsystem}
 \label{sec:anforderungBestellstystem}
 
-Das Bestellsystem soll es Nutzern ermöglichen, die Hochbahn von der Terrasse aus mit einem Bestellauftrag zur Küche zu schicken. 
+Das Bestellsystem soll es Nutzern ermöglichen, die Hochbahn mit einem Bestellauftrag zur Küche zu schicken. 
 Dort soll ein Tablet die aktuelle Bestellung anzeigen. Ist alles für den Transport vorbereitet, kann ein Nutzer aus der Küche den Auftrag 
 bestätigen und die Bahn fährt zur gewünschten Position zurück. \\
-Zudem soll die Möglichkeit bestehen, den Bestand zu erfassen. Das System soll selbstorganisierend sein, sodass sich auch das Kontingent durch Bestellungen aktualisiert. Dadurch soll verhindert werden, dass mehr bestellt werden kann, als vorhanden ist.
+Zudem soll die Möglichkeit bestehen, den Bestand zu erfassen. Das System soll selbstorganisierend sein, sodass sich auch der erfasste Vorrat in der Küche durch Bestellungen aktualisiert. Dadurch soll verhindert werden, dass mehr als vorrätig ist bestellt werden kann.
 Ebenfalls sollen Nutzer, die etwas bestellt haben, den aktuellen Lieferzustand einsehen können. D. h. es soll angezeigt werden, wo sich die Bahn befindet und welche Bestellung gerade bearbeitet wird.
 
 %---------------------VORGEHENSWEISE-----------------
@@ -339,10 +339,10 @@ Die Platine muss folgende Anforderungen erfüllen:
 		\item und Anschluss des Motortreibers.
 	\end{itemize}
 \end{center}
-All diese Anforderungen sollen möglichst gering im Leistungsverbrauch sein. Das bedeutet, dass beispielsweise Spannungsteiler für die Spannungsüberwachung nur dann in Aktion treten, wenn auch wirklich Spannung gemessen wird. Ansonsten bestünde hierbei ein ständiger Stromverbrauch.
+All diese Anforderungen sollen möglichst gering im Leistungsverbrauch sein. Das bedeutet, dass beispielsweise Spannungsteiler für die Spannungsüberwachung nur dann eingeschaltet werden, wenn auch wirklich Spannung gemessen wird. Ansonsten bestünde hierbei ein ständiger Stromverbrauch.
 
 \section{Kommunikation über UART}
-Generell erfolgt die Kommunikation der beiden Mikrocontroller über \acrshort{uart}. Daraus folgt, dass \acrfull{rx}-Pin des Hochbahn-Controllers (ESP32) mit \acrfull{tx}-Pin der Motorsteuerung (Arduino), sowie \acrshort{rx} des Arduinos mit \acrshort{tx} des ESP32 verbunden sein muss. 
+Generell erfolgt die Kommunikation der beiden Mikrocontroller über \acrshort{uart}. Daraus folgt, dass \acrfull{rx}-Pin des Hochbahn-Controllers (ESP32) mit \acrfull{tx}-Pin der Motorsteuerung (Arduino), sowie \acrshort{rx} des Arduinos mit \acrshort{tx} des ESP32 verbunden sein müssen. 
 Daraus resultiert folgendes Problem: \\
 Ein Arduino läuft mit einer Betriebsspannung von 5V, während der ESP32 mit 3,3V fungiert. Dadurch erhielte der ESP32 beim Empfangen von Nachrichten einen zu hohen HIGH-Pegel, während der Arduino Nachrichten mit zu niedriger Spannung bekäme.
 
