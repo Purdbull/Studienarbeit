@@ -4,7 +4,7 @@
 \label{cha:grundlagen}
 In diesem Kapitel werden die für die Studienarbeit relevanten Grundlagen betrachtet. Für die Abstandsmessung wird dabei das Ultraschallverfahren in \autoref {sec:ultraschall}erläutert. Als Antriebstechnik wird in \autoref{sec:schrittmotor} der Schrittmotor betrachtet und schließlich das \acrshort{mqtt}-Protokoll für die Kommunikation mit \autoref{sec:mqtt} beschrieben. 
 
-\section{Abstandsmessung mit Ultraschall}
+\section{Abstandsmessung mit Ultraschall (MT)}
 \label{sec:ultraschall}
 Die Distanzmessung mit Ultraschall ist ein berührungsloses Verfahren. Die Messung  beruht auf dem Prinzip der Laufzeitmessung. Der Frequenzbereich von Ultraschall liegt zwischen 20Khz - 1Ghz (vgl. \cite{ultraschallbereich}) und somit außerhalb des hörbaren Bereichs (20Khz).  Das Frequenzspektrum bei technischen Anwendungen ist kleiner. \\
 Ein Ultraschallsensor besteht aus einer Sende- und Empfangseinheit. Die Schallwellen werden meist auf Basis des piezoelektrischen Effekts impulsartig ausgesandt und ausgewertet.  Der Ultraschallimpuls pflanzt sich mit Schallgeschwindigkeit im Ausbreitungsmedium fort. Das zu messende Objekt reflektiert die Schallwelle. Die Empfangseinheit nimmt das entstandene Echo auf. Durch die verstrichene Zeit von der Aussendung bis zum Empfangen des Impulses kann die Entfernung des Objektes bestimmt werden. \\
@@ -20,7 +20,7 @@ Die maximale Messdistanz hängt von der maximal möglichen Intensität der ausge
 Prinzipbedingt unterliegen Ultraschallsensoren einigen Messfehlern. Dazu gehört, dass schallschluckende Oberflächen eine zu geringe Intensität reflektieren. Dasselbe gilt für Objekte mit rauer Oberfläche. Messfehler können außerdem durch sog. Scheinechos entstehen, wenn der Ultraschallimpuls von mehreren Objekten reflektiert wird. Aufgrund des Öffnungswinkels der Schalwelle ist der gleichzeitige Betrieb mehrerer Sensoren in derselben Richtung nur eingeschränkt möglich. (vgl. \cite{ultraschallBa})
 
 \newpage
-\section{Der Schrittmotor}
+\section{Der Schrittmotor (MT)}
 \label{sec:schrittmotor}
 Der Schrittmotor zählt zu den \acrshort{synchronmaschine}n. Mit den Motoren können Positionen sehr exakt ohne weitere Regler angefahren werden. Schrittmotoren finden sich beispielsweise in Druckern, CD-Laufwerken und computergesteuerte Werkzeugmaschinen.  Schrittmotoren besitzen ein Haltemoment, das ebenfalls in vielen Anwendungen genutzt wird. (vgl. \cite{schrittmotorBa}, S. 2) In \autoref{pic:pmMotor} ist der Aufbau eines Schrittmotors \textit{(hier: PM-Motors)} dargestellt. 
 
@@ -59,7 +59,7 @@ Folgende Grundtypen von Schrittmotoren werden unterschieden:
 
 \newpage
 
-\subsection{Der \acrshort{reluktanz}-Schrittmotor (VR)}
+\subsection{Der \acrshort{reluktanz}-Schrittmotor (VR) (MT)}
 
 Beim \acrshort{reluktanz}-Schrittmotor besteht der Rotor aus einem Weicheisenkern dessen Zahnteilung ungleich der Polteilung des Stators ist. Nach einem Umschalten des Statormagnetfeldes bewegt sich der Rotor in die Position des geringsten magnetischen Widerstands (Reluktanz). Diese Stellung wird auch als \acrshort{koinzidenzstellung} bezeichnet. Die Stärke des magnetischen Feldes hängt von der Stromstärke ab. Diese ist veränderlich und verleiht dem Motortyp seine Bezeichnung VR-Motor \textit{(VR = engl. "variable reluctance motor")}. (vgl. \cite{schrittmotorBa}, S.2)
 
@@ -74,10 +74,10 @@ Für die Anzahl der Schritte je Umdrehung gilt:
 
 Bei einem Motor mit vier Rotorzähnen und 3 Strängen würde sich somit bei einem Umschaltvorgang ein Verdrehwinkel $\beta$ von 30° einstellen. Um das Drehmoment zu erhöhen, werden alle Spulen gleichzeitig bestromt. Die Änderung des Magnetfeldes wird durch Umpolungen erreicht. 
 
-\subsection{Der Permanenterregte Schrittmotor (PM)}
+\subsection{Der Permanenterregte Schrittmotor (PM) (MT)}
 Beim PM-Motor ist der Rotor permanentmagnetisch. Dieser stellt sich ebenfalls in Abhänigigkeit vom Statormagnetfeld in polaritätsrichtige \acrshort{koinzidenzstellung}. Durch den Permanentmagneten bildet der Motor ein Haltemoment im stromlosen Zustand aus. Die Anzahl gleichzeitig erregter Wicklungen wird mit $n$ bezeichnet. Bei Verdopplung von $n$ halbiert sich der Schrittwinkel $\alpha$. Bleibt $n$ konstant, dreht sich der Rotor im \textit{Vollschrittbetrieb}. Bei einem PM-Motor kann zwischen Vollschritt- und Halbschrittbetrieb gewechselt werden. (vgl. \cite{kleinantriebe}, S. 436f). \newpage
 
-\subsection{Der Hybrid-Schrittmotor (HY)}
+\subsection{Der Hybrid-Schrittmotor (HY) (MT)}
 Der Hybrid-Schrittmotor (HY) ist eine Kombination aus beiden Bauformen. Der Motor besitzt einen permanentmagnetischen Rotor sowie variabel ansteuerbare Statorwicklungen. Dadurch vereint die Bauform die Vorteile des hohen Drehmoments des PM-Motors sowie die große Auflösung des VR-Motors. Im Vergleich zum PM-Motor sind beim Hybrid-Schrittmotor Nord- und Südpol axial versetzt und um einen halben Zahn verdreht. Der Aufbau eines HY-Motors ist in \autoref{pic:hyMotor} dargestellt. 
 
 
@@ -105,7 +105,7 @@ Wird $n$ größer, steigt dadurch Drehmoment $M$ des Motors. Durch die kontinuie
 Eine weitere Betriebsart ist der Mikroschrittbetrieb. Dabei wird die Stromstärke in den Statorwicklungen durch den Treiber sinusförmig gesteuert. (vgl. \cite{kleinantriebe},S.438, 454; \cite{schrittmotorBa}, S.3)
 
 \newpage
-\section{MQTT} 
+\section{MQTT (INF)} 
 \label{sec:mqtt}
 \acrfull{mqtt} ist ein Protokoll, welches zur digitalen Datenübertragung in Ethernet-basierten Systemen dient. Es benötigt dabei nur wenig Bandbreite und verwendet eine Publish/Subscribe - Architektur. Das bedeutet, dass Nachrichten sogenannter Topics von Publishern bereitgestellt und von Subscribern empfangen werden. Der Datenverkehr wird über einen zentralen Broker verwaltet. In \autoref{pic:mqttbroker} ist eine typische \acrshort{mqtt}-Topologie aufgezeigt. 
 
@@ -124,7 +124,7 @@ Wichtig dabei ist, dass die Daten nicht zwischen Publisher und Subscriber direkt
 
 
 
-\section{UART}
+\section{UART (INF)}
 \label{sec:uart}
 \acrfull{uart} bezeichnet eine Hardware-Schnittstelle, welche zur seriellen Kommunikation verwendet wird. In \autoref{pic:uartCon} ist die Verbindung zwischen zwei Geräten, die über \acrshort{uart} kommunizieren, gezeigt.
 \begin{figure}[h]
@@ -135,7 +135,7 @@ Wichtig dabei ist, dass die Daten nicht zwischen Publisher und Subscriber direkt
 \end{figure}
 Zu erkennen sind zwei Pins pro Gerät: Einer um Daten zu Senden und einer um sie zu Empfangen. Das grundlegende Prinzip ist, Daten in Pakete zu konvertieren, die dann Bit für Bit übermittelt werden. Ein Paket besteht aus einem Start-Bit, gefolgt von fünf bis neun Data-Bits, welche mit ein bis zwei Stop-Bits abgeschlossen werden. Daten werden also Byte für Byte an den Empfänger übertragen. Ein Arduino hat mehrere Pins, welche \acrshort{uart}-Kommunikation ermöglichen könnten. In diesem Projekt werden nur die Standart-Pins verwendet, da nur zwei Geräte miteinander kommunikzieren müssen (vgl. \cite{uart}). 
 \newpage
-\section{Zustandsautomaten}
+\section{Zustandsautomaten (INF)}
 Ein Zustadsautomat ist ein Graph, bei dem die Knoten Zustände des Automaten darstellen. Kanten zeigen die Übergangskriterien von einem Zustand in einen Anderen (vgl. \cite{infoSkript}). In folgender Grafik ist ein einfacher Zustandsautomat aufgezeichnet: 
 
 \begin{figure}[h]
@@ -147,3 +147,6 @@ Ein Zustadsautomat ist ein Graph, bei dem die Knoten Zustände des Automaten dar
 
 \autoref{pic:simpleState} zeigt einen Automaten, welcher zwei Zustände hat:$A$ und $B$. Beim Start befindet er sich in Zustand $A$ und kann nur unter der Bedingung $x$ in Zustand $B$ wechseln. Aus Zustand $B$ kann er nur über Bedingung $y$ wieder zurück zu $A$. Die doppelte Umrandung von $A$ zeigt, dass es sich hierbei m den Startzustand handelt. \\
 Zustandsautomaten finden oft Anwendung in Softwareentwicklung. Sie werden hauptsächlich zum Lesen von Nachrichten oder Eingaben verwendet. In dieser Arbeit wird das Gesamtkonzept einzelner Softwarekomponenten als Zustandsautomaten implementiert.
+
+\section{HTTP (INF)}
+\acrfull{http} kommt in IP-basierten Netzen für die Übertragung von Webseiten und Informationen von einem Webserver zum Webbrowser zum Einsatz. \acrshort{http} arbeitet nach einem Client-Server-Prinzip. Das bedeutet, dass der Browser alks Client und der Server als \acrshort{http}-Server fungiert. Um beispielsweise eine Website aufzurufen, sendet der Browser ein \acrshort{http}-Request an den Server (vgl. \cite{http}). Es gibt verschiedene Arten von solchen Requests. \\Folgende zwei Arten sind für diese Arbeit wichtig: Ein GET-Request erbittet Webseiten oder einzelne Informationen vom Webserver. Ein POST-Request wird verwendet um auf dem Server neue Informationen zu erstellen, bzw. Informationen an den Server zu schicken. 

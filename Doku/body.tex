@@ -1,10 +1,10 @@
 %----------------------ANFORDERUNGSANALYSE-------------------
-\chapter{Anforderungsanalyse}
+\chapter{Anforderungsanalyse (MT)}
 \label{cha:anforderungsanalyse}
 
 In diesem Kapitel wird mit \autoref{sec:ausgangslage} zunächst das bisherige System beschrieben. Mit den anschließenden Abschnitten \ref{sec:anforderungFunktionUndAufbau} bis \ref{sec:anforderungBestellstystem} werden die Anforderungen an das neue, digitale Transportsystem definiert. 
 
-\section{Ausgangslage}
+\section{Ausgangslage (MT)}
 \label{sec:ausgangslage}
 Die Gartenhochbahn stellt ein Transportsystem für Essen und Getränke dar. Hauptbestandteil des Systems ist eine Gondel, die sich mit Laufrädern auf einer Schiene fortbewegt. In \autoref{pic:oldhochbahn} ist die Gondel im initialen Zustand dargestellt. An dem Aufbau ist mit Ketten das Tablet befestigt, auf dem Speisen und Getränke abgestellt werden können.  
 
@@ -24,19 +24,19 @@ Mit drei Tastern können verschiedene Stationen auf dem Weg angefahren werden. D
 
 Der bisherige Gondelaufbau entspricht in vielen Punkten nicht den Anforderungen. Dazu zählt vor allem der hohe Verschleiß des reibschlüssigen Antriebs. Da der initiale Aufbau in grundlegenden Punkten verändert werden müsste, wird im Rahmen des Projektes die Gondel neu aufgebaut. In den folgenden Abschnitten werden Anforderungen an die neue Gondel gestellt. 
 
-\section{Funktion und Aufbau}
+\section{Funktion und Aufbau (MT)}
 \label{sec:anforderungFunktionUndAufbau}
 Der Aufbau soll dafür ausgelegt sein, Getränke und Speisen bis zu einem Gewicht von $\approx$5Kg zu transportieren. Um die Bestellung unversehrt liefern zu können, darf ein bestimmter Neigungswinkel nicht überschritten werden. Zu diesem Zweck muss das Kippmoment der Gondel abgefangen werden. Auf den Schienen muss sich die Gondel selbst bei engen Radien zuverlässig fortbewegen können. Damit die Entladespannung der Batterie nicht unterschritten wird, muss diese überwacht werden. Wird eine bestimmte Spannungsschwelle unterschritten, soll ein Zurückfahren in die Ladestation erzwungen werden. Da der größte Teil der Hochbahn überdacht ist, muss keine Rücksicht auf Witterungsbedingungen genommen werden. Die Konzeptionierung des Aufbaus erfolgt in \autoref{sec:konzeptGrundaufbau}.
 \newpage
 
 
-\section{Antrieb}
+\section{Antrieb (MT)}
 \label{sec:anforderungAntrieb}
 Insgesamt soll der Antrieb eine hohe Zuverlässigkeit aufweisen und verschleißarm sein. 
 Die Kraftübertragung soll mit einer passenden Übersetzung erfolgen. Durch den elektrischen Motor soll eine Regelung der Geschwindigkeit und Drehrichtung möglich sein. Wünschenswert wäre außerdem eine Rückmeldung der Umdrehungen. Beim Beschleunigen und Bremsen darf nichts von den Speisen und Getränken verschüttet werden. Dazu muss der Geschwindigkeitsgradient ausreichend klein sein. Das Konzept zum Antrieb wird in \autoref{sec:konzeptAktorik} beschrieben. 
 
 
-\section{Sensorik}
+\section{Sensorik (MT)}
 \label{sec:anforderungSensorik}
 Sensorik soll zu folgenden Zwecken eingesetzt werden: 
 
@@ -48,10 +48,10 @@ Sensorik soll zu folgenden Zwecken eingesetzt werden:
 
 Mit der Positionserkennung soll die Lage der Hochbahn auf der Transportstrecke erfasst werden können. Die Information soll der Steuerung zur Verfügung gestellt werden. Aufgrund der Information soll der Lieferungsvorgang nachvollzogen werden können und die Geschwindigkeitsregelung der Hochbahn eingestellt werden. Mit der Kollisionsvermeidung sollen Hindernisse im Fahrweg der Gondel rechtzeitig erkannt werden. Innerhalb eines definierten Warnbereiches soll die Geschwindigkeit stark gedrosselt werden. Wird durch das Hindernis außerdem ein Schutzfeld verletzt, muss die Bahn komplett zum Stillstand kommen. Die Konzeptionierung zur Sensorik wird in \autoref{sec:konzeptSensorik} beschrieben.
 
-\section{Benutzeroberfläche}
+\section{Benutzeroberfläche (MT)}
 Nutzern soll ermöglicht werden, die Bahn per Handy oder Tablet an eine gewünschte Position fahren zu lassen. Dabei soll die Oberfläche möglichst selbsterklärend sein, sodass neue Nutzer schnell erkennen, wie die Bahn anzusteuern ist. Ebenfalls sollen aktuelle Informationen der Bahn, wie beispielsweise die Position, angezeigt werden.
 
-\section{Bestellsystem}
+\section{Bestellsystem (INF)}
 \label{sec:anforderungBestellstystem}
 
 Das Bestellsystem soll es Nutzern ermöglichen, die Hochbahn mit einem Bestellauftrag zur Küche zu schicken. 
@@ -66,7 +66,7 @@ Ebenfalls sollen Nutzer, die etwas bestellt haben, den aktuellen Lieferzustand e
 \label{cha:vorgehensweise}
 In diesem Kapitel wird die Vorgehensweise zur Bewerkstelligung des Projektzieles beschrieben. Um das Ziel zu erreichen, stand zunächst die Projektorganisation im Vordergrund. Diese wird in \autoref{sec:projektorganisation} erläutert. 
 
-\section{Projektorganisation}
+\section{Projektorganisation (MT)}
 \label{sec:projektorganisation}
 Die Projektorganisation erfolgte anhand der folgenden Stufen: 
 
@@ -82,7 +82,7 @@ In einem letzten Schritt folgte die Definition der Aufgaben in einem Kanban-Boar
 
 
 \newpage
-\subsection{Projektstrukturplan}
+\subsection{Projektstrukturplan (MT)}
 In \autoref{pic:structuremech} ist der  Projektstrukturplan mit den mechatronischen Komponenten dargestellt. 
 
 \begin{figure}[h]
@@ -97,7 +97,7 @@ Das Projekt ist untergliedert in drei Teilaufgaben. Diese werden in der nächste
 Da die Bereiche aufeinander aufbauend sind, können Zusammenhänge analysiert werden. In dem Schaubild sind die Bereiche von links nach rechts in zeitlicher Abfolge aufgetragen. Dementsprechend soll in einem ersten Schritt die Aktorik konzeptioniert werden. Dazu zählt die elektrische und mechanische Komponente des Antriebs. Mit den elektrischen Leistungsdaten der Aktorik wird im nächsten Schritt das Energiekonzept ausgearbeitet. Auf diesen Bereich baut final die Konzeptionierungsphase der Sensorik auf. \\ 
 
 \newpage
-\subsection{Projektablaufplan}
+\subsection{Projektablaufplan (MT)}
 \label{sec:projektablaufplan}
 Aus dem Projektstrukturplan geht der Projektablaufplan hervor. Darin werden die zuvor definierten Arbeitspakete aus den Teilaufgaben terminiert. Ein Ausschnitt aus dem Projektablaufplan der mechatronischen Komponenten ist in \autoref{pic:roadmap} dargestellt. 
 \begin{figure}[h]
@@ -108,10 +108,11 @@ Aus dem Projektstrukturplan geht der Projektablaufplan hervor. Darin werden die 
 	\end{center}
 \end{figure}
 
+\subsection{Planung für die informationstechnische Projektumsetzung (INF)}
+Das Projekt ist in zwei Semester gegliedert. Im ersten Abschnitt sollen alle Softwarekomponenten konzeptioniert werden. Der Fokus liegt dabei auf der Konzeptionierung des verteilten Systems auf der Hochbahn, da dies den sicherheitskritischsten Faktor darstellt. Ebenfalls ist die Platine, welche das System vereint, zu Planen, zu Designen und zu Fertigen. Im Anschluss daran sollen im zweiten Abschnitt diese Konzepte umgesetzt werden. Die Platine bildet dabei das System, auf dem die einzelne Programme, insbesondere die Kommunikation zwischen den Controllern, zu Testen ist. Ein Webserver ist ebenfalls zu Implementieren.
+Sind alle Komponenten fertiggestellt, soll das System vor Inbetriebnahme simuliert getestet werden.
 
-
-\newpage
-\subsection{Arbeitsmangement}
+\subsection{Arbeitsmangement (MT)}
 \label{sec:arbeitsmanagement}
 Für das Arbeitsmanagement wird die Kanban-Methode verwendet. Dabei werden die Teilaufgaben dem Bearbeitungsstatus zugeordnet. Im Rahmen des Projektes wurden die Stati \textit{Backlog}, \textit{Todo,  In Progress, Testing} und \textit{Done}  unterschieden. 
 Die Aufgaben wurden mit den Berbeitungszeiträume aus dem Projektablaufplan definiert und dem entsprechenden Bearbeiter zugewiesen. 	
@@ -120,7 +121,7 @@ Für die Kanban-Methode kam das Tool \textit{Trello} zum Einsatz.
 
 %----------------------KONZEPT-------------------------
 
-\chapter{Konzeptionierung der mechatronischen Komponenten}
+\chapter{Konzeptionierung der mechatronischen Komponenten (MT)}
 \label{cha:konzeptionierung}
 Mit \autoref{cha:anforderungsanalyse} wurden Anforderungen an das Projekt gestellt. Zum Erreichen dieser Anforderungen findet in diesem Kapitel die Konzeptionierung statt. Dazu wird mit \autoref{sec:konzeptGrundaufbau} zunächst der generelle Aufbau betrachtet. Anschließend folgen mit den Abschnitten \ref{sec:konzeptAktorik} bis \ref{sec:konzeptSensorik} die Konzepte zu den mechatronischen Komponenten \textit{Aktorik}, \textit{Energieversorgung} und \textit{Sensorik}. Als Übergang zu den informationstechnischen Konzepten werden mit \autoref{sec:konzeptSchnittstellen} die \textit{Schnittstellen} ausgearbeitet. \newpage
 
@@ -210,11 +211,11 @@ Für das Projekt wird Konzept b) verfolgt. Die additive Fertigung des Bauteils s
 
 \section{Energieversorgung}
 \label{sec:konzeptEnergieversorgung}
-Die Batterie dient als Energieversorgung für Aktorik, Sensorik und Steuerung. Um für die Komponenten passende Ströme und Spannungen bereitstellen zu können, sind diverse Leistungskonvertierungen nötig. In \autoref{pic:leistungskonvertierung} sind die zu diesem Zweck verwendeten Komponenten dargestellt und in \autoref{tbl:leistungskonvertierung} aufgelistet. 
+Die Batterie, bestehend aus zwei Li-Ion-Zellen, dient als Energieversorgung für Aktorik, Sensorik und Steuerung. Um für die Komponenten passende Ströme und Spannungen bereitstellen zu können, sind diverse Leistungskonvertierungen nötig. In \autoref{pic:leistungskonvertierung} sind die zu diesem Zweck verwendeten Komponenten dargestellt und in \autoref{tbl:leistungskonvertierung} aufgelistet. 
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=17cm]{leistungskonvertierung.pdf}
+		\includegraphics[width=12cm]{leistungskonvertierung.pdf}
 		\caption{Schema zur Leistungskonvertierung der elektrischen Komponenten}
 		\label{pic:leistungskonvertierung}
 	\end{center}
@@ -226,13 +227,13 @@ Die Batterie dient als Energieversorgung für Aktorik, Sensorik und Steuerung. U
 		\begin{tabular}[h]{l|l|l}
 			\textbf{Name} & \textbf{Bezeichnung} & \textbf{Bauteill}\\
 			\hline
-			G1 & Li-Ion Batterie & Panasonic NCR18650B\\
+			G1 & Li-Ion Batterien in Reihe & 2x Panasonic NCR18650B\\
 			\hline
-			T1-T2 & Step-Down Converter & Polulu S13V30F5\\
+			T1 & DC-DC-Wandler & Polulu S7V7F5\\
 			\hline
-			T3 & Step-Up Converter & Polulu U1V11F3\\
+			T2 & Step-Up Converter & LAOMAO XL6009 \\
 			\hline
-			T4 & Schrittmotor Treiber & Polulu DRV8834 \\
+			T3 & Schrittmotor Treiber & Polulu DRV8834 \\
 			\hline
 			K1 & Steueurungen & Arduino Nano, ESP32 \\
 		\end{tabular}
@@ -242,9 +243,9 @@ Die Batterie dient als Energieversorgung für Aktorik, Sensorik und Steuerung. U
 \end{table}
 \newpage
 
-Die Li-Ion Batterie darf eine minimale Zellspannung $U_{min} =2,75V$ nicht unterschreiten. Zu diesem Zweck lässt sich die \acrshort{cutoffvoltage} bei den beiden Step-Down Convertern $T1$ und $T2$ einstellen. Damit wird bei  niedrigem Batteriezustand die Leistungselektronik abgeschaltet. Die Steuerung ist anschließend noch immer aktiv, sodass eine Kommunikation mit dem Hochbahncontroller weiterhin möglich bleibt. Im Schema nicht dargestellt ist der Hochbahncontroller ESP32, der die Entladespannung ebenfalls kontinuierlich überprüft und vor Erreichen der \acrshort{cutoffvoltage} die Fahrt zur Ladestation einleitet. Die beiden Konverter $T1$ und $T2$ sind in Reihe geschaltet, um die erforderlichen Leistungen des Schrittmotors bereitstellen zu können. Am Schrittmotortreiber $T4$ lässt sich die für den Motor geforderte Spannung und maximale Stromstärke einstellen. Dafür findet im Treiber ebenfalls eine Leistungskonvertierung von $V_{in}=6,6V$ auf $V_{Motor}=3,3V$ statt. Der Step-Up Converter $T3$ passt die Eingangsspannung an die erforderliche Spannung der Controller an. Die Ausgangsspannung des Converters liegt bei $5 \pm 0,15 V$ \\
+Die Li-Ion Batterie darf eine minimale Zellspannung $U_{min} =2,75V$ (\acrshort{cutoffvoltage}) nicht unterschreiten. Im Schema nicht dargestellt ist der Hochbahncontroller ESP32, der die Entladespannung kontinuierlich überprüft und vor Erreichen der \acrshort{cutoffvoltage} die Fahrt zur Ladestation einleitet. Der Converter T2 stellt die Leistung für den Schrittmotor bereit. Am Schrittmotortreiber $T3$ lässt sich die für den Motor geforderte Spannung und maximale Stromstärke einstellen. Dafür findet im Treiber ebenfalls eine Leistungskonvertierung von $V_{in}=6,6V$ auf $V_{Motor}=3,3V$ statt. Der Step-Up Converter $T1$ passt die Eingangsspannung an die erforderliche Spannung der Controller an. Die Ausgangsspannung des Converters liegt bei $5 \pm 0,15 V$ \\
 
-Die Li-Ion Batterie soll in der Parkposition der Hochbahn aufgeladen werden. Die Batterie kann bei einer Ladespannung von $4,2V$ aufgeladen werden. Für die Steuerung des Ladevorgangs kommt der Ladecontroller $MCP73831/2$ von Microchip zum Einsatz. Der Controller lässt einen Ladestrom von $500mA$ zu. 
+Die Li-Ion Batterien sollen in der Parkposition der Hochbahn aufgeladen werden. Eine Batterie kann bei einer Ladespannung von $4,2V$ aufgeladen werden. Für die Steuerung des Ladevorgangs kommt der Ladecontroller $MCP73831/2$ von Microchip zum Einsatz. Der Controller lässt einen Ladestrom von $500mA$ zu. 
 
 
 \newpage
@@ -322,7 +323,7 @@ Als Übergang von der Konzeptionierung mechatronischer Komponenten zu den inform
 In dem Schema sind die Komponenten hierarchisch dargestellt. Die Pfeile dazwischen stellen die Schnittstellen dar. Der Webserver kommuniziert mit den Endgeräten der Kunden oder dem Tablet in der Küche über \acrshort{http}. Mit POST-Requests werden Steuerbefehle oder Bestellungen zur weiteren Verarbeitung an den Server geschickt.
 \acrshort{mqtt} dient zur Kommunikation zwischen dem Server und der Hochbahn. Für die Übermittlung der \acrshort{mqtt}-Befehle  befindet sich ein \acrshort{mqtt}-Broker auf der Kommunikationsebene. Die Hochbahn erhält Information über die Station, die angefahren werden soll. Während der Fahrt gibt die Bahn Rückmeldung über die aktuelle Position. Außerdem sollen Meldungen des Systems zur Kollisionsvermeidung und der Entladespannung der Batterie übertragen werden. Auf der Hochbahn führt ein ESP32 als Controller die Kommunikation durch. Die Steuerung des Motors und die Kollisionsvermeidung sind auf zwei Arduino Nanos ausgelagert. Der ESP32 ist den beiden Controllern übergeordnet. Für die Kommunikation zwischen der Motorsteuerung und dem ESP32 wird \acrshort{uart} zur seriellen Kommunikation verwendet. Der Hochbahncontroller versendet darüber Befehle zur Motorfrequenz und empfängt dafür von der Motorsteuerung die aktuelle Geschwindigkeit. \autoref{sec:motorsteuerung} beschreibt die Umsetzung der Motorsteuerung. Wie in Abschnitt \ref{sec:konzeptKollisionsvermeidung} beschrieben, überprüft die Sicherheitssteuerung kontinuierlich die Distanzwerte der Ultraschallsensoren. Ist eine Kollision zu erwarten, setzt die Steuerung einen entsprechenden Interrupt am Hochbahn-Controller. Der \acrshort{reed}-Kontakt für die Positionserfassung ist über $I/O$-Pins direkt mit dem Hochbahncontroller verbunden. 
 
-\chapter{Entwicklung der Platine}
+\chapter{Entwicklung der Platine (INF)}
 \label{sec:ecardConcept}
 In \autoref{sec:konzeptSchnittstellen} wurde bereits angedeutet, dass auf der Hochbahn mehrere elektronische Komponenten zusammenarbeiten müssen (Arduino, ESP32, etc.). Daher werden diese Komponenten sowie die benötigte Peripherie, auf einer Platine zu einem verteilten System vereint. 
 Die Entwicklung dieser Platine wird in Folgendem erläutert.
@@ -435,7 +436,7 @@ In \autoref{sec:mess} wurde beriets erwähnt, dass die gemessene Spannung an der
 In \autoref{pic:messrichtigmitteiler} ist zu sehen, dass die Schaltung um einen Spannungsteiler erweitert wurde. Da beide Widerstände den gleichen Wert haben, kann zwischen ihnen die Hälfte der Spannung gemessen werden. 
 Um in der Software die richtige Spannung der Zelle zu erhalten, ist der gemessene Wert zu verdoppeln. Zieht man nun die Spannung der ersten Zelle ab, ist das Ergebnis die Spannung der zweiten Zelle.
 
-\chapter{Konzeption des verteilten Systems auf der Hochbahn}
+\chapter{Konzeption des verteilten Systems auf der Hochbahn (INF)}
 \label{sec:software}
 Die Software der Anlage lässt sich in zwei Bereiche gliedern: \textit{Webserver im Heimnetzwerk} und \textit{Client auf der Hochbahn}. Der Webserver soll ein Interface für Benutzer der Anlage bereitstellen, auf dem die Hochbahn gesteuert werden kann. 
 Der Client bekommt daraufhin Befehle vom Webserver und führt diese, sofern möglich, aus. 
@@ -538,7 +539,7 @@ In folgendem sind zwei Beispielnachrichten genannt, welche der Definition des Pr
 \newpage
 
 
-\chapter{Konzeptionierung der einzelnen Softwarekomponenten der Hochbahn}
+\chapter{Konzeptionierung der einzelnen Softwarekomponenten der Hochbahn (INF)}
 \section{Zustandsautomaten}
 Auf der Hochbahn befinden sich zwei Softwarekomponenten, die untereinander Nachrichten austauschen. Dies dient der Synchronisierung und Ausführung von Fahrbefehlen. Der Ablauf, welcher im erfolgreichen Fahren mündet, ergibt sich wie folgt:
 \begin{center}
@@ -583,6 +584,7 @@ Der Automat ist in \autoref{pic:statemaschineARD} gezeigt.
 Zu sehen ist dabei wieder eine Kreisstruktur, bei der die einzelnen Zustände über \texttt{ERROR} unterbrechen und wieder zu \texttt{IDLE} rücksetzen können. In Zustand \texttt{IDLE} wird die Batteriespannungen überprüft um rechtzeitig zur Ladestation zu fahren, falls sie zu leer sind. In diesem Fall schaltet sich die Bahn ab, sobald sie an der Ladestation angedockt ist. Wird eine Positionsanfrage empfangen, übermittelt Zustand \texttt{POSITION} die aktuelle Position und der Automat wechselt zu Zustand \texttt{WAIT}. Dieser wartet auf den Fahrbefehl und akzeptiert diesen nach Überprüfung. Zustand \texttt{DRIVE} führt den Fahrbefehl aus und der Automat wechselt zurück zu \texttt{IDLE}
 
 \section{Konzeptionierung der Fahrfunktion}
+\label{sec:konFahr}
 Die Hauptfunktion dieser Methode lässt sich mit folgendem Satz zusammenfassen: \textit{Die Bahn fährt von A nach B.} B ist in diesem Fall die anzufahrende Position, welche vom Server übermittelt wurde. Aus acht Abschnitten auf der Strecke und der Möglichkeit jeden Abschnitt von jedem Abschnitt aus anzufahren ergeben sich 56 individuelle Fahrprogramme. Eine Möglichkeit wäre, jedes dieser Fahrprogramme einzeln auszuprogrammieren. Ein viel eleganterer Weg ist jedoch, den Arduino selbst das Fahrprogramm bestimmen zu lassen. 
 
 \subsection{Regeln zur Bestimmung des Fahrprogramms}
@@ -659,7 +661,7 @@ Ein weiteres Beispiel mit einer Fahrt von Abschnitt zwei zu Abschnitt sechs zeig
 
 Die Priorisierung $Regel1 <  Regel3 <  Regel2  < Regel4$ kann  sowohl ein zu schnelles Ankommen der Bahn im letzten Abschnitt, als auch unnötige Beschleunigungen vermeiden.
 
-\chapter{Server}
+\chapter{Server (INF)}
 Die ursprüngliche Konzeptionierung dieses Projekts plante ein Bestellsystem. Dieses wurde aufgrund der stark gestiegenen Komplexität des verteilten Systems auf der Hochbahn in den Ausblick dieser Arbeit verschoben. Da ein Server nun nur Steuerbefehle weiterleitet, wäre es einfach, diesen vom ESP32 der Hochbahn selbst hosten zu lassen. Da das System jedoch auch nach Ende dieser Arbeit weiterentwickelt werden soll, wird hierbei trotzdem eine Grundlage geschaffen, um später das Bestellsystem leichter hinzufügen zu können. Daher ist ein Server zu entwickeln, welcher die komplexe Implementierung eines Bestellsystems ermöglicht. 
 \section{ASP.NET-Core}
 Nach evaluierung verschiedener Frameworks für die Serverprogrammierung, fiel die Entscheidung auf APS.NET-Core. Grund dafür war einerseits die persönliche Vorliebe für die Programmiersprache C\# im Gegensatz zu beispielsweise Python mit Django als Framework. Ebenfalls bietet ASP.NET-Core die Möglichkeit einen \acrshort{mqtt}-Broker als zusätzliche Komponente des Systems zu hosten. Somit wird im Betrieb auf dem Raspberry PI nur noch der Server getartet, ohne einen Broker installieren und starten zu müssen. \\
@@ -684,7 +686,7 @@ Index ist jene Seite, die beim ersten Aufruf der Website gezeigt wird. Sie soll 
 </div>
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:index} Index.html des Servers}
-\vspace{1cm}
+\vspace{0.5cm}
 
 In \autoref{code:index} ist der HTML-Code der Hauptseite zu sehen. Zu erkennen ist ein \texttt{Input} des Types \texttt{Range} (Slider), dessen Wert über seine \texttt{ID} erhalten werden kann. Die Funktion \texttt{driveTo()}, welche beim Klicken auf den \texttt{Button} gestartet wird, entnimmt diesen Wert und sendet ihn via \acrshort{mqtt} an die Bahn (Mehr dazu unter \autoref{sec:serverMqtt}). Die Hochbahn schickt, bei Änderung der Position, diese an den Server. Auf dem Server soll also immer die aktuelle Position der Bahn gespeichert sein. Änderungen des Inhalts auf der Seite des Servers hat generell keine Auswirkung auf jene die Beispielsweise auf dem Handy angezeigt wird, da das Handy sich beim ersten Aufruf die Seite holt und diese nicht aktualisiert. Daher ist der Einbau einer Funktionalität nötig, die Clientseitig periodisch Daten wie die aktuelle Position aktualisiert. Die Position soll im \texttt{div} der ID \texttt{data-position} angezeigt werden. Um aktuelle Daten vom Server zu erhalten wird Clientseitig ein GET-Request durchgeführt. Dieses Request erfragt definierte Daten vom Server und kann von jedem Gerät welches die Seite aufruft durchgeführt werden. Beim ersten Aufruf der Website wird beispielsweise ein GET-Request auf die Seite Index durchgeführt. \\
 HTML bietet die Möglichkeit einer \texttt{onload} - Methode. Diese wird ausgeführt, sobald die Seite aufgerufen wird. Im Falle des Hochbahnservers initialisiert die \texttt{onload} - Methode die periodische Ausführung verschiedener GET-Requests. 
@@ -700,7 +702,7 @@ HTML bietet die Möglichkeit einer \texttt{onload} - Methode. Diese wird ausgef�
 	}
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:init} Initialisierung der periodischen GET-Requests}
-\vspace{1cm}
+\vspace{0.5cm}
 In \autoref{code:init} ist die Initialisierungsfunktion zu erkennen. Sie setzt ein intervall von 500 Millisekunden. Das bedeutet, dass die Methode alle 500 Millisekunden ausgeführt wird. So führt jedes Gerät welches die Hauptseite lädt alle 500 Millisekunden verschiedene Get-Requests auf verschiedene Informationen der Hochbahn durch. 
 
 \subsection{Info}
@@ -731,7 +733,7 @@ Die GET-Requests auf diese Informationen werden mit jener für die Position der 
     }
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:get}GET-Request auf die Fehlermeldungen}
-\vspace{1cm}
+\vspace{0.5cm}
 \autoref{code:get} zeigt ein GET-Request auf die URL \texttt{Home/Error}. Mit der Antwort des Servers wird im Parameter \texttt{data} die aktuelle Fehlermeldung übergtagen. Diese wird im Anschluss an das Textfeld mit der ID \texttt{data-error} übergeben. 
 \subsection{Benutzeroberfläche}
 Ein Nutzer der mit einem Smartphone die Seite im Heimnetzwerk aufruft, also im Browser die IP-Adresse des Servers eingibt, kann auf die beiden Seiten zugreifen, welche in \autoref{pic:ui} gezeigt sind.
@@ -804,6 +806,7 @@ public void ConfigureServices(IServiceCollection services)
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:services} ConfigureServices des Servers}
 
+\vspace{0.5cm}
 Neben dem Singleton werden in \autoref{code:services} weitere Handler-Funktionen von \acrshort{mqtt} als Service registriert. Diese werden vom Broker benötigt. Der Parameter \texttt{\_server} ist eine Instanz eines Interfaces, welches selbst geschrieben werden muss. Dieses muss alle benötigten \acrshort{mqtt} - Methoden implementieren, wie beispielsweise \acrshort{mqtt} - Messages verschicken. Im Falle dieser Arbeit werden folgende Funktionen benötigt:
 
 \begin{center}
@@ -828,6 +831,7 @@ public Task sendMessage(string topic, string payload)
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:mqttSend} Sende-Methode des \acrshort{mqtt} - Services}
 
+\vspace{0.5cm}
 In \autoref{code:mqttSend} ist die sende-Methode gezeigt. \texttt{MqttApplicationMessageBuilder} konvertiert die Nachricht mit Topic in ein \acrshort{mqtt}-Format, welches dann mit der Methode \texttt{PublishAsync} an den Broker übermittelt wird. Dieser verwaltet im Anschluss die Übertragung an die Hochbahn, da sie sich an dem gewünschte Topic angemeldet hat.\\
 Das Empfangen von Nachrichten erfolgt über eine Callback-Methode, die bei jeder empfangenen Nachricht aufgerufen wird. Initialisiert wird diese Im Konstruktor des \texttt{mqtt} - Services.
 
@@ -854,7 +858,7 @@ _mqttServer.UseApplicationMessageReceivedHandler(async e =>
 
 Die in \autoref{code:mqttReceive} gezeigte Methode überprüft, um welches Topic es sich handelt, bzw. an welches Topic die NAchricht geschickt wurde. Je nach Topic wird im Anschluss das Payload, bzw. der NAchrichtencontext, in der ihm zugewiesenen Variable gespeichert. Eine Fehlermeldung landet somit immer in der Variable \texttt{ErrorMsg}. Für den gleichen Zweck existieren noch die Variablen \texttt{WarningMsg, PositionMsg und BatteryMsg}. In \autoref{sec:controller} ist bereits gezeigt, wann diese Variablen ausgelesen werden. 
 
-\chapter{Umsetzung} 
+\chapter{Umsetzung (MT)} 
 \label{cha:umsetzung}
 In diesem ersten Teil der Studienarbeit stand die Konzeptionierung in \autoref{cha:konzeptionierung} im Vordergrund. Auf dieses Kapitel aufbauend soll der aktuelle Stand der Umsetzung beschrieben werden. Dieser beschränkt sich bislang auf die Motorsteuerung in \autoref{sec:motorsteuerung} sowie die Getriebekonstruktion in \autoref{sec:getriebekonstruktion}.
 \newpage
@@ -1113,7 +1117,7 @@ Um den Wellenabstand zu erreichen, wird die Motoraufhängung nach unten entsprec
 Die Wellen werden axial beansprucht. Damit die Befestigung der Welle die axialen Kräfte aufnehmen kann, wird zusätzlich ein Rundmaterial an die Seitenteile montiert. 
 \newpage
 
-\chapter{Fertigung der Platine}
+\chapter{Fertigung der Platine (INF)}
 \section{Schaltplan}
 \label{sec:eCardPlan}
 \autoref{pic:schaltplan} zeigt den gesamten Schaltplan für die Platine. Zu sehen sind ESP32, zwei Arduini, sowie Steppertreiber, ein Relais und diverse \textcolor{magenta}{Schraubklemmen} um beispielsweise die beiden \textcolor{orange}{Ultraschallsensoren} anzuschließen. Der Einsatz des \textcolor{red}{Relais} wird in TODO erklärt.Die \textcolor{blue}{Kommunikation zwischen Arduino und ESP} ist in TODO aufgeführt. Unter TODO ist die \textcolor{green}{Mosfetschaltung zur Spannungsmessung} erklärt. All diese Komponenten sind farblich im Schaltplan markiert. In (TODO) wurde das Energieversorgungskonzept erklärt, welches ebenfalls auf der Platine vorhanden sein muss.
@@ -1160,7 +1164,7 @@ Nach Verlöten der übrigen Komponenten und Anschluss von Step-Up-Wandler und Ba
 	\end{center}
 \end{figure}
 
-\chapter{Implementierung der Zustandsautomaten}
+\chapter{Implementierung der Zustandsautomaten (INF)}
 Im folgenden wird die zuvor unter \autoref{sec:stateESP} konzeptionierte Logik des Zustandsautomaten des ESP32 implementiert.
 C++ ist die hierbei verwendete Programmiersprache. Die Idee ist eine State Maschine, die zu jeder zeit einen aktuellen State (\texttt{currentState}) hat, welcher sich in Abhängigkeit von der Eingabe verändert. Beispielsweise soll die Maschine von \texttt{IDLE} nach \texttt{START} wechseln, sofern ein valider Fahrbefehl vom Server erhalten wurde.
 
@@ -1307,8 +1311,8 @@ class StateMachine{
 
 In \autoref{code:stateMachines} sind die KLassendefinitionen der Zustandsmaschinen von ESP und Arduino gezeigt. Die Klasse auf dem ESP hat im Vergleich zur Zustandsmaschine auf dem Arduino eine weitere Überladung der Methode \texttt{StateHandle} mit einem \texttt{String} als übergabeparameter. Diese dient dazu, Nachrichten die vom Server mit \acrshort{mqtt} übertragen wurden evaluieren zu lassen. die Methode \texttt{handle} wird aus der \texttt{main} aufgerufen und verwaltet Nachrichten. D.h. sie ruft je nach Nachrichteneingang die Methode \texttt{StateHandle} ohne oder mit entsprechendem Parametern auf. 
 
-\chapter{Implementierung der Fahrfunktion}
-Zur Implementierung der Fahrfunktion wird eine Klasse namens Drivehandler erstellt. Wie bereits in TODO erwähnt, wird eine Fahrt mithilfe von Maximalgeschwindigkeiten auf mehreren Abschnitten realisiert. Dazu besitzt die Klasse zwei Arrays: 
+\chapter{Implementierung der Fahrfunktion (INF)}
+Zur Implementierung der Fahrfunktion wird eine Klasse namens Drivehandler erstellt. Wie bereits in \autoref{sec:konFahr} erwähnt, wird eine Fahrt mithilfe von Maximalgeschwindigkeiten auf mehreren Abschnitten realisiert. Dazu besitzt die Klasse zwei Arrays: 
 
 \begin{center}
 	\begin{itemize}
@@ -1364,37 +1368,54 @@ driveSpeeds[driveArrayMaxIndex] = 0;
 \vspace{0.5cm}
 Die zweite anzuwendende Regel sollte verhidnern dass die Bahn beim Anfahren unnötig hoch beschleunigt. Dazu wird, falls der Wert an Index 0 größer als jener an Index zwei ist, der Wert an Index 0 gleich dem Wert an Index zwei egsetzt. Im Anschluss daran wird die Geschwindigkeit im Vorletzten Abschnitt auf Maximal 50 gesetzt. Als letztes wird die Geschwindigkeit im letzten Abschnitt aus 0 gesetzt, damit die Hochbahn im gewünschten Abschnitt anhält. Das Anhalten an sich unterscheidet sich bei normalen Abschnitten im gegensatz zden beiden Endpunkten der Strecke. Dies wird allerdings von der Methode \texttt{drive()} übernommen, da die Logik dieser Funktion durch das simple Anhalten der Bahn erfüllt ist. Wie genau die Bahn anhält fällt nicht in den Aufgabenbereich des Setzens der Maximalwerte.
 
+\section{Das eigentliche Fahren}
+Sind die Werte für die Maximalgeschwindigkeit der einzelnen Abschnitte richtig gesetzt, kann nun eine Fahrt durchgeführt werden. Um den Motor anzusteuern, wird die unter \autoref{sec:motorsteuerung} entwickelte Library \texttt{HighTrainStepper} verwendet. Besser gesagt, sind die Methoden \texttt{linear} und \texttt{stopMode} zu verwenden. Im folgenden ist eine einfache Fahrt dargestellt, bei der das passieren eines Magneten simuliert wird. 
 
+\vspace{0.5cm}
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+if (this->isDrivingForward) {
+for (int i = 0; i < this->driveArrayMaxIndex; i++) {
+	this->stepper->linear(driveSpeeds[i]);
+	delay(7000); //fake reed contact
+}
+}
+else {
+int s = 0;
+for (int i = 0; i < this->driveArrayMaxIndex; i++) {
+	s = driveSpeeds[i] * (-1);
+	this->stepper->linear(s);
+	delay(7000); //fake reed contact
+}
+}
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:drive} Die Fahrfunktion}
+\vspace{0.5cm}
 
+In \autoref{code:drive} ist zu erkennen, wie der pointer auf ein \texttt{HighTrainStepper} in Abhängigkeit von der Fahrtrichtung die Methode \texttt{linear} aufruft. Der Wert für die anzupeilende Geschwindigkeit wird dem Array \texttt{driveSpeeds} entnommen. Die hier verwendete Methode \texttt{delay} simuliert das Passieren eines Magneten, indem sie das Programm für eine gewisse Zeit stoppt. Das Programm verhält sich also so, als würde alle sieben Sekunden ein Magnet passiert werden. Da die Methode \texttt{linear} innerhalb der \texttt{for}-Schleife aufgerufen wird, kann mit der Variable \texttt{i} jedesmal auf den richtigen Index des Arrays \texttt{driveSpeeds} zugegriffen werden. \\
+Sind alle Abschnitte passiert, wird in Abhängigkeit davon ob der Zielabschnitt ein Endabschnitt (null oder sieben) ist, die Methode \texttt{stopMode} mit dem Parameter \texttt{2} oder \texttt{3} aufgerufen. DIeser Vorgang ist in \autoref{code:stop} zu sehen.
 
+\vspace{0.5cm}
+\begin{lstlisting}[language=c, style=dhpaperdefault]
+if (this->to == 0 || this->to == 7) {
+	this->stepper->stopMode(3);
+	}
+else {
+	this->stepper->stopMode(2);
+}
+\end{lstlisting}
+\captionof{lstlisting}{\label{code:stop} Anhalten im letzten Abschnitt}
+\vspace{0.5cm}
 
+\texttt{stopMode(3)} hält erst am Ende, also mit Erkennen des letzten Magneten an, während \texttt{stopMode(2)} die Bahn auf Geschwindigkeit 0 abbremst.
 
-%
-%\section{Fertigungsverfahren}\\
-%Für die vorgestellten Bauteile soll nun das Fertigungsverfahren ausgewählt weden. Dabei besteht die Möglichkeit konventionelle- und adaptiven Fertigungsverfahren zur Auswahl.
-%
-%
-%\begin{figure}[h]
-%	\centering
-%	\includegraphics[width=12cm]{fertigungsverfahren.png}
-%	\caption{Konstruktionsansicht der verschiebbaren Motoraufhängung}
-%	\label{pic:fertigungsverfahren}
-%\end{figure}
-%
-%
-%Aufbereitungs-  Rüstzeit 
-%
-%Bei hoch beanspruchten Teilen: Konventionelle Fertigungsverfahren 
-%Aufwändige Konturen: Adaptive Fertigung
-%
-%
-%	
-
+\chapter{Ergebnis (INF + MT)}
+Nach Implementierung der gesamten Software konnte erstmals das System auf der Platine getestet werden. Der Server lief lokal über den Computer und sowohl Smartphone als auch Hochbahn-Controller konnten ihn erreichen. Auf der Website wurde bereits der Akkustand angezeigt. Nach senden eines Fahrbefehls, führte die Platine, bzw. der Schrittmotor, eine Simulierte Fahrt von Position null bis Position sieben durch. Dabei war zu erkennen, dass die Geschwindigkeiten richtig gesetzt wurden, da der Motor in den ersten Abschnitten langsam lief, während er gegen Ende hin auf volle Geschwindigkeit beschleunigte. \\
+Nach diesem erfolgreichen Test galt es, die Hochbahn zusammenzubauen. Die letzten benötigten Teile wurden gedruckt, ein Plexiglas in den Platinekasten geklebt, und alle Komponenten miteinander verkabelt. Der Server wurde währenddessen auf einem Raspberry Pi installiert, sodass er im Netzwerk gehostet werden kann. An der Schiene wurden die benötigten Magneten befestigt und die Bahn konnte ihre erwste Testfahrt erfolgreich durchführen. Die fertige Anlage mit noch fehlendem Tablett (welches jedoch sehr einfach installiert werden kann) ist in Abbildung TODO zu sehen.
 
 %-------------------------FAZIT UND AUSBLICK-----------------
 
 
-\chapter{Fazit und Ausblick}
+\chapter{Fazit und Ausblick (INF + MT)}
 Im ersten Teil der Studienarbeit standen Grundlagen, Anforderungen sowie Konzepte im Bereich der im Vordergrund. Diese Arbeit wurde nun mit der Implementierungsphase vorangeführt. Währenddessen musste flexibel notwendige Anpassungen reagiert werden und besonders auf die Funktion der Schnittstellen geachtet werden. Abscließend können können wir mit dieser Arbeit ein fertiges und voll funktionsfähiges Endprodukt vorstellen. \\
 
 Abschließend folgen mit \autoref{sec:fazit} die persönlichen Fazits zur eigenen Disziplin sowie Zusammenarbeit und mit \autoref{sec:ausblick} ein Ausblick. 
@@ -1419,15 +1440,14 @@ Besonders bei den Schnittstellen stellte sich heraus, wie wichtig die Absprache 
 
 
 \subsection{Moritz Knapp}
-\subsubsection{Zusammenarbeit}
-Ich persönlich kann auf die Art der Zusammenarbeit bei diesem Projekt nur positiv zurückblicken. Es hat sich schnell herauskristalliert, dass Jan den mechanischen Aufbau plant, während Ich die Software konzeptioniere. Aus den dabei entstandenen Anforderungen konnte die Planung der Platine gemeinsam gut umgesetzt werden. Für mich war ebenfalls der Einblick in mechanische Fertigungsverfahren sehr lehrreich. Ich bezeichne mich gerne als Hobbybastler. Dementsprechend hat es unglaublich viel Spass gemacht, von Jan professionelle mechanische Arbeiten wie beispielsweise das Drehen der Antriebswelle beigebracht zu bekommen. Gerade als Informatiker ist ein Einblick in praktische Arbeiten wie Mechanik eine spannende Abwechslung. Ich hoffe, ich konnte Jan bei der Programmierung der Schrittmotorsteuerung unterstützen und ihm dabei ein bisschen Informatiker-Denken mitgeben konnte. Ich möchte hierbei auch positiv hervorheben, wie gut die getrennte Programmierung des Arduinos funktioniert hat. Wir haben uns abgesprochen, was genau die Funktionen können sollen, und ich konnte sie später genau so in meinem Code einbauen, wie wir das gedacht haben. 
-\subsubsection{Eigene Arbeit}
 Da ich solche Art von Projekten auch schon vorher gerne umgesetzt habe, bereitete mir auch die eigenständige Arbeit sehr viel Freude. Ich habe vorher noch nie ein verteiltes System konzeptioniert und implementiert, daher konnte ich hierbei sehr viel lernen. Ich konnte mein Wissen und meine Erfahrung in objektorientierten Programmieren und auch Netztechnik vertiefen und erweitern. Die Programmierung von Frontend / Backend des Servers und verteiltes System mit Mikrocontrollern auf der Hochbahn ermöglichte die Anwendung von viel Wissen aus den Theorieinhalten über Webengineering und Embedded-Programming. Negativ anzumerken ist an dieser Stelle mein Zeitmanagement. Ich habe mir selbst zu wenig Deadlines gesetzt, sodass sich manche Dinge, wie beispielsweise die Implementierung der Zustandsautomaten, länger hingezogen haben. Hätte ich mir dabei strengere Richtlinien gegeben, hätte ich mehr Zeit zur Verbesserung des Systems gehabt. Beispielsweise das Protokoll zwischen den Controllern hätte ausgebaut werden können, um noch mehr Informationen auch vom Arduino an den Server zu übertragen. 
+\subsubsection{Zusammenarbeit im Hinblick auf die interdisziplinäre Arbeitsform}
+Ich persönlich kann auf die Art der Zusammenarbeit bei diesem Projekt nur positiv zurückblicken. Es hat sich schnell herauskristalliert, dass Jan den mechanischen Aufbau plant, während Ich die Software konzeptioniere. Aus den dabei entstandenen Anforderungen konnte die Planung der Platine gemeinsam gut umgesetzt werden. Für mich war ebenfalls der Einblick in mechanische Fertigungsverfahren sehr lehrreich. Ich bezeichne mich gerne als Hobbybastler. Dementsprechend hat es unglaublich viel Spass gemacht, von Jan professionelle mechanische Arbeiten wie beispielsweise das Drehen der Antriebswelle beigebracht zu bekommen. Gerade als Informatiker ist ein Einblick in praktische Arbeiten wie Mechanik eine spannende Abwechslung. Ich hoffe, ich konnte Jan bei der Programmierung der Schrittmotorsteuerung unterstützen und ihm dabei ein bisschen Informatiker-Denken mitgeben konnte. Ich möchte hierbei auch positiv hervorheben, wie gut die getrennte Programmierung des Arduinos funktioniert hat. Wir haben uns abgesprochen, was genau die Funktionen können sollen, und ich konnte sie später genau so in meinem Code einbauen, wie wir das gedacht haben. 
+
 
 \section{Ausblick}
 \label{sec:ausblick}
 
-\subsection{Informatik}
 Genrerell wurde die Software in diesem Projekt so konzeptioniert, dass sie leicht erweiterbar ist. Anstelle eines lokal gehosten Servers auf dem ESP32, welcher die gleichen Anforderungen des Endergebnisses erfüllen könnte, wurde ein richtiger Server auf Basis von \acrshort{mvc} erstellt. Dadurch ist eine Grundlage gegeben, auf der ein Bestellsystem gut aufgebaut werden kann. Außerdem sind die einzelnen Seiten leicht erweiterbar, sodass mehr Informationen der Hochbahn angezeigt werden können. Ein Beispiel dazu wäre eine dynamische Anzeige zur aktuellen Position der Hochbahn als eine kleine Animation. \\
 Das System auf der Hochbahn ist auch noch in vielerlei Hinsicht erweiterbar. Aktuell verwendet das System nur ein Byte pro Nachricht. Dadurch ist eine gute Grundlage des Informationsflusses gegeben, die allerdings mit mehreren Bytes pro Nachricht erweitert werden kann. Beispielsweise könnte so auch der Arduino eigene Fehlermeldungen an den ESP schicken, welcher diese dann dem Server übermittelt. Dadurch könnte dem Nutzer die Fehlerdiagnose enorm erleichtert werden. \\
 Eine erweiterte Kommunikation über \acrshort{mqtt} ist ebenfalls möglich. Dadurch könnten individuellere Fahrten durchgeführt werden. Wäre der Server um eine Benutzerdatenbank erweitert, könnte beispielsweise jeder Nutzer eigene Fahrprogramme mit eigenen Höchstgeschwindigkeiten der einzelnen Abschnitte erstellen. Diese müssten dann ebenfalls durch eine erweiterte Kommunikation vom ESP an den Arduino übermittelt werden. Ein weiteres Konzept der individuellen Fahrten verschiedener Nutzer wäre die Möglichkeit, eine Farbe zu wählen, welche von RGB-LEDs auf der Hochbahn angezeigt wird. Die RGB-Codes des Nutzers würden dann ebenfalls über \acrshort{mqtt} übermittelt. Dazu müsste die Hochbahn allerdings auch über entsprechende LEDs wie beispielsweise Neopixel-Ringe verfügen. Diese könnten direkt an den ESP angeschlossen werden, sodass dieser die Farben anzeigt, während der Arduino die individuelle Fahrt steuert. \\
