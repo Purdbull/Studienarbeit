@@ -117,7 +117,7 @@ Eine weitere Betriebsart ist der Mikroschrittbetrieb. Dabei wird die Stromstärk
     \end{center}
 \end{figure}
 
-Zu sehen ist besagter Broker, welcher die Kommunikation verwaltet. In diesem Beispiel sendet  Gerät-A Daten an Topic-A, auf welches Gerät-B subscribed hat. Diese Daten werden umgehend an Gerät-B übermittelt. Auf ähnlichem Weg erhält Gerät-A Daten von Gerät-B über das Topi-B.\\
+\newpage Zu sehen ist besagter Broker, welcher die Kommunikation verwaltet. In diesem Beispiel sendet  Gerät-A Daten an Topic-A, auf welches Gerät-B subscribed hat. Diese Daten werden umgehend an Gerät-B übermittelt. Auf ähnlichem Weg erhält Gerät-A Daten von Gerät-B über das Topic-B.\\
 Um die Publish Subscribe Architektur zu verstehen ist es hilfreich, eine Analogie zum Fernsehen zu bilden. Dabei sendet ein TV-Sender sein Programm an einen bestimmten Kanal.
 Auf diesen Kanal können nun beliebig viele Fernseher (\textit{Subscriber}) zugreifen. Auch wenn keine aktive Verbindung zwischen Sender und Empfänger aufgebaut wird, erhalten beliebig viele Empfänger die benötigten Daten.
 Wichtig dabei ist, dass die Daten nicht zwischen Publisher und Subscriber direkt, sondern über den zentralen Broker versendet werden. \acrshort{mqtt} ist neben der einfachen Topologie auch für die sehr niedrige Netzlast bekannt. Echtzeitfähigkeit ist ebenfalls gegeben. (Vgl. \cite{mqtt})
@@ -130,7 +130,7 @@ Wichtig dabei ist, dass die Daten nicht zwischen Publisher und Subscriber direkt
 
 \begin{figure}[h]
     \begin{center}
-        \includegraphics[width=8cm]{uart.PNG}
+        \includegraphics[width=6cm]{uart.PNG}
         \caption{\label{pic:uartCon}Verbindung zwischen zwei Geräten die über \acrshort{uart} kommunizieren}
     \end{center}
 \end{figure}
@@ -147,5 +147,5 @@ Ein Zustadsautomat ist ein Graph, bei dem die Knoten Zustände des Automaten dar
 	\end{center}
 \end{figure}
 
-\autoref{pic:simpleState} zeigt ein Automat, welcher zwei Zustände hat:$A$ und $B$. Beim Start befindet er sich in Zustand $A$ und kann nur unter der Bedingung $x$ in Zustand $B$ wechseln. Aus Zustand $B$ kann er nur über Bedingung $y$ wieder zurück zu $A$. Die doppelte Umrandung von $A$ zeigt, dass es sich hierbei m den Startzustand handelt. \\
+\autoref{pic:simpleState} zeigt einen Automaten, der zwei Zustände hat: $A$ und $B$. Beim Start befindet dieser sich in Zustand $A$ und kann nur unter der Bedingung $x$ in Zustand $B$ wechseln. Aus Zustand $B$ kann er nur über Bedingung $y$ wieder zurück zu $A$. Die doppelte Umrandung von $A$ soll den Startzustand verdeutlichen. \\
 Zustandsautomaten finden oft Anwendung in Softwareentwicklung. Sie werden hauptsächlich zum Lesen von Nachrichten oder Eingaben verwendet. In dieser Arbeit wird das Gesamtkonzept einzelner Softwarekomponenten als Zustandsautomaten implementiert.

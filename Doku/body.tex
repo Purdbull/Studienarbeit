@@ -324,7 +324,7 @@ In dem Schema sind die Komponenten hierarchisch dargestellt. Die Pfeile dazwisch
 
 \chapter{Entwicklung der Platine}
 \label{sec:ecardConcept}
-In \autoref{sec:konzeptSchnittstellen} wurde bereits angedeutet, dass auf der Hochbahn mehrere elektronische Komponenten zusammenarbeiten müssen (Arduino, ESP32, etc.). Daher werden diese Komponenten, sowie die benötigte Peripherie, auf einer Platine zu einem verteilten System vereint. 
+In \autoref{sec:konzeptSchnittstellen} wurde bereits angedeutet, dass auf der Hochbahn mehrere elektronische Komponenten zusammenarbeiten müssen (Arduino, ESP32, etc.). Daher werden diese Komponenten sowie die benötigte Peripherie, auf einer Platine zu einem verteilten System vereint. 
 Die Entwicklung dieser Platine wird in Folgendem erläutert.
 
 \section{Anforderungen an die Platine}
@@ -339,16 +339,16 @@ Die Platine muss folgende Anforderungen erfüllen:
 		\item und Anschluss des Motortreibers.
 	\end{itemize}
 \end{center}
-All diese Anforderungen sollen möglichst gering im Leistungsverbrauch sein. Das bedeutet, dass beispielsweise Spannungsteiler für die Spannungsüberwachung nur dann in Aktion treten, wenn auch wirklich Spannung gemessen wird. Ansonsten bestünde hierbei ein ständiger Stromverbrauch.
+All diese Anforderungen sollen möglichst gering im Leistungsverbrauch sein. Das bedeutet, dass beispielsweise Spannungsteiler für die Spannungsüberwachung nur vorkommen sollten, wenn auch wirklich Spannung gemessen wird. Ansonsten würde hier unnötigerweise Verlustleistung entstehen. 
 
 \section{Kommunikation über UART}
-Generell erfolgt die Kommunikation der beiden Mikrocontroller über \acrshort{uart}. Daraus folgt, dass \acrfull{rx}-Pin des Hochbahn-Controllers (ESP32) mit \acrfull{tx}-Pin der Motorsteuerung (Arduino), sowie \acrshort{rx} des Arduinos mit \acrshort{tx} des ESP32 verbunden sein muss. 
+Generell erfolgt die Kommunikation der beiden Mikrocontroller über \acrshort{uart}. Daraus folgt, dass der \acrfull{rx}-Pin des Hochbahn-Controllers (ESP32) mit dem \acrfull{tx}-Pin der Motorsteuerung (Arduino), sowie der \acrshort{rx} des Arduinos mit dem \acrshort{tx} des ESP32 verbunden sein muss. 
 Daraus resultiert folgendes Problem: \\
-Ein Arduino läuft mit einer Betriebsspannung von 5V, während der ESP32 mit 3,3V fungiert. Dadurch erhielte der ESP32 beim Empfangen von Nachrichten einen zu hohen HIGH-Pegel, während der Arduino Nachrichten mit zu niedriger Spannung bekäme.
+Ein Arduino wird bei einer Betriebsspannung von $5V$ versorgt während der ESP32 eine Spannung von $3,3V$ benötigt. Dadurch erhielte der ESP32 beim Empfangen von Nachrichten einen zu hohen HIGH-Pegel wobei der Arduino Nachrichten mit zu niedriger Spannung bekäme.
 
 \subsection{Level-Shifter}
-Um die Pulse des ESP32 auf die richtige Spannung zu erhöhen, wird ein sogenannter Level-Shifter verwendet. Dieser übermittelt Signale mit einer Höhe von 5V an den Arduino, während der ESP32 nur 3,3V ausgibt.
-Der zugehörige Schaltplan ist in \autoref{pic:levelshift} gezeigt.
+Um die Signale des ESP32 auf die richtige Spannung zu erhöhen, wird ein sogenannter Level-Shifter verwendet. Dieser übermittelt Signale mit einer Spannung von $ 5V $ an den Arduino, während der ESP32 nur $ 3,3V $ ausgibt.
+Der zugehörige Schaltplan ist in \autoref{pic:levelshift} dargestellt.
 \vspace{1cm}
 
 \begin{figure}[h]
@@ -358,8 +358,8 @@ Der zugehörige Schaltplan ist in \autoref{pic:levelshift} gezeigt.
 	\end{center}
 \end{figure}
 
-Angenommen, der ESP32 gibt an \textit{data in} ein \texttt{Low}-Signal, also 0V. Aufgrund der 3,3V am Gate des Mosfets, wird dieses aktiviert. Somit wird \textit{data out} durch das Mosfet ebenfalls auf 0V gezogen. 
-Liegt \textit{data in} jedoch auf 3,3V, gibt es keinen Spannungsunterschied zwischen Gate und Source des Mosfets. Dadurch wird es deaktiviert, sodass \textit{data out} auf 5V gezogen wird. 
+Angenommen, der ESP32 gibt an \textit{data in} ein \texttt{Low}-Signal, würde der MOSFET aufgrund der $ 3,3V $ am Gate des Mosfets aktiviert. Somit wird \textit{data out} durch das Mosfet ebenfalls auf $ 0V $ gezogen. 
+Liegt \textit{data in} jedoch auf $ 3,3V, $ gibt es keinen Spannungsunterschied zwischen Gate und Source des Mosfets. Dadurch wird es deaktiviert, sodass \textit{data out} auf 5V gezogen wird. 
 Somit erzeugt eine positive Flanke von 3,3V des ESP32 eine Flanke von 5V am Arduino.
 
 \subsection{Spannungsteiler}
@@ -383,19 +383,19 @@ Auf der Platine gibt es drei unterschiedliche Betriebsspannungen:
 		\item und 10V für den Schrittmotor.
 	\end{itemize}
 \end{center}
-All diese Spannungen kommen aus der Stromquelle, welche aus den zwei Zellen des Litium-Ionen Akkus besteht. Die Spannung liegt, je nach Ladezustand, zwischen ca. 7,4V und 8,2V. Da die Komponenten jedoch zu jedem Zeitpunkt die gleiche Spannung benötigen, werden Spannungsregler benötigt. 
-Einer davon ist ein DCDC-Wandler, welcher die Zellspannung auf konsistente 5V für beide Arduini regelt. Da der ESP32 selbst einen Spannungsregler von 5V auf 3,3V besitzt, kann dieser ebenfalls an die Arduino-Versorgungsleitung angeschlossen werden. Ein Step-Up-Wandler erzeugt aus besagten 5V eine Spannung von 10V für Motortreiber und Schrittmotor. 
+All diese Spannungen kommen aus der Stromquelle, welche aus den zwei Zellen der Litium-Ionen Akkus besteht. Die Spannung liegt, je nach Ladezustand, zwischen ca. 7,4V und 8,2V. Da die Komponenten jedoch zu jedem Zeitpunkt die gleiche Spannung benötigen, werden Spannungsregler benötigt. 
+Einer davon ist ein DC/DC-Wandler, welcher die Zellspannung auf konsistente 5V für beide Arduini regelt. Da der ESP32 selbst einen Spannungsregler von 5V auf 3,3V besitzt, kann dieser ebenfalls an die Arduino-Versorgungsleitung angeschlossen werden. Ein Step-Up-Wandler erzeugt aus besagten 5V eine Spannung von 10V für Motortreiber und Schrittmotor. 
 
 \section{Spannungsmessungen an den Batteriezellen}
 \label{sec:mess}
 Die Stromversorgung der Hochbahn stellen zwei in Reihe geschaltete Lithium Ionen Akkus dar. Diese Reihenschaltung ist in \autoref{pic:messfalsch} gezeigt. Während bei einfachen Batterien die Gesamtspannung gemessen werden kann, müssen hier die beiden Zellen einzeln betrachtet werden.
-Um die einzelnen Zellen zu messen, soll die Spannung jeweils am + Pol abgegriffen werden. Somit muss die Messeinrichtung von der Gesamtspannung jene der ersten Zelle abziehen, um die Spannung der zweiten Zelle zu erhalten. Dieser Vorgang ist erforderlich, da kein Spannungsunterschied zwischen + und - der oberen Zelle gemessen werden kann. Grund dafür ist, dass \gls{gnd} des Arduinos gleich mit \gls{gnd} der unteren Zelle ist, nicht der oberen.
+Um die einzelnen Zellen zu messen, soll die Spannung jeweils am + Pol abgegriffen werden. Somit muss die Messeinrichtung von der Gesamtspannung jene der ersten Zelle abziehen, um die Spannung der zweiten Zelle zu erhalten. Dieser Vorgang ist erforderlich, da kein Spannungsunterschied zwischen + und - der oberen Zelle gemessen werden kann. Grund dafür ist, dass \gls{gnd} des Arduinos gleich mit \gls{gnd} der unteren Zelle ist.
 Verbände man, wie in \autoref{pic:messfalsch} gezeigt, zwei analoge Pins direkt mit den + Polen, wäre eine Spannungsmessung in der Theorie möglich.
 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width=7.5cm]{wrongMeasure.PNG}
-		\caption{\label{pic:messfalsch} Einfache Spannungsmessung der Zellen}
+		\caption{\label{pic:messfalsch} Einfache (nicht implementierte) Spannungsmessung der Zellen}
 	\end{center}
 \end{figure}
 
@@ -410,7 +410,7 @@ In der Praxis ergeben sich dabei jedoch zwei Probleme:
 
 Die in Folgendem erklärte Schaltung soll diese Probleme umgehen.
 \subsection{Mosfetschaltung zur aktivierbaren Spannungsmessung}
-Diese Schaltung soll ermöglichen, die Spannungsmessung per Signal aktivieren zu können. Das Signal wird dabei vom messenden Arduino mit einem 5V-Pegel erzeugt. Ist die Schaltung aktiviert, sollen ähnlich wie in \autoref{pic:messfalsch} beide Spannungen abgegriffen werden.
+Diese Schaltung soll es ermöglichen, die Spannungsmessung per Signal aktivieren zu können. Das Signal wird dabei vom messenden Arduino mit einem 5V-Pegel erzeugt. Ist die Schaltung aktiviert, sollen - ähnlich wie in \autoref{pic:messfalsch} - beide Spannungen abgegriffen werden.
 
 \begin{figure}[h]
 	\begin{center}
@@ -427,11 +427,11 @@ In \autoref{sec:mess} wurde beriets erwähnt, dass die gemessene Spannung an der
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[width=9cm]{messMitTeiler.PNG}
+		\includegraphics[width=13cm]{messMitTeiler.PNG}
 		\caption{\label{pic:messrichtigmitteiler} Mosfetschaltung zur aktivierbaren Spannungsmessung mit Spannungsteiler}
 	\end{center}
 \end{figure}
-\newpage
+
 In \autoref{pic:messrichtigmitteiler} ist zu sehen, dass die Schaltung um einen Spannungsteiler erweitert wurde. Da beide Widerstände den gleichen Wert haben, kann zwischen ihnen die Hälfte der Spannung gemessen werden. 
 Um in der Software die richtige Spannung der Zelle zu erhalten, ist der gemessene Wert zu verdoppeln. Zieht man nun die Spannung der ersten Zelle ab, ist das Ergebnis die Spannung der zweiten Zelle.
 
@@ -1395,23 +1395,44 @@ Die zweite anzuwendende Regel sollte verhidnern dass die Bahn beim Anfahren unn�
 
 
 \chapter{Fazit und Ausblick}
-In diesem ersten Teil der Studienarbeit wurden zunächst Grundlagen geschaffen und Anforderungen an die digitalisierte Version der Hochbahn gestellt. Anschließend wurden die Konzepte zum Erreichen der Forderungen erstellt. Im Teil der Umsetzung wurden bereits erste Versuche durchgeführt und Prototypen getestet.\\
+Im ersten Teil der Studienarbeit standen Grundlagen, Anforderungen sowie Konzepte im Bereich der im Vordergrund. Diese Arbeit wurde nun mit der Implementierungsphase vorangeführt. Währenddessen musste flexibel notwendige Anpassungen reagiert werden und besonders auf die Funktion der Schnittstellen geachtet werden. Abscließend können können wir mit dieser Arbeit ein fertiges und voll funktionsfähiges Endprodukt vorstellen. \\
 
-Im weiteren Verlauf der Arbeit gilt es nun, die Umsetzung weiter fortzuführen. Dabei steht vor allem die Fertigung der beschriebenen Bauteile an. Anschließend können die informationstechnischen Anwendungen erstmals zusammen mit dem Aufbau getestet werden. Diese Vorhaben sollen vor allem in der folgenden Praxisphase umgesetzt werden. 
+Abschließend folgen mit \autoref{sec:fazit} die persönlichen Fazits zur eigenen Disziplin sowie Zusammenarbeit und mit \autoref{sec:ausblick} ein Ausblick. 
 
---> Wichtig: Reinschreiben, wie die interdisziplinäre Studienarbeit funktioniert hat!
 
-\section{Persönliches Fazit}
+\section{Persönliche Fazits}
+\label{sec:fazit}
+
+Mit diesem letzten Kapitel der Arbeit stellt in Abschnitt  jeder sein eigenes Fazit über die vor und äu
+
+\subsection{Jan Bantle - Mechatronik}
+
+Der mechatronische Arbeitsprozess umfasste die Grundlagenforschung, Systemanalyse, Konzeptionierung sowie die Implementierung. Während des Prozesses mussten Aufgaben aus den unterschiedlichsten Bereichen fachlich und zeitlich abgestimmt werden. Um die Wirkzusammenhänge zu erkennen, stellte  der Projektstrukturplan eine ideale Grundlage dar. Als Beispiel für die Wichtigkeit der Abstimmung seien die Arbeitsfelder Motor, Aktorik und Getriebe genannt. Es musste je nach Drehmoment des Motors  ein anderes Übersetzungsverhältnis beim Getriebe konzeptioniert, sowie eine größere Leistung durch die Akkus bereitgesttellt werden. Eine zeitliche Abstimmung musste vor allem dort stattfinden, wo die hardware-technischen Komponenten Voraussetzung die software-seitigen Themen der Informatik waren. Es stellt sich heraus, dass ein Zeitplan ebenso wichtig war wie die situationsbedingte Priorisierung der Arbeitspakete. Insgesamt konnte aus der Studienarbeit einiges an Arbeitsorganisation für das zukünftige Berufsleben erlangt werden. \\
+
+
+Besonders positiv hervorzuheben ist der intensive Praxisbezug. Während die betreffenden Inhalte zuvor fast ausschließlich in der Theorie bekannt waren, kam bei diesem Projekt die Praxis von der CAD-Konstruktion bis zur Fertigung in der Werkstatt nicht zu kurz. Dabei war es interessant zu sehen, wie weit die theoretischen Konzepte von der praktischen Umsetzung auseinanderliegen können. Bspw. wurde mir durch diese Arbeit deutlich, wie entscheidend die Auswahl einer geeigneten Fertigungsmethode sowie eine fertigungsgerechte Konstruktion ist.  \\
+
+Die größte Herausforderung stellte für mich die Schnittstellenkommunikation dar. Die Forderung nach einer durchgängige Kommunikation hatte zur Folge, dass statt einer herkömmlichen Library zur Motorsteuerung eine eigene Library mit Interrupts geschrieben werden musste. Um die Implemetierung nebst anderer Librarys auf dem Arduino Nano zu bewerkstelligen, musste dabei objektorientiert vorgegangen werden. Abschließend lässt sich sagen, dass durch das Projekt Studieninahlte sowie Arbeitsorganisation in einer prakischen Art erlernt wurden.
+
+\subsubsection{Zusammenarbeit im Hinblick auf die interdisziplinäre Arbeitsform}
+Besonders bei den Schnittstellen stellte sich heraus, wie wichtig die Absprache zwischen uns war. Dass die Bewerkstelligung letztlich so gut funktioniert hat, ist ein Beispiel dafür, dass die Zusammenarbeit stets gut funktioniert hat. Generell eignet sich für eine interdisziplinare Studienarbeit hervorragend dafür, die Wichtigkeit der Absprache zweier Fachbereiche zu erkennen. Das Projekt könnten ebenso eine alltägliche Situation aus dem Arbeitsleben mit Experten aus verschiednenen Fachbereichen darstellen. Durch diese Art der Studienarbeit konnten Moritz und ich jeweils in unserem Expertengebieten unser Bestes geben während wir uns auch in die jeweiligen anderen Bereichen hineinwagten. Bspw. führte Moritz das Platinendesign durch während ich meine Library objektorientiert implementiert habe. Dies war nur dadurch möglich, dass jeder den anderen mit seinem Expertenwissen zur Seite gestanden ist. Mir hat die Zusammenarbeit stets viel Freude bereitet und ich hatte die Chance, durch den interdisziplinären Anteil viele Einblicke in informationstechnischen Themen zu bekommen. 
+
 
 \subsection{Moritz Knapp}
 \subsubsection{Zusammenarbeit}
-Ich persönlich kann auf die Art der Zusammenarbeit bei diesem Projekt nur positiv zurückblicken. Es hat sich schnell herauskristalliert, dass Jan den mechanischen Aufbau plant, während Ich die Software konzeptioniere. Aus den dabei entstandenen Anforderungen konnte die Planung der Platine gemeinsam gut umgesetzt werden. Für mich war ebenfalls der Einblick in mechanische Fertigungsverfahren sehr lehrreich. Ich bezeichne mich gerne als Hobbybastler. Dementsprechend hat es unglaublich viel Spass gemacht von Jan professionelle mechanische Arbeiten wie beispielsweise das Drehen der Antriebswelle beigebracht zu bekommen. Gerade als Informatiker ist ein Einblick in praktische Arbeiten wie Mechanik eine spannende Abwechslung. Ich hoffe ich konnte Jan bei der Programmierung der Schrittmotorsteuerung unterstützen und ihm dabei ein bisschen Informatiker-Denken mitgeben konnte. Ich möchte hierbei auch positiv hervorheben, wie gut die getrennte Programmierung des Arduinos funktioniert hat. Wir haben uns abgesprochen,w as genau die funktionen können sollen, und ich konnte sie später genau so in meinem Code einbauen, wie wir das gedacht haben. 
+Ich persönlich kann auf die Art der Zusammenarbeit bei diesem Projekt nur positiv zurückblicken. Es hat sich schnell herauskristalliert, dass Jan den mechanischen Aufbau plant, während Ich die Software konzeptioniere. Aus den dabei entstandenen Anforderungen konnte die Planung der Platine gemeinsam gut umgesetzt werden. Für mich war ebenfalls der Einblick in mechanische Fertigungsverfahren sehr lehrreich. Ich bezeichne mich gerne als Hobbybastler. Dementsprechend hat es unglaublich viel Spass gemacht, von Jan professionelle mechanische Arbeiten wie beispielsweise das Drehen der Antriebswelle beigebracht zu bekommen. Gerade als Informatiker ist ein Einblick in praktische Arbeiten wie Mechanik eine spannende Abwechslung. Ich hoffe, ich konnte Jan bei der Programmierung der Schrittmotorsteuerung unterstützen und ihm dabei ein bisschen Informatiker-Denken mitgeben konnte. Ich möchte hierbei auch positiv hervorheben, wie gut die getrennte Programmierung des Arduinos funktioniert hat. Wir haben uns abgesprochen, was genau die Funktionen können sollen, und ich konnte sie später genau so in meinem Code einbauen, wie wir das gedacht haben. 
 \subsubsection{Eigene Arbeit}
-Da ich solche Art von Projekten auch schon vorher gerne umgesetzt habe, bereitete mir auch die eigenständige Arbeit sehr viel Freude. Ich habe vorher noch nie ein verteiltes System konzeptioniert und implementiert, daher konnte ich hierbei sehr viel lernen. Ich konnte mein Wissen und meine Erfahrung in objektorientierten Programmieren und auch Netztechnik vertiefen und erweitern. Die Programmierung von Frontend / Backend des Servers und verteiltes System mit Mikrocontrollern auf der Hochbahn ermöglichte die Anwendung von viel Wissen aus den Theorieinhalten über Webengineering und Embedded-Programming. Negativ anzumerken an dieser Stelle ist mein Zeitmanagement. Ich habe mir selbst zu wenig Deadlines gesetzt, sodass manche Dinge wie beispielsweise die Implementierung der Zustandsautomaten sich länger hinzogen als sie sollten. Hätte ich mir dabei strengere Richtlinien gegeben, hätte ich mehr Zeit zur Verbesserung des Systems gehabt. Beispielsweise das Protokoll zwischen den Controllern hätte ausgebaut werden können, um noch mehr Informationen auch vom Arduino an den Server zu übertragen. 
+Da ich solche Art von Projekten auch schon vorher gerne umgesetzt habe, bereitete mir auch die eigenständige Arbeit sehr viel Freude. Ich habe vorher noch nie ein verteiltes System konzeptioniert und implementiert, daher konnte ich hierbei sehr viel lernen. Ich konnte mein Wissen und meine Erfahrung in objektorientierten Programmieren und auch Netztechnik vertiefen und erweitern. Die Programmierung von Frontend / Backend des Servers und verteiltes System mit Mikrocontrollern auf der Hochbahn ermöglichte die Anwendung von viel Wissen aus den Theorieinhalten über Webengineering und Embedded-Programming. Negativ anzumerken ist an dieser Stelle mein Zeitmanagement. Ich habe mir selbst zu wenig Deadlines gesetzt, sodass sich manche Dinge, wie beispielsweise die Implementierung der Zustandsautomaten, länger hingezogen haben. Hätte ich mir dabei strengere Richtlinien gegeben, hätte ich mehr Zeit zur Verbesserung des Systems gehabt. Beispielsweise das Protokoll zwischen den Controllern hätte ausgebaut werden können, um noch mehr Informationen auch vom Arduino an den Server zu übertragen. 
 
 \section{Ausblick}
+\label{sec:ausblick}
+
 \subsection{Informatik}
-Genrerell wurde die Software in diesem Projekt so konzeptioniert, dass sie leicht erweiterbar ist. Anstelle von einem lokal gehosten Server auf dem ESP32, welcher die gleichen Anforderungen des Endergebnisses erfüllen könnte, wurde ein richtiger Server auf Basis von \acrshort{mvc} erstellt. Dadurch ist eine Grundlage gegeben, auf welcher ein Bestellsystem gut aufgebaut werden kann. Ebenfalls sind die einzelnen Seiten leicht erweiterbar, sodass mehr Informationen der Hochbahn auch angezeigt werden könnten. Ein Beispiel hierbei wäre eine dynamische Anzeige der aktuellen Position der Hochbahn als kleine Animation. \\
-Das System auf der Hochbahn ist auch noch in vielerlei Hinsicht erweiterbar. Aktuell verwendet Das System nur ein Byte pro Nachricht. Dadurch ist eine gute Grundlage des Informationsflusses gegeben, die allerdings mit mehreren Bytes pro Nachricht erweitert werden kann. Beispielsweise könnte so auch der Arduino eigene Fehlermeldungen an den ESP schicken, welche diese dann dem Server übermittelt. So könnte dem Nutzer die Fehlerdiagnose enorm erleichtert werden können. \\
-Eine Erweiterung der Kommunikation über \acrshort{mqtt} ist ebenfalls möglich. Dadurch könnten individuellere Fahrten durchgeführt werden. Wäre der Server um eine Benutzerdatenbank erweitert, könnte beispielsweise jeder Nutzer eigene Fahrprogramme mit eigenen Höchstgeschwindigkeiten der einzelnen Abschnitte erstellen. Diese müssten dann ebenfalls durch eine erweiterte Kommunikation vom ESP an den ARduino übermittelt werden. Ein weiteres Konzept der individuellen Fahrten verschiedener Nutzer wäre die Möglichkeit, eine Farbe zu wählen, welche von RGB-LEDs auf der Hochbahn angezeigt wird. Die RGB-Codes des Nutzers würden dann ebenfalls über \acrshort{mqtt} übermittelt. Dazu müsste die Hochbahn allerdings auch über entsprechende LEDs wie beispielsweise Neopixel-Ringe verfügen. Diese könnten direkt an den ESP angeschlossen werden, sodass dieser die Farben anzeigt, während der Arduino die individuelle Fahrt steuert. \\
-Viele der oben aufgeführten Ideen werden in zukünftigen Projekten zur Erweiterung mit hoher Wahrscheinlichkeit angegangen. Zu Beginn wäre hier aber die Kommunikation sowohl über \acrshort{mqtt} als auch über \acrshort{uart} zu erweitern, sodass komplexere Systeme darauf aufgebaut werden können.
+Genrerell wurde die Software in diesem Projekt so konzeptioniert, dass sie leicht erweiterbar ist. Anstelle eines lokal gehosten Servers auf dem ESP32, welcher die gleichen Anforderungen des Endergebnisses erfüllen könnte, wurde ein richtiger Server auf Basis von \acrshort{mvc} erstellt. Dadurch ist eine Grundlage gegeben, auf der ein Bestellsystem gut aufgebaut werden kann. Außerdem sind die einzelnen Seiten leicht erweiterbar, sodass mehr Informationen der Hochbahn angezeigt werden können. Ein Beispiel dazu wäre eine dynamische Anzeige zur aktuellen Position der Hochbahn als eine kleine Animation. \\
+Das System auf der Hochbahn ist auch noch in vielerlei Hinsicht erweiterbar. Aktuell verwendet das System nur ein Byte pro Nachricht. Dadurch ist eine gute Grundlage des Informationsflusses gegeben, die allerdings mit mehreren Bytes pro Nachricht erweitert werden kann. Beispielsweise könnte so auch der Arduino eigene Fehlermeldungen an den ESP schicken, welcher diese dann dem Server übermittelt. Dadurch könnte dem Nutzer die Fehlerdiagnose enorm erleichtert werden. \\
+Eine erweiterte Kommunikation über \acrshort{mqtt} ist ebenfalls möglich. Dadurch könnten individuellere Fahrten durchgeführt werden. Wäre der Server um eine Benutzerdatenbank erweitert, könnte beispielsweise jeder Nutzer eigene Fahrprogramme mit eigenen Höchstgeschwindigkeiten der einzelnen Abschnitte erstellen. Diese müssten dann ebenfalls durch eine erweiterte Kommunikation vom ESP an den Arduino übermittelt werden. Ein weiteres Konzept der individuellen Fahrten verschiedener Nutzer wäre die Möglichkeit, eine Farbe zu wählen, welche von RGB-LEDs auf der Hochbahn angezeigt wird. Die RGB-Codes des Nutzers würden dann ebenfalls über \acrshort{mqtt} übermittelt. Dazu müsste die Hochbahn allerdings auch über entsprechende LEDs wie beispielsweise Neopixel-Ringe verfügen. Diese könnten direkt an den ESP angeschlossen werden, sodass dieser die Farben anzeigt, während der Arduino die individuelle Fahrt steuert. \\
+Viele der oben aufgeführten Ideen werden in zukünftigen Projekten zur Erweiterung mit hoher Wahrscheinlichkeit angegangen. Zu Beginn wäre hier aber die Kommunikation sowohl über \acrshort{mqtt} als auch über \acrshort{uart} zu erweitern, sodass komplexere Systeme darauf aufgebaut werden können.\\
+
+Hinsichtlich des mechatronischen Teils könnte eine detailliertere Lageerfassung implementiert werden. Durch die Verwendung des Schrittmotors ist der Weg für die inkrementale Lageerfassung bereits geebnet. Diese Positionsvorhersagen könnte dann durch die bereits implementierten Erfassung per Reed-Kontakte als absolute Lageerfassung ergänzt werden. Des Weiteren wäre eine automatische Absenkung des Tabletts nach Ankunft am Abgabe- oder Aufnahmeort denkbar. Falls der Auslenkwinkel des Tabletts beim Beschleunigen oder Abbremsen in der Zukunft Probleme bereitet, wäre eine winkelabhängige Drehzahlregelung denkbar. Dadurch könnten die Geschwindigkeiten generell in Abhängigkeiten vom Transportgut gesetzt werden und würden sich daher situationsbedingt anpassen. 
+
+
