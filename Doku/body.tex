@@ -337,12 +337,13 @@ Die Platine muss folgende Anforderungen erfüllen:
 		\item Spannungsüberwachung beider Batteriezellen,
 		\item Interruptleitungen von Reed-Kontakt und Sicherheitssteuerung,
 		\item Selbstabschaltung des Systems
-		\item und Anschluss des Motortreibers.
+		\item und Anschluss von Motortreiber und Ultraschallsensoren.
 	\end{itemize}
 \end{center}
-All diese Anforderungen sollen möglichst gering im Leistungsverbrauch sein. Das bedeutet, dass beispielsweise Spannungsteiler für die Spannungsüberwachung nur vorkommen sollten, wenn auch wirklich Spannung gemessen wird. Ansonsten würde hier unnötigerweise Verlustleistung entstehen. 
+All diese Anforderungen sollen möglichst gering im Leistungsverbrauch umgesetzt werden. \newpage 
 
 \section{Kommunikation über UART}
+\label{sec:uartecard}
 Generell erfolgt die Kommunikation der beiden Mikrocontroller über \acrshort{uart}. Daraus folgt, dass der \acrfull{rx}-Pin des Hochbahn-Controllers (ESP32) mit dem \acrfull{tx}-Pin der Motorsteuerung (Arduino), sowie der \acrshort{rx} des Arduinos mit dem \acrshort{tx} des ESP32 verbunden sein muss. 
 Daraus resultiert folgendes Problem: \\
 Ein Arduino wird bei einer Betriebsspannung von $5V$ versorgt während der ESP32 eine Spannung von $3,3V$ benötigt. Dadurch erhielte der ESP32 beim Empfangen von Nachrichten einen zu hohen HIGH-Pegel wobei der Arduino Nachrichten mit zu niedriger Spannung bekäme.
@@ -411,6 +412,7 @@ In der Praxis ergeben sich dabei jedoch zwei Probleme:
 
 Die in Folgendem erklärte Schaltung soll diese Probleme umgehen.
 \subsection{Mosfetschaltung zur aktivierbaren Spannungsmessung}
+\label{sec:mosfetmess}
 Diese Schaltung soll es ermöglichen, die Spannungsmessung per Signal aktivieren zu können. Das Signal wird dabei vom messenden Arduino mit einem 5V-Pegel erzeugt. Ist die Schaltung aktiviert, sollen - ähnlich wie in \autoref{pic:messfalsch} - beide Spannungen abgegriffen werden.
 
 \begin{figure}[h]
@@ -539,16 +541,16 @@ In folgendem sind zwei Beispielnachrichten genannt, welche der Definition des Pr
 \newpage
 
 
-\chapter{Konzeptionierung der einzelnen Softwarekomponenten der Hochbahn (INF)}
+\chapter{Konzeptionierung der einzelnen Softwarekomponenten der Hochbahn (INF)}\label{sec:softwareKomp}
 \section{Zustandsautomaten}
 Auf der Hochbahn befinden sich zwei Softwarekomponenten, die untereinander Nachrichten austauschen. Dies dient der Synchronisierung und Ausführung von Fahrbefehlen. Der Ablauf, welcher im erfolgreichen Fahren mündet, ergibt sich wie folgt:
 \begin{center}
 	\begin{itemize}
-		\item ESP32 $\Leftarrow$ Server: \textit{Fahr mal zu Position y!}
+		\item ESP32 $\Leftarrow$ Server: \textit{Fahr zu Position y!}
 		\item ESP32 $\Rightarrow$ Arduino: \textit{Wo genau stehen wir?}
 		\item ESP32 $\Leftarrow$ Arduino: \textit{Position x!}
-		\item ESP32 $\Rightarrow$ Arduino: \textit{Fahr mal zu Position y!}
-		\item ESP32 $\Leftarrow$ Arduino: \textit{Alles klar, mach ich!}
+		\item ESP32 $\Rightarrow$ Arduino: \textit{Fahr zu Position y!}
+		\item ESP32 $\Leftarrow$ Arduino: \textit{OK!}
 	\end{itemize}
 \end{center}
 Der hier aufgelistete Ablauf ist fehlerlos dargestellt. Die Positionsabfrage dient dazu, auch auf dem ESP32 immer die richtige Position zu speichern. Er besitzt hierbei einen falschen Wert, falls er durch Netzkommunikation einen Positionswechsel nicht mitbekommt. \\
@@ -588,6 +590,7 @@ Zu sehen ist dabei wieder eine Kreisstruktur, bei der die einzelnen Zustände ü
 Die Hauptfunktion dieser Methode folgt der folgenden Struktur: \textit{Die Bahn fährt von A nach B.} B ist in diesem Fall die anzufahrende Position, welche vom Server übermittelt wurde. Aus acht Abschnitten auf der Strecke und der Möglichkeit jeden Abschnitt von jedem Abschnitt aus anzufahren ergeben sich 56 individuelle Fahrprogramme. Die Ausprogramierung aller Fahrprogramme würde einen erheblichen Aufwand bedeuten. Aus diesem Grund wurden Regeln ausformuliert, nach denen der Controller die Fahrpgromme selbst zusammenstellt. Diese werden nachfolgend beschrieben. 
 
 \subsection{Regeln zur Bestimmung des Fahrprogramms}
+\label{sec:rules}
 Auf der Strecke gibt es zwei unterschiedlich Arten anfahrbaren Positionen:
 \begin{center}
 	\begin{itemize}
@@ -598,17 +601,8 @@ Auf der Strecke gibt es zwei unterschiedlich Arten anfahrbaren Positionen:
 Der Unterschied liegt darin, dass die Bahn bei einer der beiden Endpositionen exakt am Magneten anhalten muss, während beim Anfahren von Aschnitten der Stopp zwischen zwei Magneten erfolgen soll. Die anzupeilende Geschwindigkeit ist in Prozent der Maximalgeschwindigkeit angegeben.
 \newpage 
 \subsubsection{Regel 1: Maximalgeschwindigkeit einzelner Abschnitte}
-\autoref{pic:streckengrafik} zeigt die Strecke (schwarz) der Hochbahn.
-
-\begin{figure}[h]
-	\begin{center}
-		\includegraphics[width = \textwidth]{Streckengrafik.pdf}
-		\caption{\label{pic:streckengrafik} Hochbahn-Strecke als Grafik}
-	\end{center}
-\end{figure}
-
-Wie zu erkennen ist, gibt es sowohl sehr kurvige als auch längere gerade Streckenteile. Die Strecke wird nun in acht Abschnitte unterteilt, die jeweils angefahren werden können. Abschnitt null und sieben sind die Endpunkte der Hochbahnstrecke.  In \autoref{pic:positionen} sind diese Acht Abschnitte - jeweils durch Magnete von einander getrennt - zu sehen.
-\newpage
+\autoref{pic:positionen} zeigt die Strecke (schwarz) der Hochbahn.
+Wie zu erkennen ist, gibt es sowohl sehr kurvige als auch längere gerade Streckenteile. Die Strecke wird daher in acht Abschnitte unterteilt, die jeweils angefahren werden können. Abschnitt null und sieben sind die Endpunkte der Hochbahnstrecke.  In \autoref{pic:positionen} sind diese Acht Abschnitte - jeweils durch Magnete von einander getrennt - zu sehen.
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[width = \textwidth]{Positionen.pdf}
@@ -662,15 +656,15 @@ Ein weiteres Beispiel mit einer Fahrt von Abschnitt zwei zu Abschnitt sechs zeig
 Die Priorisierung $Regel1 <  Regel3 <  Regel2  < Regel4$ kann  sowohl ein zu schnelles Ankommen der Bahn im letzten Abschnitt, als auch unnötige Beschleunigungen vermeiden.
 
 \chapter{Server (INF)}
+\label{sec:server}
 Die ursprüngliche Konzeptionierung dieses Projekts plante ein Bestellsystem. Dieses wurde aufgrund der stark gestiegenen Komplexität des verteilten Systems auf der Hochbahn in den Ausblick dieser Arbeit verschoben. Da ein Server nun nur Steuerbefehle weiterleitet, wäre es einfach, diesen vom ESP32 der Hochbahn selbst hosten zu lassen. Da das System jedoch auch nach Ende dieser Arbeit weiterentwickelt werden soll, wird hierbei trotzdem eine Grundlage geschaffen, um später das Bestellsystem leichter hinzufügen zu können. Daher ist ein Server zu entwickeln, welcher die komplexe Implementierung eines Bestellsystems ermöglicht. 
 \section{ASP.NET-Core}
-Nach Evaluierung verschiedener Frameworks für die Serverprogrammierung, fiel die Entscheidung auf APS.NET-Core. Grund dafür war einerseits die persönliche Vorliebe für die Programmiersprache C\# im Gegensatz zu beispielsweise Python mit Django als Framework. Ebenfalls bietet ASP.NET-Core die Möglichkeit, einen \acrshort{mqtt}-Broker als zusätzliche Komponente des Systems zu hosten. Somit wird im Betrieb auf dem Raspberry PI nur noch der Server getartet, ohne einen Broker installieren und starten zu müssen. \\
-Das Framework baut auf \acrfull{mvc} auf. Models werden aktuell noch vernachlässigt, da aufgrund der geringen Funktionlität keinerlei Objekte beispielsweise in eine Datenbank geschrieben werden müssen. Kommt das Bestellsystem hinzu, sind Models für Bestellungen oder Nutzer zu implementieren. Der Server dient jedoch vorerst nur als Vermittler zwischen Benutzer und Hochbahn ohne individuelle Anforderungen zu erfüllen, welche Models benötigen. Auf Views und Controller kann trotz geringer Fnktionalität nicht verzichtet werden. 
+Nach Evaluierung verschiedener Frameworks für die Serverprogrammierung, fiel die Entscheidung auf APS.NET-Core. Grund dafür war einerseits eine persönliche Vorliebe für die Programmiersprache C\#, im Gegensatz zu beispielsweise Python mit Django als Framework. Ebenfalls bietet ASP.NET-Core die Möglichkeit, einen \acrshort{mqtt}-Broker als zusätzliche Komponente des Systems zu hosten. Somit wird im Betrieb auf dem Raspberry PI nur noch der Server getartet, ohne einen Broker installieren und starten zu müssen. \\
+Das Framework baut auf \acrfull{mvc} auf. Dieses gliedert eine Serverapplikation in Models, View und Controller. Models sind eine Art Datenmodell, welches zur individuellen Nutzung, oder für Datenbanken verwendbar ist. Views sind Seiten, also Benutzeroberflächen, die dem Nutzer angezeigt werden. Controller bilden die Schnittstelle zwischen Browser und Server. Models werden aktuell noch vernachlässigt, da aufgrund der geringen Funktionlität keinerlei Objekte beispielsweise in eine Datenbank geschrieben werden müssen. Kommt das Bestellsystem hinzu, sind Models für Bestellungen oder Nutzer zu Implementieren. Der Server dient jedoch vorerst nur als Vermittler zwischen Benutzer und Hochbahn ohne individuelle Anforderungen zu erfüllen, welche Models benötigen würden. Auf Views und Controller kann trotz geringer Fnktionalität nicht verzichtet werden. 
 
 \section{Views}
 \subsection{Index}
-Index ist jene Seite, die beim ersten Aufruf der Website gezeigt wird. Sie soll dem Nutzer anzeigen wo sich die Bahn aktuell befindet. Zudem soll die Möglichkeit geboten werden einen Fahrbefehl an die Bahn zu schicken. Der Konzeptionierung der Fahrfunktion ist eine Grafik zu entnehmen, bei der die einzelnen Abschnitte der Bahn erkennbar sind (\autoref{pic:streckengrafik}). Ist diese Grafik auch auf der Seite zu sehen, kann ein Nutzer bei einer Eingabe die gewünschte Position auswählen und als Fahrbefehl verschicken. Als Eingabefunktion wurde aufgrund symbolischer Ähnlichkeit ein Slider verwendet. Auf Darlegung des Design-Codes (hierbei bestehend aus css und Bootstrap) wird in dieser Arbeit verzichtet, da der Fokus auf Technik und Funktionalität liegt. 
-\vspace{1cm}
+Index ist jene Seite, die beim ersten Aufruf der Website gezeigt wird. Sie soll dem Nutzer anzeigen, wo sich die Bahn aktuell befindet. Zudem soll die Möglichkeit bestehen, einen Fahrbefehl an die Bahn zu schicken. Der Konzeptionierung der Fahrfunktion ist eine Grafik zu entnehmen, bei der die einzelnen Abschnitte der Bahn erkennbar sind (\autoref{pic:streckengrafik}). Ist diese Grafik auch auf der Seite zu sehen, kann ein Nutzer bei einer Eingabe die gewünschte Position auswählen und als Fahrbefehl verschicken. Als Eingabefunktion wurde aufgrund symbolischer Ähnlichkeit ein Slider verwendet. Auf Darlegung des Design-Codes (hierbei bestehend aus css und Bootstrap) wird in dieser Arbeit verzichtet, da der Fokus auf Technik und Funktionalität liegt. 
 
 \begin{lstlisting}[language=html, style=dhpaperdefault]
 <div class="text-center">
@@ -688,7 +682,7 @@ Index ist jene Seite, die beim ersten Aufruf der Website gezeigt wird. Sie soll 
 \captionof{lstlisting}{\label{code:index} Index.html des Servers}
 \vspace{0.5cm}
 
-In \autoref{code:index} ist der HTML-Code der Hauptseite zu sehen. Zu erkennen ist ein \texttt{Input} des Types \texttt{Range} (Slider), dessen Wert über seine \texttt{ID} erhalten werden kann. Die Funktion \texttt{driveTo()}, welche beim Klicken auf den \texttt{Button} gestartet wird, entnimmt diesen Wert und sendet ihn via \acrshort{mqtt} an die Bahn (Mehr dazu unter \autoref{sec:serverMqtt}). Die Hochbahn schickt, bei Änderung der Position, diese an den Server. Auf dem Server soll also immer die aktuelle Position der Bahn gespeichert sein. Änderungen des Inhalts auf der Seite des Servers hat generell keine Auswirkung auf jene die Beispielsweise auf dem Handy angezeigt wird, da das Handy sich beim ersten Aufruf die Seite holt und diese nicht aktualisiert. Daher ist der Einbau einer Funktionalität nötig, die Clientseitig periodisch Daten wie die aktuelle Position aktualisiert. Die Position soll im \texttt{div} der ID \texttt{data-position} angezeigt werden. Um aktuelle Daten vom Server zu erhalten wird Clientseitig ein GET-Request durchgeführt. Dieses Request erfragt definierte Daten vom Server und kann von jedem Gerät welches die Seite aufruft durchgeführt werden. Beim ersten Aufruf der Website wird beispielsweise ein GET-Request auf die Seite Index durchgeführt. \\
+In \autoref{code:index} ist der HTML-Code der Hauptseite zu sehen. Zu erkennen ist ein \texttt{Input} des Types \texttt{Range} (Slider), dessen Wert über seine \texttt{ID} erhalten werden kann. Die Funktion \texttt{driveTo()}, welche beim Klicken auf den \texttt{Button} gestartet wird, entnimmt diesen Wert und sendet ihn via \acrshort{mqtt} an die Bahn (Mehr dazu unter \autoref{sec:serverMqtt}). Die Hochbahn schickt, bei Änderung der Position, diese an den Server. Auf dem Server soll also immer die aktuelle Position der Bahn gespeichert sein. Änderungen des Inhalts auf der Seite des Servers hat generell keine Auswirkung auf jene die beispielsweise auf dem Handy angezeigt wird, da das Handy sich beim ersten Aufruf die Seite holt und diese nicht aktualisiert. Daher ist der Einbau einer Funktionalität nötig, die Clientseitig periodisch Daten wie die aktuelle Position aktualisiert. Die Position soll im \texttt{div} der ID \texttt{data-position} angezeigt werden. Um aktuelle Daten vom Server zu erhalten, wird Clientseitig ein GET-Request durchgeführt. Dieses Request erfragt definierte Daten vom Server und kann von jedem Gerät, welches die Seite aufruft, durchgeführt werden. Beim ersten Aufruf der Website wird beispielsweise ein GET-Request auf die Seite Index durchgeführt. \\
 HTML bietet die Möglichkeit einer \texttt{onload} - Methode. Diese wird ausgeführt, sobald die Seite aufgerufen wird. Im Falle des Hochbahnservers initialisiert die \texttt{onload} - Methode die periodische Ausführung verschiedener GET-Requests. 
 \vspace{0.5cm}
 \begin{lstlisting}[language=html, style=dhpaperdefault]
@@ -703,7 +697,7 @@ HTML bietet die Möglichkeit einer \texttt{onload} - Methode. Diese wird ausgef�
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:init} Initialisierung der periodischen GET-Requests}
 \vspace{0.5cm}
-In \autoref{code:init} ist die Initialisierungsfunktion zu erkennen. Sie setzt ein intervall von 500 Millisekunden. Das bedeutet, dass die Methode alle 500 Millisekunden ausgeführt wird. So führt jedes Gerät welches die Hauptseite lädt alle 500 Millisekunden verschiedene Get-Requests auf verschiedene Informationen der Hochbahn durch. 
+In \autoref{code:init} ist die Initialisierungsfunktion zu erkennen. Sie setzt ein intervall von 500 Millisekunden. Das bedeutet, dass die Methode alle 500 Millisekunden ausgeführt wird. So führt jedes Gerät welches die Hauptseite lädt alle 500 Millisekunden verschiedene Get-Requests auf verschiedene Informationen der Hochbahn durch, welche dem jeweiligen Methodennamen zu entnehmen sind. 
 
 \subsection{Info}
 Auf der Infoseite sind aktuelle Informationen über die Hochbahn zu sehen. Hierbei gibt es drei Kategorien:
@@ -716,7 +710,7 @@ Auf der Infoseite sind aktuelle Informationen über die Hochbahn zu sehen. Hierb
 	\end{itemize}
 \end{center}
 \newpage
-Die GET-Requests auf diese Informationen werden mit jener für die Position der Hochbahn initialisiert. Ein solches Request erfolgt folgendermaßen:
+GET-Requests auf diese Informationen werden mit jener für die Position der Hochbahn initialisiert. Ein solches Request erfolgt folgendermaßen:
 
 \begin{lstlisting}[language=html, style=dhpaperdefault]
 	function getErrorMsg() {
@@ -734,7 +728,7 @@ Die GET-Requests auf diese Informationen werden mit jener für die Position der 
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:get}GET-Request auf die Fehlermeldungen}
 \vspace{0.5cm}
-\autoref{code:get} zeigt ein GET-Request auf die URL \texttt{Home/Error}. Mit der Antwort des Servers wird im Parameter \texttt{data} die aktuelle Fehlermeldung übergtagen. Diese wird im Anschluss an das Textfeld mit der ID \texttt{data-error} übergeben. 
+\autoref{code:get} zeigt ein GET-Request auf die URL \texttt{Home/Error}. Die Antwort des Servers überträgt im Parameter \texttt{data} die aktuelle Fehlermeldung. Diese wird im Anschluss an das Textfeld mit der ID \texttt{data-error} übergeben. 
 \subsection{Benutzeroberfläche}
 Ein Nutzer, der mit einem Smartphone die Seite im Heimnetzwerk aufruft, also im Browser die IP-Adresse des Servers eingibt, kann auf die beiden Seiten zugreifen, welche in \autoref{pic:ui} gezeigt sind.
 
@@ -783,7 +777,7 @@ public IActionResult getPosition()
 \captionof{lstlisting}{\label{code:requests} Anfragen an den Server}
 \vspace{0.5cm}
 
-In \autoref{code:requests} sind die drei verschiedenen Anfragen gezeigt, welche an den Server gestellt werden können. Die erste ist ein GET-Request an die Hauptseite. Das \texttt{return}-Statement sucht in diesem Fall nach einer HTML-Datei Namens Index, welche an das fragende Gerät zurückgegeben wird. Die zweite Funktion zeigt ein POST-Request, bzw. die serverseitige Antwort auf ein POST-Request an die URL \texttt{Home/Position}. Diese entnimmt dem POST die Position und übermittelt diese mit \texttt{\_mqttService} an das Topic (\texttt{Train/driveToPosition}), sodass der ESP32 auf der Hochbahn die Position entwerten kann. Die dritte Anfage ist wieder ein GET, jedoch mit dem Ziel nur die Information \texttt{position} und keine ganze Seite zu erhalten. Zurückgegeben wird hier die Variable \texttt{Position}, welche im \texttt{\_mqttService} gespeichert ist. Wie diese Information von der Hochbahn erhalten wird, ist im Folgenden erklärt.
+In \autoref{code:requests} sind die drei verschiedenen Anfragen gezeigt, welche an den Server gestellt werden können. Die erste ist ein GET-Request an die Hauptseite. Das \texttt{return}-Statement sucht in diesem Fall nach einer HTML-Datei Namens \texttt{Index}, welche an das fragende Gerät zurückgegeben wird. Die zweite Funktion zeigt ein POST-Request, bzw. die serverseitige Antwort auf ein POST-Request an die URL \texttt{Home/Position}. Diese entnimmt dem POST die Position und übermittelt diese mit \texttt{\_mqttService} an das Topic (\texttt{Train/driveToPosition}), sodass der ESP32 auf der Hochbahn die Position entwerten kann. Die dritte Anfage ist wieder ein GET, jedoch mit dem Ziel nur die Information \texttt{position} und keine ganze Seite zu erhalten. Zurückgegeben wird hier die Variable \texttt{Position}, welche im \texttt{\_mqttService} gespeichert ist. Wie diese Information von der Hochbahn erhalten wird, ist im Folgenden erklärt.
 \section{MQTT}
 \label{sec:serverMqtt}
 Neben dem laufenden \acrshort{mqtt}-Broker wird zusätzlich ein \acrshort{mqtt}-Server benötigt, um Nachrichten zu empfangen und zu senden. Dieser wird im \texttt{Startup} als ein Service registriert. Dieser Service wird anschließend als Singleton umgesetzt, damit von überall im Code auf den gleichen Service zugegriffen wird:
@@ -832,8 +826,8 @@ public Task sendMessage(string topic, string payload)
 \captionof{lstlisting}{\label{code:mqttSend} Sende-Methode des \acrshort{mqtt} - Services}
 
 \vspace{0.5cm}
-In \autoref{code:mqttSend} ist die sende-Methode gezeigt. \texttt{MqttApplicationMessageBuilder} konvertiert die Nachricht mit Topic in ein \acrshort{mqtt}-Format, welches dann mit der Methode \texttt{PublishAsync} an den Broker übermittelt wird. Dieser verwaltet im Anschluss die Übertragung an die Hochbahn, da sie sich an dem gewünschte Topic angemeldet hat.\\
-Das Empfangen von Nachrichten erfolgt über eine Callback-Methode, die bei jeder empfangenen Nachricht aufgerufen wird. Initialisiert wird diese Im Konstruktor des \texttt{mqtt} - Services.
+In \autoref{code:mqttSend} ist die Sende-Methode gezeigt. \texttt{MqttApplicationMessageBuilder} konvertiert die Nachricht mit Topic in ein \acrshort{mqtt}-Format, welches dann mit der Methode \texttt{PublishAsync} an den Broker übermittelt wird. Dieser verwaltet im Anschluss die Übertragung an die Hochbahn, da sie sich an dem gewünschte Topic angemeldet hat.\\
+Das Empfangen von Nachrichten erfolgt über eine Callback-Methode, die bei jeder empfangenen Nachricht aufgerufen wird. Initialisiert wird diese im Konstruktor des \texttt{mqtt} - Services.
 
 \begin{lstlisting}[language=c, style=dhpaperdefault]
 _mqttServer.UseApplicationMessageReceivedHandler(async e =>
@@ -858,7 +852,7 @@ _mqttServer.UseApplicationMessageReceivedHandler(async e =>
 
 Die in \autoref{code:mqttReceive} gezeigte Methode überprüft, um welches Topic es sich handelt, bzw. an welches Topic die Nachricht geschickt wurde. Je nach Topic wird im Anschluss das Payload, bzw. der Nachrichtencontext, in der ihm zugewiesenen Variable gespeichert. Eine Fehlermeldung landet somit immer in der Variable \texttt{ErrorMsg}. Für den gleichen Zweck existieren noch die Variablen \texttt{WarningMsg, PositionMsg und BatteryMsg}. In \autoref{sec:controller} ist bereits gezeigt, wann diese Variablen ausgelesen werden. 
 
-\chapter{Umsetzung (MT)} 
+\chapter{Umsetzung der mechatronischen Komponenten (MT)} 
 \label{cha:umsetzung}
 Im ersten Teil der Studienarbeit stand die Konzeptionierung in \autoref{cha:konzeptionierung} im Vordergrund. Auf dieses Kapitel aufbauend soll der aktuelle Stand der Umsetzung beschrieben werden. Dieser beschränkt sich  auf die Motorsteuerung in \autoref{sec:motorsteuerung} sowie die Getriebekonstruktion in \autoref{sec:getriebekonstruktion}.
 \newpage
@@ -1118,9 +1112,10 @@ Die Wellen werden axial beansprucht. Damit die Befestigung der Welle die axialen
 \newpage
 
 \chapter{Fertigung der Platine (INF)}
+\label{sec:ecard}
 \section{Schaltplan}
 \label{sec:eCardPlan}
-\autoref{pic:schaltplan} zeigt den gesamten Schaltplan für die Platine. Zu sehen sind ESP32, zwei Arduini, sowie Steppertreiber, ein Relais und diverse \textcolor{magenta}{Schraubklemmen} um beispielsweise die beiden \textcolor{orange}{Ultraschallsensoren} anzuschließen. Der Einsatz des \textcolor{red}{Relais} wird in TODO erklärt.Die \textcolor{blue}{Kommunikation zwischen Arduino und ESP} ist in TODO aufgeführt. Unter TODO ist die \textcolor{green}{Mosfetschaltung zur Spannungsmessung} erklärt. All diese Komponenten sind farblich im Schaltplan markiert. In (TODO) wurde das Energieversorgungskonzept erklärt, welches ebenfalls auf der Platine vorhanden sein muss.
+\autoref{pic:schaltplan} zeigt den gesamten Schaltplan für die Platine. Zu sehen sind ESP32, zwei Arduini, sowie Steppertreiber, ein \textcolor{red}{Relais} und diverse \textcolor{magenta}{Schraubklemmen} um beispielsweise die beiden \textcolor{orange}{Ultraschallsensoren} anzuschließen. Die \textcolor{blue}{Kommunikation zwischen Arduino und ESP} ist in \autoref{sec:uartecard} aufgeführt. Unter \autoref{sec:mosfetmess} ist die \textcolor{green}{Mosfetschaltung zur Spannungsmessung} erklärt. All diese Komponenten sind farblich im Schaltplan markiert. In \autoref{sec:konzeptEnergieversorgung} wurde das Energieversorgungskonzept erklärt, welches ebenfalls auf der Platine vorhanden sein muss.
 
 \begin{figure}[h]
 	\begin{center}
@@ -1132,7 +1127,7 @@ Die Wellen werden axial beansprucht. Damit die Befestigung der Welle die axialen
 
 
 \section{PCB-Design}
-Der fertige Schaltplan aus \autoref{sec:eCardPlan} ist nun in ein fräsbereites Platinen Design umzuwandeln. Um den Fräsaufwand so gering wie möglich zu halten, werden alle elektronischen Verbindungen auf einer Seite platiert. Daraus folgt, dass es zu keinen Überlappungen von Verbindungen geben darf, da sonst der Stromfluss nicht mehr logisch getrennt wäre. Um den Verbindungsaufwand zu verringern, wurde \gls{gnd} auf die Kupferschicht gelegt. Da alle Komponenten den gleichen $-Pol$ haben, müssen sie an der entsprechenden Stelle lediglich an die Schicht gebunden werden, welche somit eine \gls{gnd}-Leitung ersetzt.
+Der fertige Schaltplan aus \autoref{sec:eCardPlan} ist nun in ein fräsbereites Platinen Design umzuwandeln. Um den Fräsaufwand so gering wie möglich zu halten, werden alle elektronischen Verbindungen auf einer Seite platziert. Daraus folgt, dass es zu keinen Überlappungen von Verbindungen geben darf, da sonst der Stromfluss nicht mehr physisch getrennt wäre. Um den Verbindungsaufwand zu verringern, wurde \gls{gnd} auf die Kupferschicht gelegt. Da alle Komponenten den gleichen $-Pol$ haben, müssen sie an der entsprechenden Stelle lediglich an die Schicht gebunden werden, welche somit eine \gls{gnd}-Leitung ersetzt.
 \vspace{0.5cm}
 \begin{figure}[h]
 	\begin{center}
@@ -1141,11 +1136,11 @@ Der fertige Schaltplan aus \autoref{sec:eCardPlan} ist nun in ein fräsbereites 
 	\end{center}
 \end{figure}
 
-\autoref{pic:pcbDesign} zeigt den PCB-Entwurf für die Hauptplatine. Zu erkennen sind alle zuvor erwähnten Komponenten. Ebenfalls ersichtlich ist (weiß markiert) die 5V Versorgungsleitung. An die unten rechts platzierte Schraubklemme wird der StepUp Wandler für 10V angeschlossen. Dabei ist zu erkennen, dass diese Leitungen besonders dick (2mm) sind. Es handelt sich um die Versorgungsleitung für alle Komponenten, wodurch hier der meiste Strom fließt. Die Dicke verhindert eine Hitzeüberlastung der Leitung. Datensignale sind mit 0.3mm am dünnsten.[TODO: Bib mit dickenliste]
+\autoref{pic:pcbDesign} zeigt den PCB-Entwurf für die Hauptplatine. Zu erkennen sind alle zuvor erwähnten Komponenten. Ebenfalls ersichtlich ist (weiß markiert) die 5V Versorgungsleitung. An die unten rechts platzierte Schraubklemme wird der StepUp Wandler für 10V angeschlossen. Dabei ist zu erkennen, dass diese Leitungen besonders dick (2mm) sind. Es handelt sich um die Versorgungsleitung für alle Komponenten, wodurch hier der meiste Strom fließt. Die Dicke verhindert eine Hitzeüberlastung der Leitung. Datensignale sind mit 0.3mm am dünnsten.
 Ebenfalls ersichtlich wird, dass das Relais die Stromleitung der Batterie bereits vor dem Step-Up Wandler trennt. Der Grund dafür ist, dass im ausgeschaltenen Zustand kein Strom aus den Batterien fließen soll, was bei angeschlossenem Wandler der Fall wäre. 
 
 \section{Fertigung}
-Gefräst wurde die Platine in der Ausbildungsabteilung der SICK AG. Die bereits mit (todo acr) smd-Teilen bestückte Platine ist in \autoref{pic:ecardCopper} zu sehen. 
+Gefräst wurde die Platine in der Ausbildungsabteilung der SICK AG. Die bereits mit smd-Teilen bestückte Platine ist in \autoref{pic:ecardCopper} zu sehen. 
 
 \begin{figure}[h]
 	\begin{center}
@@ -1165,6 +1160,7 @@ Nach Verlöten der übrigen Komponenten und Anschluss von Step-Up-Wandler und Ba
 \end{figure}
 
 \chapter{Implementierung der Zustandsautomaten (INF)}
+\label{sec:states}
 Im folgenden wird die zuvor unter \autoref{sec:stateESP} konzeptionierte Logik des Zustandsautomaten des ESP32 implementiert.
 C++ ist die hierbei verwendete Programmiersprache. Die Idee ist eine State Maschine, die zu jeder zeit einen aktuellen State (\texttt{currentState}) hat, welcher sich in Abhängigkeit von der Eingabe verändert. Beispielsweise soll die Maschine von \texttt{IDLE} nach \texttt{START} wechseln, sofern ein valider Fahrbefehl vom Server erhalten wurde.
 
@@ -1230,7 +1226,7 @@ Gibt es keine Empfangene Nachricht, führt Idle-State die Aufgabe \textit{Batter
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:IdleState:handleWithoutParam}Batteriemessung der Idle-State Klasse}
 	\vspace{0.5cm}
-\texttt{batteryMeasure} aus \autoref{code:IdleState:handleWithoutParam} ist ein Pointer auf eine Instanz der Klasse Battery Master, welche im späteren Verlauf erklärt wird TODO!. 
+\texttt{batteryMeasure} aus \autoref{code:IdleState:handleWithoutParam} ist ein Pointer auf eine Instanz der Klasse Battery Master. DIese Klasse bietet verschiedene Methoden, um den Abtteriezustand in verschiedenen Formaten zu erhalten. 
 Die Methoden \texttt{getCellOneInPercent} und \texttt{getCellTwoInPercent} geben jeweils den Batteriezustand der Zelle in Prozent zurück. Liegen beide unter dem Schwellwert von 10\%, wird \texttt{CHARGE\_STATE} zurückgegeben, wodurch die Statemaschine daraufhin in den Zustand wechselt, welcher die Bahn zur Ladestation zurückfährt.
 Ansonsten wird der Batteriezustand an den Arduino geschickt, und die Maschine wechselt wieder zu \texttt{IDLE}.
 Wird eine Nachricht vom ESP empfangen, wird folgende Methode im Idle-Zustand aufgerufen: 
@@ -1246,12 +1242,12 @@ Wird eine Nachricht vom ESP empfangen, wird folgende Methode im Idle-Zustand auf
 \captionof{lstlisting}{\label{code:IdleState:handleByte}Nachrichtenvalidierung innerhalb der Idle-State KLasse}
 \vspace{0.5cm}
 
-\texttt{messageHandler} aus \autoref{code:IdleState:handleByte} ist ein Pointer auf eine Instanz der Klasse Decoder. Diese KLasse bietet mehrere Methoden, um Header, Body und Tail einer Nachricht einzeln als \texttt{int} zu erhalten um die Evaluation von Nachrichten zu vereinfachen.
+\texttt{messageHandler} aus \autoref{code:IdleState:handleByte} ist ein Pointer auf eine Instanz der Klasse Decoder. Diese Klasse bietet mehrere Methoden, um Header, Body und Tail einer Nachricht einzeln als \texttt{int} zu erhalten um die Evaluation von Nachrichten zu vereinfachen.
 Die Methode aus \autoref{code:IdleState:handleByte} überprüft, ob es sich bei der NAchricht um eine Positionsanfrage handelt. Ist dies der Fall, wechselt die Maschine den Zustand zu \texttt{POSITION\_STATE}, andernfalls zu \texttt{ERROR}, da diese handle-Methode nur mit Positionsanfragen aufgerufen werden darf.
 Die anderen States implementieren auf ähnliche Weise die handle-Methode mit und ohne Parameter. Sie führen die Aufgaben des States durch und geben als \texttt{int} den neuen State zurück. 
 
 \section{State-Machine}
-Die State-Machine ist ein Klasse, dessen Objekt alle Zustandsübergänge verwaltet. Sie hat Zugriff auf emfangene Nachrichten und ruft, jenachdem ob es eine neue Nachricht gibt, die Methode \texttt{handle} des aktuellen Zustands mit oder ohne byte-Parameter auf. Abhängig vom Rückgabewert der Funktion wird der aktuelle State geköscht, und der korrekte neue State initialisiert. \autoref{code:machineHandle} zeigt einen Ausschnitt einer solchen Methode der ZUstandsmaschine auf der Hauptsteuerung. ZUm Vergleich ist der Zustandsautomat aus \autoref{pic:statemaschineARD} einzusehen.
+Die State-Machine ist ein Klasse, dessen Objekt alle Zustandsübergänge verwaltet. Sie hat Zugriff auf emfangene Nachrichten und ruft, jenachdem ob es eine neue Nachricht gibt, die Methode \texttt{handle} des aktuellen Zustands mit oder ohne byte-Parameter auf. Abhängig vom Rückgabewert der Funktion wird der aktuelle State gelöscht, und der korrekte neue State initialisiert. \autoref{code:machineHandle} zeigt einen Ausschnitt einer solchen Methode der Zustandsmaschine auf der Hauptsteuerung. Zum Vergleich ist der Zustandsautomat aus \autoref{pic:statemaschineARD} einzusehen.
 \vspace{0.5cm}
 \begin{lstlisting}[language=c, style=dhpaperdefault]
 void StateMaschine::StateHandle() { 
@@ -1277,7 +1273,7 @@ void StateMaschine::StateHandle() {
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:machineHandle}Handle-Methode zum Zustandsübergang ohne empfangene Nachricht}
 
-Das Switch-Case dient dazu den richtigen State zu initialisieren. In diesem Beispiel würde im Fall \texttt{IDLE\_STATE} ein neuer Idle-State initialisiert. Im Falle \texttt{POSITION\_STATE} erfolgt ein wechsel zu Error-State, da es keinen Fall geben sollte indem ohne \texttt{byte}-Parameter (Positionsabfrage) zu \texttt{POSITOIN\_STATE} gewechselt werden kann. Gibt ein Zustand selbst, aufgrund von Fehlern bei der Ausführung, \texttt{ERROR\_STATE} zurück, wird ein Error-State initialisiert und ausgeführt. Die Ausführung validiert, im Falle der Hauptsteuerung, wie gravierend bzw gefährlich der Fehler ist und führt falls nötig einen Nothalt aus. In diesem Fall müsste die Bahn in Anfangsposition neugestartet werden. Ist kein Nothalt nötig, wird ein Fehler mit einer Status-LED signalisiert, und die Maschine wechselt wieder zu Idle. 
+Das Switch-Case dient dazu den richtigen State zu Initialisieren. In diesem Beispiel würde im Fall \texttt{IDLE\_STATE} ein neuer Idle-State initialisiert. Im Falle \texttt{POSITION\_STATE} erfolgt ein Wechsel zu Error-State, da es keinen Fall geben sollte indem ohne \texttt{byte}-Parameter (Positionsabfrage) zu \texttt{POSITOIN\_STATE} gewechselt werden kann. Gibt ein Zustand selbst, aufgrund von Fehlern bei der Ausführung, \texttt{ERROR\_STATE} zurück, wird ein Error-State initialisiert und ausgeführt. Die Ausführung validiert, im Falle der Hauptsteuerung, wie gravierend, bzw. gefährlich der Fehler ist und führt falls nötig einen Nothalt aus. In diesem Fall müsste die Bahn in Anfangsposition neugestartet werden. Ist kein Nothalt nötig, wird ein Fehler mit einer Status-LED signalisiert, und die Maschine wechselt wieder zu Idle. 
 \\ Die weiteren States und Übergangsfunktionen werden auf gleiche Weise mit ihren jeweiligen Anpassungen (z.B. IdleState der Hauptsteuerung misst die Batterie wenn keine Nachricht emfangen wurde) implementiert. Somit ergeben sich folgende Klassen für die Zustandsmaschinen von Arduino und ESP:
 
 \begin{lstlisting}[language=c, style=dhpaperdefault]
@@ -1309,9 +1305,10 @@ class StateMachine{
 \end{lstlisting}
 \captionof{lstlisting}{\label{code:stateMachines} State-Maschinen von ESP und Arduino}
 
-In \autoref{code:stateMachines} sind die KLassendefinitionen der Zustandsmaschinen von ESP und Arduino gezeigt. Die Klasse auf dem ESP hat im Vergleich zur Zustandsmaschine auf dem Arduino eine weitere Überladung der Methode \texttt{StateHandle} mit einem \texttt{String} als übergabeparameter. Diese dient dazu, Nachrichten die vom Server mit \acrshort{mqtt} übertragen wurden evaluieren zu lassen. die Methode \texttt{handle} wird aus der \texttt{main} aufgerufen und verwaltet Nachrichten. D.h. sie ruft je nach Nachrichteneingang die Methode \texttt{StateHandle} ohne oder mit entsprechendem Parametern auf. 
+In \autoref{code:stateMachines} sind die KLassendefinitionen der Zustandsmaschinen von ESP und Arduino gezeigt. Die Klasse auf dem ESP hat im Vergleich zur Zustandsmaschine auf dem Arduino eine weitere Überladung der Methode \texttt{StateHandle} mit einem \texttt{String} als Übergabeparameter. Diese dient dazu, Nachrichten die vom Server mit \acrshort{mqtt} übertragen wurden evaluieren zu lassen. die Methode \texttt{handle} wird aus der \texttt{main} aufgerufen und verwaltet Nachrichten. D.h. sie ruft je nach Nachrichteneingang die Methode \texttt{StateHandle} ohne oder mit entsprechendem Parametern auf. 
 
 \chapter{Implementierung der Fahrfunktion (INF)}
+\label{sec:driveFunc}
 Zur Implementierung der Fahrfunktion wird eine Klasse namens Drivehandler erstellt. Wie bereits in \autoref{sec:konFahr} erwähnt, wird eine Fahrt mithilfe von Maximalgeschwindigkeiten auf mehreren Abschnitten realisiert. Dazu besitzt die Klasse zwei Arrays: 
 
 \begin{center}
@@ -1321,8 +1318,8 @@ Zur Implementierung der Fahrfunktion wird eine Klasse namens Drivehandler erstel
 	\end{itemize}
 \end{center}
 
-\texttt{sectionSpeeds} ist ein Array vom Typ int und dient dazu, jedem Abschnitt einen vordefinierten Wert für die Maximalgeschwindigkeit zu geben. \texttt{driveSpeeds} ist ein Array was für jede individuelle Fahrt angepasst wird. Über eine Variable \texttt{driveArrayMaxIndex} kann die Anzahl der Abschnitte reduziert werden für kürzere Fahrten. \\
-Die Klasse besitzt zudem die beiden Methoden \texttt{drive()} und \texttt{setDriveSpeeds()}. Letztere füttert das Array \texttt{driveSpeeds} mit den richtigen Werten welche sich aus den vier Fahrtregeln aus TODO ergeben. \texttt{drive()} soll im Anschluss daran die Fahrt durchführen. \\
+\texttt{sectionSpeeds} ist ein Array vom Typ \texttt{int} und dient dazu, jedem Abschnitt einen vordefinierten Wert für die Maximalgeschwindigkeit zu geben. \texttt{driveSpeeds} ist ein Array was für jede individuelle Fahrt angepasst wird. Über eine Variable \texttt{driveArrayMaxIndex} kann die Anzahl der Abschnitte reduziert werden für kürzere Fahrten. \\
+Die Klasse besitzt zudem die beiden Methoden \texttt{drive()} und \texttt{setDriveSpeeds()}. Letztere füttert das Array \texttt{driveSpeeds} mit den richtigen Werten welche sich aus den vier Fahrtregeln aus \autoref{sec:rules} ergeben. \texttt{drive()} soll im Anschluss daran die Fahrt durchführen. \\
 Im Konstruktor werden mehrere Werte gesetzt, welche zur Vorbereitung für das Setzen der richtigen Fahrtwerte dienen. Er wird mit zwei Werten aufgerufen: \texttt{from} und \texttt{to}. Hierbei handelt es sich um die aktuelle Position der Bahn, sowie die Zielposition. Anhand dieser Informationen können folgende Werte leicht ermittelt werden:
 
 \begin{itemize}
@@ -1330,7 +1327,7 @@ Im Konstruktor werden mehrere Werte gesetzt, welche zur Vorbereitung für das Se
 	\item und \texttt{driveArrayMaxIndex}.
 \end{itemize}
 
-Nun besitzt die Klasse alle benötigten Informationen um die zuvor in TODO konzeptionierte Fahrt zu bestimmen.
+Nun besitzt die Klasse alle benötigten Informationen um eine Fahrt zu bestimmen.
 
 \section{Die richtigen Fahrtwerte setzten}
 
@@ -1409,6 +1406,7 @@ else {
 \texttt{stopMode(3)} hält erst am Ende, also mit Erkennen des letzten Magneten an, während \texttt{stopMode(2)} die Bahn auf Geschwindigkeit 0 abbremst.
 
 \chapter{Montage und finaler Stand (INF + MT)}
+\label{sec:final}
 Bevor die Endmontage angestoßen werden konnte, mussten die mechatronischen Komponenten mit dem softwareseitigen Part verknüpft werden. Als Schlüsselstelle stellte sich dabei die Fahrfunktion heraus. Diese diente letztlich auch als Test für die erfolgreiche Verknpüfung der beiden Bereiche. Dazu wurde die gesamte Software auf die Controller geladen und die Komponenten über die Platine verdrahtet. Der Server lief lokal über den Computer. Dabei konnten sowohl Smartphone als auch Hochbahn-Controller darauf zugreifen. Auf der Website wurde bereits der Akkustand angezeigt. Durch Senden von Fahrbefehlen wurden als Test Transportfahrten simuliert. Innerhalb dieser Tests wurden die Geschwindigkeitsprofile durch den Motor entsprechend der Regeln wie gewünscht ausgeführt. \\
 
 Für die Endmontage wurden als weitere Komponenten eine Ladevorrichtung sowie eine Haltuerung für den Reed-Kontakt entwickelt. Die beiden Komponenten sind in \autoref{pic:ladeReedVorrichtung} dargestellt. Über die Ladevorrichtung können die Akkus der Hochbahn in der Ladestation geladen werden. Dafür sind auf der Ladevorrichtung zwei Schleifkonakte, die von Märklin für H0-Eisenbahnen verkauft werden, angebracht. \\ 
@@ -1437,15 +1435,21 @@ gezeigt.
 \newpage
 
 
-Die Gartenhochbahn im finalen Endzustand an der Schiene ist in %todo%
- dargestellt. 
-dargestellt. Abschließend wurde eine finale Testfahrt in der vorgesehenen Umgebung durcheführt. An der Schiene wurden Neodym-Magneten für die Reed-Kontakte befestigt. Dieser wurde erfolgreich abgeschlossen.
+Die Gartenhochbahn im finalen Endzustand an der Schiene ist in \autoref{pic:final}
+ dargestellt. Abschließend wurde eine finale Testfahrt in der vorgesehenen Umgebung durcheführt. An der Schiene wurden Neodym-Magneten für die Reed-Kontakte befestigt. Dieser wurde erfolgreich abgeschlossen.
 
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=13cm]{final.jpg}
+		\caption{\label{pic:final} Ergebnis der Studienarbeit}
+	\end{center}
+\end{figure}
 
 %-------------------------FAZIT UND AUSBLICK-----------------
 
 
 \chapter{Fazit und Ausblick (INF + MT)}
+\label{sec:end}
 Im ersten Teil der Studienarbeit standen Grundlagen, Anforderungen sowie Konzepte im Vordergrund. Diese Arbeit wurde nun mit der Implementierungsphase fortgeführt. Währenddessen musste flexibel auf notwendige Anpassungen reagiert werden und besonders auf die Funktion der Schnittstellen geachtet werden. Abschließend können  wir mit dieser Arbeit ein fertiges und voll funktionsfähiges Endprodukt vorstellen. \\
 
 Mit diesemTeil folgen mit \autoref{sec:fazit} die persönlichen Fazits zur eigenen Disziplin sowie Zusammenarbeit und mit \autoref{sec:ausblick} ein Ausblick. 
@@ -1477,10 +1481,17 @@ Ich persönlich kann auf die Art der Zusammenarbeit bei diesem Projekt nur posit
 \label{sec:ausblick}
 
 Genrerell wurde die Software in diesem Projekt so konzeptioniert, dass sie leicht erweiterbar ist. Anstelle eines lokal gehosten Servers auf dem ESP32, welcher die gleichen Anforderungen des Endergebnisses erfüllen könnte, wurde ein richtiger Server auf Basis von \acrshort{mvc} erstellt. Dadurch ist eine Grundlage gegeben, auf der ein Bestellsystem gut aufgebaut werden kann. Außerdem sind die einzelnen Seiten leicht erweiterbar, sodass mehr Informationen der Hochbahn angezeigt werden können. Ein Beispiel dazu wäre eine dynamische Anzeige zur aktuellen Position der Hochbahn als eine kleine Animation. \\
-Das System auf der Hochbahn ist auch noch in vielerlei Hinsicht erweiterbar. Aktuell verwendet das System nur ein Byte pro Nachricht. Dadurch ist eine gute Grundlage des Informationsflusses gegeben, die allerdings mit mehreren Bytes pro Nachricht erweitert werden kann. Beispielsweise könnte so auch der Arduino eigene Fehlermeldungen an den ESP schicken, welcher diese dann dem Server übermittelt. Dadurch könnte dem Nutzer die Fehlerdiagnose enorm erleichtert werden. \\
+Das verteilte System der Hochbahn ist auch noch in vielerlei Hinsicht erweiterbar. Aktuell verwendet es nur ein Byte pro Nachricht die zu verschicken ist. Dadurch ist eine gute Grundlage des Informationsflusses gegeben, die allerdings mit mehreren Bytes pro Nachricht erweiterbar ist. Beispielsweise könnte so auch der Arduino eigene Fehlermeldungen an den ESP übermitteln, welcher diese dann dem Server sendet. Dadurch könnte dem Nutzer die Fehlerdiagnose enorm erleichtert werden. \\
 Eine erweiterte Kommunikation über \acrshort{mqtt} ist ebenfalls möglich. Dadurch könnten individuellere Fahrten durchgeführt werden. Wäre der Server um eine Benutzerdatenbank erweitert, könnte beispielsweise jeder Nutzer eigene Fahrprogramme mit eigenen Höchstgeschwindigkeiten der einzelnen Abschnitte erstellen. Diese müssten dann ebenfalls durch eine erweiterte Kommunikation vom ESP an den Arduino übermittelt werden. Ein weiteres Konzept der individuellen Fahrten verschiedener Nutzer wäre die Möglichkeit, eine Farbe zu wählen, welche von RGB-LEDs auf der Hochbahn angezeigt wird. Die RGB-Codes des Nutzers würden dann ebenfalls über \acrshort{mqtt} übermittelt. Dazu müsste die Hochbahn allerdings auch über entsprechende LEDs wie beispielsweise Neopixel-Ringe verfügen. Diese könnten direkt an den ESP angeschlossen werden, sodass dieser die Farben anzeigt, während der Arduino die individuelle Fahrt steuert. \\
 Viele der oben aufgeführten Ideen werden in zukünftigen Projekten zur Erweiterung mit hoher Wahrscheinlichkeit angegangen. Zu Beginn wäre hier aber die Kommunikation sowohl über \acrshort{mqtt} als auch über \acrshort{uart} zu erweitern, sodass komplexere Systeme darauf aufgebaut werden können.\\
 
 Hinsichtlich des mechatronischen Teils könnte eine detailliertere Lageerfassung implementiert werden. Durch die Verwendung des Schrittmotors ist der Weg für die inkrementale Lageerfassung bereits geebnet. Diese Positionsvorhersagen könnte dann durch die bereits implementierten Erfassung per Reed-Kontakte als absolute Lageerfassung ergänzt werden. Des Weiteren wäre eine automatische Absenkung des Tabletts nach Ankunft am Abgabe- oder Aufnahmeort denkbar. Falls der Auslenkwinkel des Tabletts beim Beschleunigen oder Abbremsen in der Zukunft Probleme bereitet, wäre eine winkelabhängige Drehzahlregelung denkbar. Dadurch könnten die Geschwindigkeiten generell in Abhängigkeiten vom Transportgut gesetzt werden und würden sich daher situationsbedingt anpassen. 
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[width=\textwidth]{abschlussbild.jpg}
+		\caption{Abschlussbild}
+	\end{center}
+\end{figure}
 
 
