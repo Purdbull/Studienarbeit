@@ -19,7 +19,7 @@ bool isDrivingForward = true;
 */
 const char* ssid = "Kimo-Lan";
 const char* password = "DU!k0mmst_h13r-n1cht.r31n!";
-const char* mqtt_server = "192.168.100.100";
+const char* mqtt_server = "192.168.100.33";
 
 WiFiClient espClient;
 PubSubClient client(espClient);

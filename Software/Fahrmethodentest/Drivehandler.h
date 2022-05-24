@@ -10,6 +10,7 @@ class Drivehandler{
     ~Drivehandler();
 
     void drive();
+    void setDriveSpeeds();
 
   private:
     Stepper* stepper;
@@ -22,7 +23,6 @@ class Drivehandler{
     int driveArrayMaxIndex;
     bool isDrivingForward;
 
-    void setDriveSpeeds();
 
     
 };

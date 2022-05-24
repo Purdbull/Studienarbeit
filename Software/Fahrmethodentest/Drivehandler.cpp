@@ -31,7 +31,7 @@ void Drivehandler::drive() {
       Serial.print("Moritz will zu ");
       Serial.println(driveSpeeds[i]);
       stepper->linear(driveSpeeds[i]);
-      delay(6000);
+      delay(1000);
     }
   }
   else {
@@ -50,7 +50,7 @@ void Drivehandler::drive() {
   }
 
   if (this->to == 0 || this->to == 7) {
-    stepper->stopMode(3);
+    stepper->stopMode(2);
   }
   else {
     stepper->stopMode(2);
