@@ -36,8 +36,24 @@
 \usepackage{bookmark}
 
 % header styles
-\usepackage[headings]{fullpage}
+%\usepackage[headings]{fullpage}
 \usepackage{fancyhdr}
+
+\fancypagestyle{normal}{
+	\fancyhf{}
+	\fancyhead[C]{\leftmark}
+	
+	\fancyfoot[C]{\thepage}
+	
+	\renewcommand{\headrulewidth}{0.4pt}
+	\renewcommand{\footrulewidth}{0.4pt}
+}
+
+
+\usepackage{titlesec}
+\titleformat{\chapter}
+{\normalfont\LARGE\bfseries}{\thechapter}{1em}{}
+\titlespacing*{\chapter}{0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
 
 % glossary and abbreviations
 \usepackage[toc,acronym]{glossaries}
