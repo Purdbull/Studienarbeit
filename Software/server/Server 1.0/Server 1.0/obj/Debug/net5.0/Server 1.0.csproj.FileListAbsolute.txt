@@ -41,7 +41,6 @@ D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.runtimeconfig.json
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.runtimeconfig.dev.json
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.dll
-D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\ref\Server 1.0.dll
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.pdb
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.Views.dll
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.Views.pdb
@@ -59,7 +58,6 @@ D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.TagHelpers.output.cache
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.RazorCoreGenerate.cache
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\Home\Index.cshtml.g.cs
-D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\Home\Privacy.cshtml.g.cs
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\Shared\Error.cshtml.g.cs
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\Shared\_Layout.cshtml.g.cs
 D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\Shared\_ValidationScriptsPartial.cshtml.g.cs
@@ -81,3 +79,6 @@ D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\D
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Server 1.0.csprojAssemblyReference.cache
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\staticwebassets\Server 1.0.StaticWebAssets.xml
 D:\Skywalker\DH\T3000B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\Home\Info.cshtml.g.cs
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\bin\Debug\net5.0\Server 1.0.StaticWebAssets.xml
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\Razor\Views\Home\Info.cshtml.g.cs
+D:\DH\T3000_B\Studienarbeit\Software\server\Server 1.0\Server 1.0\obj\Debug\net5.0\refint\Server 1.0.dll
